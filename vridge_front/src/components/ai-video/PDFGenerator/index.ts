@@ -1,0 +1,1 @@
+export { PDFGenerator } from './PDFGenerator';

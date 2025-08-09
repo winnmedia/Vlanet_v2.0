@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "totalTests": 0,
+    "passed": 0,
+    "failed": 0,
+    "partial": 0,
+    "criticalIssues": 0,
+    "executionTime": "1.19s",
+    "timestamp": "2025-08-09T13:31:19.174Z",
+    "environment": {
+      "BASE_URL": "https://vlanet.net",
+      "API_URL": "https://videoplanet.up.railway.app/api",
+      "TEST_EMAIL": "test@videoplanet.com",
+      "TEST_PASSWORD": "TestUser123!",
+      "TIMEOUT": 15000,
+      "RETRY_COUNT": 3,
+      "PARALLEL_TESTS": true
+    }
+  },
+  "results": [],
+  "criticalIssues": [],
+  "performanceMetrics": {
+    "login": [
+      {
+        "duration": 1075,
+        "timestamp": "2025-08-09T13:31:19.058Z"
+      }
+    ]
+  },
+  "recommendations": []
+}

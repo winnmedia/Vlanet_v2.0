@@ -1,0 +1,14 @@
+.next
+node_modules
+out
+dist
+coverage
+.nyc_output
+*.log
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.env*
+.DS_Store
+Thumbs.db

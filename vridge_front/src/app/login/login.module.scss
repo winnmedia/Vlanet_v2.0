@@ -1,0 +1,297 @@
+.user {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  
+  .intro {
+    height: 100%;
+    padding: 50px;
+    position: relative;
+    background: url('/images/User/bg.png') no-repeat;
+    background-size: cover;
+    
+    .intro_wrap {
+      .logo {
+        img {
+          width: 120px;
+        }
+      }
+      
+      .slogun {
+        color: #fff;
+        font-size: 57px;
+        line-height: 1.24;
+        margin-top: 30px;
+        display: none;
+        
+        span {
+          font-weight: bold;
+        }
+      }
+      
+      .etc {
+        position: absolute;
+        left: 0;
+        bottom: 50px;
+        width: 100%;
+        padding: 0 50px;
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+        
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          
+          li {
+            color: #fff;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            font-weight: 300;
+            font-size: 15px;
+            margin-top: 20px;
+            
+            &:first-child {
+              margin-top: 0;
+            }
+          }
+        }
+        
+        div {
+          color: #fff;
+          font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          font-weight: 400;
+          text-align: right;
+          font-size: 64px;
+          line-height: 1.24;
+        }
+      }
+    }
+  }
+  
+  .form {
+    height: 100%;
+    position: relative;
+    background: #fcfcfc;
+    
+    .form_wrap {
+      width: 400px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      
+      .title {
+        font-size: 36px;
+        color: #000;
+        text-align: center;
+        font-weight: 600;
+      }
+      
+      input.ty01 {
+        width: 100%;
+        height: 54px;
+        border: 1px solid #eeeeee;
+        border-radius: 15px;
+        padding: 0 15px;
+        font-size: 16px;
+        transition: all 0.3s;
+        box-sizing: border-box;
+        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        
+        &::placeholder {
+          font-size: 16px;
+          color: #919191;
+        }
+        
+        &:focus {
+          outline: none;
+          background: #fff;
+          box-shadow: 5px 5px 10px #e8e8e8;
+          border-color: #eeeeee;
+        }
+        
+        &:hover {
+          background: #fff;
+          box-shadow: 5px 5px 10px #e8e8e8;
+        }
+        
+        &.mt50 {
+          margin-top: 50px;
+        }
+        
+        &.mt10 {
+          margin-top: 10px;
+        }
+      }
+      
+      .error {
+        color: #d93a3a;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+      
+      .find_link {
+        color: #919191;
+        margin-top: 15px;
+        cursor: pointer;
+        text-align: right;
+        font-size: 14px;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      
+      button.submit {
+        width: 100%;
+        height: 54px;
+        background: #0031ff;
+        color: #fff;
+        border: none;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        
+        &.mt20 {
+          margin-top: 20px;
+        }
+        
+        &:hover:not(:disabled) {
+          background: #0028d9;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0, 49, 255, 0.3);
+        }
+        
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          background: #8095ff;
+        }
+      }
+      
+      .signup_link {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 14px;
+        
+        span {
+          display: inline-block;
+          margin-left: 10px;
+          color: #1631F8;
+          font-weight: bold;
+          cursor: pointer;
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+      
+      .line {
+        margin: 50px 0;
+        background: #e6e6e6;
+        height: 1px;
+        position: relative;
+        
+        &:before {
+          content: 'Or Sign Up With';
+          display: block;
+          font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          font-weight: 300;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          padding: 4px 16px;
+          transform: translate(-50%, -50%);
+          color: #919191;
+          font-size: 15px;
+          background: #fcfcfc;
+        }
+      }
+      
+      .sns_login {
+        ul {
+          text-align: center;
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          
+          li {
+            display: inline-block;
+            text-indent: -9999px;
+            width: 50px;
+            height: 50px;
+            border: 1px solid #e6e6e6;
+            border-radius: 100%;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            
+            &:hover {
+              border-color: #1631F8;
+              transform: translateY(-2px);
+            }
+            
+            &.google {
+              background: url('/images/User/google_icon.svg') no-repeat;
+              background-size: 24px;
+              background-position: center;
+            }
+            
+            &.kakao {
+              background: url('/images/User/kakao_icon.svg') no-repeat;
+              background-size: 26px;
+              background-position: center;
+            }
+            
+            &.naver {
+              background: url('/images/User/naver_icon.svg') no-repeat;
+              background-size: 20px;
+              background-position: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 태블릿 이하에서는 인트로 숨기기
+@media (max-width: 1024px) {
+  .user {
+    grid-template-columns: 1fr;
+    
+    .intro {
+      display: none;
+    }
+    
+    .form {
+      .form_wrap {
+        width: 90%;
+        max-width: 400px;
+      }
+    }
+  }
+}
+
+// 큰 화면에서만 slogun과 etc 표시
+@media (min-width: 1440px) {
+  .user {
+    .intro {
+      .intro_wrap {
+        .slogun {
+          display: block;
+        }
+        .etc {
+          display: flex;
+        }
+      }
+    }
+  }
+}
