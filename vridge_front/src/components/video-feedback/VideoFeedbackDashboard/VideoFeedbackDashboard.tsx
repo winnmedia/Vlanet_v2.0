@@ -40,7 +40,7 @@ import { useToast } from '@/contexts/toast.context';
 interface VideoFeedbackDashboardProps {
   videoId: string;
   projectId?: number;
-  currentUser: User;
+  currentUser?: User;
   className?: string;
 }
 
