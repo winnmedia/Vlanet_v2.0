@@ -1,0 +1,191 @@
+name: 🚀 Deployment Health Check
+
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # 매일 오전 9시, 오후 6시 (KST 기준)
+    - cron: '0 0,9 * * *'  # UTC 00:00, 09:00 = KST 09:00, 18:00
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Test Type'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+        - full
+        - quick
+        - integration-only
+
+jobs:
+  deployment-test:
+    name: 🔍 Deployment Status Test
+    runs-on: ubuntu-latest
+    
+    outputs:
+      deployment_status: ${{ steps.deploy_test.outputs.status }}
+      success_rate: ${{ steps.deploy_test.outputs.success_rate }}
+    
+    steps:
+    - name: 📂 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        npm ci
+        npm install node-fetch
+        
+    - name: 🔍 Run Deployment Tests
+      id: deploy_test
+      run: |
+        echo "🚀 Starting deployment tests..."
+        
+        # deployment-test.js 실행 및 결과 파싱
+        node deployment-test.js > test_output.log 2>&1 || true
+        
+        # 성공률 추출
+        SUCCESS_RATE=$(grep -oE "성공률: [0-9.]+%" test_output.log | grep -oE "[0-9.]+" || echo "0")
+        TOTAL_TESTS=$(grep -oE "총 테스트: [0-9]+" test_output.log | grep -oE "[0-9]+" || echo "0")
+        PASSED_TESTS=$(grep -oE "성공: [0-9]+ ✅" test_output.log | grep -oE "[0-9]+" || echo "0")
+        FAILED_TESTS=$(grep -oE "실패: [0-9]+ ❌" test_output.log | grep -oE "[0-9]+" || echo "0")
+        
+        echo "success_rate=$SUCCESS_RATE" >> $GITHUB_OUTPUT
+        echo "total_tests=$TOTAL_TESTS" >> $GITHUB_OUTPUT
+        echo "passed_tests=$PASSED_TESTS" >> $GITHUB_OUTPUT
+        echo "failed_tests=$FAILED_TESTS" >> $GITHUB_OUTPUT
+        
+        # 상태 결정
+        if [ "$SUCCESS_RATE" = "100" ]; then
+          echo "status=excellent" >> $GITHUB_OUTPUT
+          echo "🎉 모든 테스트 통과!"
+        elif [ "$(echo "$SUCCESS_RATE >= 90" | bc -l)" = "1" ]; then
+          echo "status=good" >> $GITHUB_OUTPUT
+          echo "✅ 대부분의 테스트 통과"
+        elif [ "$(echo "$SUCCESS_RATE >= 80" | bc -l)" = "1" ]; then
+          echo "status=warning" >> $GITHUB_OUTPUT
+          echo "⚠️ 일부 테스트 실패"
+        else
+          echo "status=critical" >> $GITHUB_OUTPUT
+          echo "❌ 다수의 테스트 실패"
+          exit 1
+        fi
+        
+    - name: 📋 Display Test Results
+      run: |
+        echo "## 🔍 Deployment Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Success Rate | ${{ steps.deploy_test.outputs.success_rate }}% |" >> $GITHUB_STEP_SUMMARY
+        echo "| Total Tests | ${{ steps.deploy_test.outputs.total_tests }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Passed | ${{ steps.deploy_test.outputs.passed_tests }} ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| Failed | ${{ steps.deploy_test.outputs.failed_tests }} ❌ |" >> $GITHUB_STEP_SUMMARY
+        echo "| Status | ${{ steps.deploy_test.outputs.status }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # 테스트 로그 출력
+        echo "### 📝 Detailed Logs" >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+        cat test_output.log >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 🔗 Integration Tests
+      if: ${{ github.event.inputs.test_type != 'quick' }}
+      run: |
+        echo "🧪 Running integration tests..."
+        node integration-test.js > integration_output.log 2>&1 || true
+        
+        echo "### 🧪 Integration Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+        cat integration_output.log >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 📊 Upload Test Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-test-results-${{ github.run_number }}
+        path: |
+          test_output.log
+          integration_output.log
+          deployment-test-results-*.json
+        retention-days: 30
+        
+    - name: 💬 Comment PR Results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const successRate = '${{ steps.deploy_test.outputs.success_rate }}';
+          const status = '${{ steps.deploy_test.outputs.status }}';
+          const totalTests = '${{ steps.deploy_test.outputs.total_tests }}';
+          const passedTests = '${{ steps.deploy_test.outputs.passed_tests }}';
+          const failedTests = '${{ steps.deploy_test.outputs.failed_tests }}';
+          
+          const statusEmojis = {
+            'excellent': '🎉',
+            'good': '✅',
+            'warning': '⚠️',
+            'critical': '❌'
+          };
+          
+          const comment = `## ${statusEmojis[status]} Deployment Test Results
+          
+          | Metric | Value |
+          |--------|-------|
+          | 성공률 | **${successRate}%** |
+          | 총 테스트 | ${totalTests} |
+          | 성공 | ${passedTests} ✅ |
+          | 실패 | ${failedTests} ❌ |
+          
+          ### 📍 Status: ${status}
+          
+          ${status === 'excellent' ? '모든 배포 테스트가 성공했습니다! 🚀' :
+            status === 'good' ? '대부분의 테스트가 성공했습니다. ✨' :
+            status === 'warning' ? '일부 테스트가 실패했습니다. 검토가 필요합니다. ⚠️' :
+            '다수의 테스트가 실패했습니다. 즉시 확인이 필요합니다! 🚨'}
+          
+          > 자세한 결과는 Actions 탭에서 확인하세요.`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  notify:
+    name: 📢 Notification
+    runs-on: ubuntu-latest
+    needs: deployment-test
+    if: always()
+    
+    steps:
+    - name: 🚨 Critical Alert
+      if: needs.deployment-test.outputs.deployment_status == 'critical'
+      run: |
+        echo "🚨 CRITICAL: Deployment tests failed significantly!"
+        echo "Success rate: ${{ needs.deployment-test.outputs.success_rate }}%"
+        echo "Immediate attention required!"
+        
+    - name: ⚠️ Warning Alert
+      if: needs.deployment-test.outputs.deployment_status == 'warning'
+      run: |
+        echo "⚠️ WARNING: Some deployment tests failed."
+        echo "Success rate: ${{ needs.deployment-test.outputs.success_rate }}%"
+        echo "Review recommended."
+        
+    - name: ✅ Success Notification
+      if: needs.deployment-test.outputs.deployment_status == 'excellent' || needs.deployment-test.outputs.deployment_status == 'good'
+      run: |
+        echo "✅ Deployment tests passed successfully!"
+        echo "Success rate: ${{ needs.deployment-test.outputs.success_rate }}%"
+        echo "All systems operational! 🚀"

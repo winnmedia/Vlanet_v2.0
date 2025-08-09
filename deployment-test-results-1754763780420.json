@@ -1,0 +1,154 @@
+{
+  "timestamp": "2025-08-09T18:22:58.596Z",
+  "environment": "test",
+  "results": [
+    {
+      "test": "Production Frontend (vlanet.net)",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:58.810Z",
+      "details": {
+        "statusCode": 200,
+        "responseTime": 212,
+        "hasContent": true
+      }
+    },
+    {
+      "test": "Frontend Content Validation",
+      "success": false,
+      "timestamp": "2025-08-09T18:22:58.810Z",
+      "details": {
+        "hasTitle": false,
+        "hasReact": false,
+        "contentLength": 7625
+      }
+    },
+    {
+      "test": "Staging Frontend (videoplanet-seven.vercel.app)",
+      "success": false,
+      "timestamp": "2025-08-09T18:22:58.870Z",
+      "details": {
+        "statusCode": 404,
+        "responseTime": 60
+      }
+    },
+    {
+      "test": "API Health Check",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.350Z",
+      "details": {
+        "statusCode": 200,
+        "responseTime": 480,
+        "healthStatus": "healthy",
+        "database": "ok",
+        "cache": "ok"
+      }
+    },
+    {
+      "test": "API Documentation",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.472Z",
+      "details": {
+        "statusCode": 200,
+        "responseTime": 121,
+        "version": "1.0.0",
+        "endpointCount": 7
+      }
+    },
+    {
+      "test": "Endpoint /api/auth/login/",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.591Z",
+      "details": {
+        "statusCode": 405,
+        "responseTime": 119,
+        "authenticated": false
+      }
+    },
+    {
+      "test": "Endpoint /api/users/me/",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.710Z",
+      "details": {
+        "statusCode": 401,
+        "responseTime": 119,
+        "authenticated": true
+      }
+    },
+    {
+      "test": "Endpoint /api/projects/",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.830Z",
+      "details": {
+        "statusCode": 401,
+        "responseTime": 119,
+        "authenticated": true
+      }
+    },
+    {
+      "test": "Endpoint /api/video-planning/",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.951Z",
+      "details": {
+        "statusCode": 401,
+        "responseTime": 121,
+        "authenticated": true
+      }
+    },
+    {
+      "test": "Performance - Production Frontend",
+      "success": true,
+      "timestamp": "2025-08-09T18:22:59.996Z",
+      "details": {
+        "responseTime": 45,
+        "threshold": "2000ms",
+        "performance": "excellent"
+      }
+    },
+    {
+      "test": "Performance - API Health",
+      "success": true,
+      "timestamp": "2025-08-09T18:23:00.132Z",
+      "details": {
+        "responseTime": 136,
+        "threshold": "2000ms",
+        "performance": "excellent"
+      }
+    },
+    {
+      "test": "SSL/Security - www.vlanet.net",
+      "success": true,
+      "timestamp": "2025-08-09T18:23:00.176Z",
+      "details": {
+        "https": true,
+        "hasSecurityHeaders": true,
+        "statusCode": 200
+      }
+    },
+    {
+      "test": "SSL/Security - videoplanet.up.railway.app",
+      "success": true,
+      "timestamp": "2025-08-09T18:23:00.294Z",
+      "details": {
+        "https": true,
+        "hasSecurityHeaders": true,
+        "statusCode": 200
+      }
+    },
+    {
+      "test": "CORS Configuration",
+      "success": true,
+      "timestamp": "2025-08-09T18:23:00.419Z",
+      "details": {
+        "statusCode": 200,
+        "allowOrigin": "https://www.vlanet.net",
+        "allowCredentials": "true"
+      }
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "passed": 12,
+    "failed": 2,
+    "duration": 1823
+  }
+}
