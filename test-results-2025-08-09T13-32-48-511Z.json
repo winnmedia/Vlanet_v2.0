@@ -1,0 +1,55 @@
+{
+  "summary": {
+    "totalTests": 1,
+    "passed": 0,
+    "failed": 1,
+    "criticalIssues": 1,
+    "executionTime": "1.23s",
+    "timestamp": "2025-08-09T13:32:48.511Z"
+  },
+  "environment": {
+    "BASE_URL": "https://vlanet.net",
+    "API_URL": "https://videoplanet.up.railway.app/api",
+    "TEST_EMAIL": "test@videoplanet.com",
+    "TEST_PASSWORD": "TestUser123!",
+    "TIMEOUT": 10000
+  },
+  "results": [
+    {
+      "test": "로그인 인증",
+      "status": "FAIL",
+      "message": "로그인 실패: Account creation failed: 404",
+      "timestamp": "2025-08-09T13:32:48.510Z",
+      "category": "Authentication",
+      "severity": "CRITICAL",
+      "priority": "P0",
+      "impact": "전체 시스템 접근 불가",
+      "error": "Account creation failed: 404"
+    }
+  ],
+  "bugList": [
+    {
+      "id": "BUG_1",
+      "category": "Authentication",
+      "severity": "CRITICAL",
+      "title": "로그인 인증",
+      "description": "로그인 실패: Account creation failed: 404",
+      "status": "OPEN",
+      "priority": "P0",
+      "impact": "전체 시스템 접근 불가",
+      "timestamp": "2025-08-09T13:32:48.510Z"
+    }
+  ],
+  "recommendations": [
+    {
+      "category": "Authentication",
+      "priority": "HIGH",
+      "action": "Authentication 관련 백엔드 API 엔드포인트 구현",
+      "failedTests": [
+        "로그인 인증"
+      ],
+      "estimatedEffort": "2-4 시간",
+      "impact": "CRITICAL"
+    }
+  ]
+}

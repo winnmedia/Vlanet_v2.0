@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 API 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #1631F8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0F23C9;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>VideoPlanet 로그인 API 테스트</h1>
+    
+    <div class="form-group">
+        <label>API URL:</label>
+        <input type="text" id="apiUrl" value="http://localhost:8001/api/users/login/" readonly>
+    </div>
+    
+    <div class="form-group">
+        <label>이메일:</label>
+        <input type="email" id="email" value="demo@test.com">
+    </div>
+    
+    <div class="form-group">
+        <label>비밀번호:</label>
+        <input type="password" id="password" value="demo1234">
+    </div>
+    
+    <button onclick="testDirectAPI()">직접 API 테스트</button>
+    <button onclick="testFrontendAPI()">프론트엔드 API 테스트</button>
+    
+    <div id="response"></div>
+
+    <script>
+        // 직접 API 테스트
+        async function testDirectAPI() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const apiUrl = document.getElementById('apiUrl').value;
+            const responseDiv = document.getElementById('response');
+            
+            responseDiv.textContent = '로그인 시도 중...';
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'success';
+                    responseDiv.textContent = '✅ 로그인 성공!\n\n' + JSON.stringify(data, null, 2);
+                    
+                    // 토큰 저장
+                    if (data.access) {
+                        localStorage.setItem('access_token', data.access);
+                        console.log('Access token 저장됨');
+                    }
+                    if (data.vridge_session) {
+                        localStorage.setItem('vridge_session', data.vridge_session);
+                        console.log('Vridge session 저장됨');
+                    }
+                } else {
+                    responseDiv.className = 'error';
+                    responseDiv.textContent = '❌ 로그인 실패\n\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                responseDiv.className = 'error';
+                responseDiv.textContent = '❌ 네트워크 오류: ' + error.message;
+            }
+        }
+        
+        // 프론트엔드 API 테스트 (프론트엔드 서버 통해서)
+        async function testFrontendAPI() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const responseDiv = document.getElementById('response');
+            
+            responseDiv.textContent = '프론트엔드 API로 로그인 시도 중...';
+            
+            try {
+                // 프론트엔드 서버의 API 라우트 호출
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.className = 'success';
+                    responseDiv.textContent = '✅ 프론트엔드 API 로그인 성공!\n\n' + JSON.stringify(data, null, 2);
+                } else {
+                    responseDiv.className = 'error';
+                    responseDiv.textContent = '❌ 프론트엔드 API 로그인 실패\n\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                responseDiv.className = 'error';
+                responseDiv.textContent = '❌ 프론트엔드 API 오류: ' + error.message;
+            }
+        }
+        
+        // 페이지 로드 시 자동 테스트
+        window.onload = function() {
+            console.log('로그인 테스트 페이지 준비 완료');
+        }
+    </script>
+</body>
+</html>
