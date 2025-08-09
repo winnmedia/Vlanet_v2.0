@@ -1,0 +1,304 @@
+{
+  "timestamp": "20250810_031007",
+  "test_categories": [
+    "genre_prompts",
+    "tone_prompts",
+    "intensity_prompts",
+    "complex_scenarios"
+  ],
+  "test_results": {
+    "genre_prompts": {
+      "action": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "action_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "comedy": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, light-hearted, visually appealing, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, light-hearted, visually appealing, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "comedy_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "horror": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, ominous atmosphere, dramatic shadows, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, ominous atmosphere, dramatic shadows, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "horror_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "documentary": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, authentic, informative visual, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, authentic, informative visual, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "documentary_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "commercial": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      }
+    },
+    "tone_prompts": {
+      "professional": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, clean, minimalist, corporate aesthetic, bright, even lighting, structured, balanced framing, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, clean, minimalist, corporate aesthetic, bright, even lighting, structured, balanced framing, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_professional",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "casual": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, natural, approachable, lifestyle, natural, soft lighting, relaxed, candid framing, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, natural, approachable, lifestyle, natural, soft lighting, relaxed, candid framing, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_casual",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "dramatic": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "playful": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, vibrant, energetic, fun, bright, colorful lighting, dynamic, varied angles, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, vibrant, energetic, fun, bright, colorful lighting, dynamic, varied angles, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_playful",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "elegant": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, sophisticated, refined, luxurious, soft, flattering lighting, graceful, well-balanced framing, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, sophisticated, refined, luxurious, soft, flattering lighting, graceful, well-balanced framing, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_elegant",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "edgy": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, bold, unconventional, cutting-edge, high contrast, dramatic lighting, unusual angles, creative framing, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, bold, unconventional, cutting-edge, high contrast, dramatic lighting, unusual angles, creative framing, dynamic motion, strong effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "commercial_edgy",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      }
+    },
+    "intensity_prompts": {
+      "intensity_1": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, minimal motion, subtle effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 40,
+        "image_parameters": {
+          "style_preset": "action_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 40,
+          "conditioning_augmentation": 0.03
+        }
+      },
+      "intensity_3": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, moderate motion, balanced effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 80,
+        "image_parameters": {
+          "style_preset": "action_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 80,
+          "conditioning_augmentation": 0.05
+        }
+      },
+      "intensity_5": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic motion, strong effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 127,
+        "image_parameters": {
+          "style_preset": "action_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 127,
+          "conditioning_augmentation": 0.07
+        }
+      },
+      "intensity_7": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, powerful motion, bold effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 175,
+        "image_parameters": {
+          "style_preset": "action_dramatic",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 175,
+          "conditioning_augmentation": 0.09000000000000001
+        }
+      },
+      "intensity_10": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, maximum motion, spectacular effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 255,
+        "image_parameters": {
+          "style_preset": "action_dramatic",
+          "clip_guidance_preset": "FAST_BLUE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 255,
+          "conditioning_augmentation": 0.12000000000000001
+        }
+      }
+    },
+    "complex_scenarios": {
+      "Intense Action": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, bold, unconventional, cutting-edge, high contrast, dramatic lighting, unusual angles, creative framing, dynamic action, high energy, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, bold, unconventional, cutting-edge, high contrast, dramatic lighting, unusual angles, creative framing, extreme motion, overwhelming effects, dynamic action, high energy, smooth camera movement",
+        "motion_intensity": 220,
+        "image_parameters": {
+          "style_preset": "action_edgy",
+          "clip_guidance_preset": "FAST_BLUE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 220,
+          "conditioning_augmentation": 0.11
+        }
+      },
+      "Soft Comedy": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, vibrant, energetic, fun, bright, colorful lighting, dynamic, varied angles, light-hearted, visually appealing, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, vibrant, energetic, fun, bright, colorful lighting, dynamic, varied angles, gentle motion, soft effects, light-hearted, visually appealing, smooth camera movement",
+        "motion_intensity": 60,
+        "image_parameters": {
+          "style_preset": "comedy_playful",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 60,
+          "conditioning_augmentation": 0.04
+        }
+      },
+      "Elegant Commercial": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, sophisticated, refined, luxurious, soft, flattering lighting, graceful, well-balanced framing, professional, brand-focused, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, sophisticated, refined, luxurious, soft, flattering lighting, graceful, well-balanced framing, active motion, noticeable effects, professional, brand-focused, smooth camera movement",
+        "motion_intensity": 100,
+        "image_parameters": {
+          "style_preset": "commercial_elegant",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 100,
+          "conditioning_augmentation": 0.06
+        }
+      },
+      "Dark Horror": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, ominous atmosphere, dramatic shadows, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, cinematic, high-contrast, artistic, dramatic shadows and highlights, dynamic angles and depth, explosive motion, striking effects, ominous atmosphere, dramatic shadows, smooth camera movement",
+        "motion_intensity": 200,
+        "image_parameters": {
+          "style_preset": "horror_dramatic",
+          "clip_guidance_preset": "FAST_BLUE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 200,
+          "conditioning_augmentation": 0.1
+        }
+      },
+      "Professional Doc": {
+        "image_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, clean, minimalist, corporate aesthetic, bright, even lighting, structured, balanced framing, authentic, informative visual, high quality, professional cinematography",
+        "video_prompt": "A cinematic shot for Opening Scene. An establishing shot that sets the mood and introduces the main elements, clean, minimalist, corporate aesthetic, bright, even lighting, structured, balanced framing, moderate motion, balanced effects, authentic, informative visual, smooth camera movement",
+        "motion_intensity": 80,
+        "image_parameters": {
+          "style_preset": "documentary_professional",
+          "clip_guidance_preset": "SIMPLE"
+        },
+        "video_parameters": {
+          "motion_bucket_id": 80,
+          "conditioning_augmentation": 0.05
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_tests": 21,
+    "categories_tested": 4,
+    "unique_prompts_per_category": {
+      "genre_prompts": 5,
+      "tone_prompts": 6,
+      "intensity_prompts": 1,
+      "complex_scenarios": 5
+    },
+    "average_uniqueness": 4.25,
+    "conclusion": "✅ 프롬프트 생성 시스템이 정상 작동합니다. 평균 4.2개의 고유한 프롬프트가 생성되었습니다."
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "timestamp": "20250810_030804",
+  "test_summary": {
+    "total_tests": 4,
+    "test_categories": [
+      "genre_variations",
+      "tone_variations",
+      "intensity_variations",
+      "complex_variations"
+    ]
+  },
+  "comparison_results": {
+    "genre_variations": {
+      "total_variations": 5,
+      "unique_elements": 5,
+      "similarity_score": 93.1782125911262,
+      "key_differences": [
+        "act1_opening 필드가 다름",
+        "act2_development 필드가 다름",
+        "act3_climax 필드가 다름",
+        "act4_resolution 필드가 다름",
+        "overall_theme 필드가 다름"
+      ]
+    },
+    "tone_variations": {
+      "total_variations": 6,
+      "unique_elements": 6,
+      "similarity_score": 84.18439223548951,
+      "key_differences": [
+        "act1_opening 필드가 다름",
+        "act2_development 필드가 다름",
+        "act3_climax 필드가 다름",
+        "overall_theme 필드가 다름"
+      ]
+    },
+    "intensity_variations": {
+      "total_variations": 5,
+      "unique_elements": 5,
+      "similarity_score": 56.11694300430322,
+      "key_differences": [
+        "act1_opening 필드가 다름",
+        "act2_development 필드가 다름",
+        "overall_theme 필드가 다름"
+      ]
+    },
+    "complex_variations": {
+      "total_variations": 5,
+      "unique_elements": 5,
+      "similarity_score": 92.94626227366474,
+      "key_differences": [
+        "act1_opening 필드가 다름",
+        "act2_development 필드가 다름",
+        "act3_climax 필드가 다름",
+        "act4_resolution 필드가 다름",
+        "overall_theme 필드가 다름"
+      ]
+    }
+  },
+  "conclusion": {
+    "system_works": true,
+    "total_variations_tested": 21,
+    "average_unique_elements": 5.25,
+    "verdict": "시스템이 사용자 선택에 따라 다른 스토리를 생성합니다."
+  }
+}

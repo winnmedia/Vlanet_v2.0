@@ -1,0 +1,16 @@
+# 최소 테스트용 Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Django만 설치
+RUN pip install django==4.2.7 gunicorn==21.2.0
+
+# 테스트 파일만 복사
+COPY railway_test.py .
+
+# 포트 노출
+EXPOSE 8000
+
+# 직접 실행
+CMD ["gunicorn", "railway_test:application", "--bind", "0.0.0.0:$PORT", "--access-logfile", "-", "--error-logfile", "-"]

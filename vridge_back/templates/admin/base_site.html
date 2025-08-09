@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Vlanet 관리자{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Vlanet 관리 시스템</a></h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/admin_custom.css' %}">
+<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+<style>
+    /* Logo in header */
+    #header #branding h1 {
+        padding: 0 10px;
+        font-size: 20px;
+        font-weight: 600;
+        text-transform: none;
+    }
+    
+    #header #branding h1 a {
+        color: white;
+    }
+    
+    #header #branding h1:before {
+        content: "";
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background: url("/static/admin/img/logo/vlanet-icon.svg") no-repeat center;
+        background-size: contain;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
