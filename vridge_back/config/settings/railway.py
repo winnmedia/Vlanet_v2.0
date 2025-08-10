@@ -147,10 +147,7 @@ static_dir = os.path.join(BASE_DIR, 'static')
 if os.path.exists(static_dir):
     STATICFILES_DIRS.append(static_dir)
 
-# Frontend 빌드 디렉토리가 있으면 추가 (Railway에서는 보통 없음)
-frontend_static = os.path.join(BASE_DIR, '../vridge_front/build/static')
-if os.path.exists(frontend_static):
-    STATICFILES_DIRS.append(frontend_static)
+# Railway에서는 프론트엔드를 별도로 배포하므로 프론트엔드 빌드 디렉토리는 추가하지 않음
 
 # WhiteNoise 설정
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

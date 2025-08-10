@@ -126,17 +126,17 @@ INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "config.middleware.RailwayHealthCheckMiddleware",  # 헬스체크 - 가장 먼저
+    "corsheaders.middleware.CorsMiddleware",  # CORS를 두번째로 이동 (중요!)
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # django-cors-headers
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "config.middleware.CORSDebugMiddleware",  # CORS 디버그 재활성화
     # 일단 아래 미들웨어들은 비활성화 (Railway 502 문제 해결 후 재활성화)
-    # "config.middleware.CORSDebugMiddleware",
     # "config.middleware.SecurityHeadersMiddleware",
     # "config.rate_limit_middleware.RateLimitMiddleware",
     # "config.rate_limit_middleware.SecurityAuditMiddleware",
