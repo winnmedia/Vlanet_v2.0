@@ -11,14 +11,7 @@
   "build": {
     "env": {
       "NODE_ENV": "production",
-      "NEXT_TELEMETRY_DISABLED": "1",
-      "NEXT_SHARP_PATH": "/tmp/node_modules/sharp"
-    }
-  },
-  "functions": {
-    "app/video-feedback/page.tsx": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 10
+      "NEXT_TELEMETRY_DISABLED": "1"
     }
   },
   "regions": ["icn1"],
