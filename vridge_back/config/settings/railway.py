@@ -17,6 +17,16 @@ ALLOWED_HOSTS = [
     '*',  # 임시로 모든 호스트 허용
 ]
 
+# CSRF 설정 추가
+CSRF_TRUSTED_ORIGINS = [
+    'https://videoplanet.up.railway.app',
+    'https://*.railway.app',
+    'https://vlanet.net',
+    'https://www.vlanet.net',
+    'http://localhost:3000',
+    'http://localhost:3001',
+]
+
 # 데이터베이스 설정 (Railway PostgreSQL)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
@@ -37,11 +47,31 @@ CORS_ALLOWED_ORIGINS = [
     "https://vlanet.net",
     "https://www.vlanet.net", 
     "https://videoplanet-seven.vercel.app",
+    "https://*.vercel.app",
     "http://localhost:3000",
     "http://localhost:3001",
 ]
+
+# 개발 환경에서는 모든 origin 허용
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+    
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False
+
+# CORS 허용 헤더 추가
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # 정적 파일 설정
 STATIC_URL = '/static/'
@@ -86,13 +116,17 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# 로깅 설정
+# 로깅 설정 (더 상세한 에러 로깅)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
             'style': '{',
         },
     },
@@ -104,7 +138,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'DEBUG' if DEBUG else 'INFO',
     },
     'loggers': {
         'django': {
@@ -114,7 +148,17 @@ LOGGING = {
         },
         'django.request': {
             'handlers': ['console'],
-            'level': 'WARNING',
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'WARNING',  # SQL 쿼리 로깅 비활성화
+            'propagate': False,
+        },
+        'users': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
@@ -176,4 +220,10 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-print(f"✅ Railway 설정 로드 완료 - DEBUG: {DEBUG}, DB: {'PostgreSQL' if DATABASE_URL else 'SQLite'}")
+# 환경 설정 로깅
+import sys
+print(f"✅ Railway 설정 로드 완료", file=sys.stderr)
+print(f"   - DEBUG: {DEBUG}", file=sys.stderr)
+print(f"   - DATABASE: {'PostgreSQL' if DATABASE_URL else 'SQLite'}", file=sys.stderr)
+print(f"   - ALLOWED_HOSTS: {ALLOWED_HOSTS}", file=sys.stderr)
+print(f"   - CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS[:3]}...", file=sys.stderr)

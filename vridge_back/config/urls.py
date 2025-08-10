@@ -87,6 +87,13 @@ try:
 except ImportError:
     HAS_DEBUG_VIEWS = False
 
+# Railway 디버그 뷰 임포트
+try:
+    from .debug_views import debug_status, debug_echo, test_signup_debug
+    HAS_RAILWAY_DEBUG = True
+except ImportError:
+    HAS_RAILWAY_DEBUG = False
+
 # 공개 프로젝트 목록 뷰 (임시)
 from django.views import View
 class PublicProjectListView(View):
@@ -168,7 +175,6 @@ urlpatterns = auth_patterns + [
     # path("api/debug-info/", debug_info, name="debug_info"),  # 삭제된 뷰
     # path("api/test-error/", test_error, name="test_error"),  # 삭제된 뷰
     
-    
     # API 경로 (권장) - /api/ 프리픽스를 사용하는 표준 경로
     path("api/users/", include("users.urls")),
     path("api/projects/", include(("projects.urls", "projects"), namespace="api_projects")),
@@ -189,6 +195,14 @@ urlpatterns = auth_patterns + [
     # CSRF 토큰 (특별 경로)
     path("users/csrf-token/", csrf_token_view, name="csrf_token"),
 ]
+
+# Railway 디버그 엔드포인트 추가
+if HAS_RAILWAY_DEBUG:
+    urlpatterns += [
+        path('api/debug/status/', debug_status, name='debug_status'),
+        path('api/debug/echo/', debug_echo, name='debug_echo'),
+        path('api/debug/test-signup/', test_signup_debug, name='test_signup_debug'),
+    ]
 
 # Always serve media files
 if settings.DEBUG:

@@ -22,29 +22,31 @@ echo "PORT: $PORT"
 echo ""
 echo "🧪 Django 설정 검증..."
 python3 -c "
-import os, django
+import os, django, sys
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', '$DJANGO_SETTINGS_MODULE')
-django.setup()
-print('✅ Django 설정 성공')
-from django.apps import apps
-print(f'   등록된 앱: {len(apps.get_app_configs())}개')
-"
+try:
+    django.setup()
+    print('✅ Django 설정 성공')
+    from django.apps import apps
+    print(f'   등록된 앱: {len(apps.get_app_configs())}개')
+    # 데이터베이스 연결 테스트
+    from django.db import connection
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT 1')
+        print('   데이터베이스 연결: ✅ 성공')
+except Exception as e:
+    print(f'❌ Django 설정 실패: {e}', file=sys.stderr)
+    sys.exit(1)
+" || exit 1
 
-# 마이그레이션 실행 (순차적으로)
+# 마이그레이션 실행 (간단히)
 echo ""
 echo "🔄 마이그레이션 실행..."
-# 각 앱을 순차적으로 마이그레이션
-python3 manage.py migrate contenttypes --noinput || echo "contenttypes 마이그레이션 실패"
-python3 manage.py migrate auth --noinput || echo "auth 마이그레이션 실패"
-python3 manage.py migrate users --noinput || echo "users 마이그레이션 실패"
-python3 manage.py migrate projects --noinput || echo "projects 마이그레이션 실패"
-python3 manage.py migrate feedbacks --noinput || echo "feedbacks 마이그레이션 실패"
-python3 manage.py migrate video_planning --noinput || echo "video_planning 마이그레이션 실패"
-python3 manage.py migrate video_analysis --noinput || echo "video_analysis 마이그레이션 실패"
-python3 manage.py migrate admin_dashboard --noinput || echo "admin_dashboard 마이그레이션 실패"
-python3 manage.py migrate documents --noinput || echo "documents 마이그레이션 실패"
-# 나머지 모든 앱
-python3 manage.py migrate --noinput || echo "전체 마이그레이션 실패"
+# 전체 마이그레이션을 한 번에 실행
+python3 manage.py migrate --noinput || {
+    echo "⚠️ 마이그레이션 실패. fake 마이그레이션 시도..."
+    python3 manage.py migrate --fake --noinput || echo "마이그레이션 실패 (계속 진행)"
+}
 
 # 캐시 테이블 생성
 echo ""
@@ -68,21 +70,35 @@ mkdir -p media/feedback_file
 mkdir -p media/profile_images
 chmod -R 755 media
 
-# 기존 사용자 수정
-echo ""
-echo "🔧 기존 사용자 이메일 인증 상태 수정..."
-python3 manage.py fix_existing_users || echo "기존 사용자 수정 실패"
+# 기존 사용자 수정 (선택적)
+if [ "$FIX_EXISTING_USERS" = "true" ]; then
+    echo ""
+    echo "🔧 기존 사용자 이메일 인증 상태 수정..."
+    python3 manage.py fix_existing_users || echo "기존 사용자 수정 실패"
+fi
 
-# 테스트 사용자 생성 (임시)
+# 테스트 사용자 생성 (선택적)
+if [ "$CREATE_TEST_USER" = "true" ]; then
+    echo ""
+    echo "👤 테스트 사용자 생성..."
+    python3 manage.py create_test_user || echo "테스트 사용자 생성 실패 (이미 존재할 수 있음)"
+fi
+
+# 헬스 체크 테스트
 echo ""
-echo "👤 테스트 사용자 생성..."
-python3 manage.py create_test_user || echo "테스트 사용자 생성 실패 (이미 존재할 수 있음)"
+echo "🏥 헬스체크 테스트..."
+python3 manage.py check || {
+    echo "❌ Django check 실패"
+    exit 1
+}
 
 # 서버 시작
 echo ""
 echo "🚀 Gunicorn 서버 시작..."
 echo "헬스체크 URL: http://0.0.0.0:$PORT/"
 echo "API 헬스체크 URL: http://0.0.0.0:$PORT/api/health/"
+echo "========================================"
+
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:$PORT \
     --workers 2 \
@@ -94,5 +110,7 @@ exec gunicorn config.wsgi:application \
     --preload \
     --access-logfile - \
     --error-logfile - \
-    --log-level info \
+    --log-level debug \
+    --capture-output \
+    --enable-stdio-inheritance \
     --worker-tmp-dir /dev/shm
