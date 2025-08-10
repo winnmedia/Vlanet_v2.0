@@ -52,11 +52,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
 ]
 
-# 개발 환경에서는 모든 origin 허용
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
-    CORS_ALLOW_ALL_ORIGINS = False
+# Railway 배포 시 CORS 모두 허용 (임시)
+CORS_ALLOW_ALL_ORIGINS = True
     
 CORS_ALLOW_CREDENTIALS = True
 
