@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Running pre-push validation for Vercel deployment..."
+
+# Frontend 디렉토리로 이동
+cd vridge_front
+
+# 배포 검증 실행
+echo "📋 Validating deployment configuration..."
+npm run validate-vercel-config
+
+# 타입 체크
+echo "🔍 Running type check..."
+npm run type-check
+
+# 린트 체크
+echo "🧹 Running lint check..."
+npm run lint
+
+echo "✅ Pre-push validation completed successfully!"

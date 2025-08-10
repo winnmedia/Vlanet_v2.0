@@ -2,21 +2,43 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "installCommand": "npm install --legacy-peer-deps",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "functions": {
+    "app/api/**.ts": {
+      "maxDuration": 10
+    },
+    "pages/api/**.ts": {
+      "maxDuration": 10
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://videoplanet.up.railway.app",
-    "NEXT_PUBLIC_ENV": "production",
     "NODE_ENV": "production"
   },
   "build": {
     "env": {
-      "NODE_ENV": "production",
       "NEXT_TELEMETRY_DISABLED": "1"
     }
   },
-  "regions": ["icn1"],
   "github": {
-    "enabled": true,
+    "silent": false,
     "autoAlias": true
   }
 }

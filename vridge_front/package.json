@@ -18,7 +18,17 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "generate:api-types": "tsx scripts/generate-api-types.ts",
-    "mock:start": "tsx mocks/start.ts"
+    "mock:start": "tsx mocks/start.ts",
+    "validate-vercel-config": "node scripts/validate-deployment.js",
+    "check-env": "node scripts/validate-deployment.js --env-only",
+    "vercel-build": "npm run validate-vercel-config && npm run build",
+    "deploy:safe": "npm run validate-vercel-config --with-build && vercel --prod",
+    "deploy:preview": "npm run validate-vercel-config && vercel",
+    "monitor:deploy": "node scripts/monitor-deployment.js",
+    "monitor:deploy:watch": "node scripts/monitor-deployment.js watch",
+    "monitor:deploy:report": "node scripts/monitor-deployment.js report",
+    "prebuild": "npm run validate-vercel-config",
+    "predeploy": "npm run validate-vercel-config --with-build"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.18",
