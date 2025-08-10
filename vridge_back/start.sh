@@ -1,116 +1,95 @@
 #!/bin/bash
-set -e
 
-echo "=== VideoPlanet Django 서버 시작 (강제 배포 트리거) ==="  
-echo "시간: $(date)"
-echo "배포 트리거: 2025-07-31 15:30 KST"
-echo "Python 버전: $(python3 --version)"
+# Railway 배포를 위한 시작 스크립트
+# 데이터베이스 마이그레이션과 함께 안전한 서버 시작
 
-# 환경변수 설정
-export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-"config.settings.railway"}
-export SECRET_KEY=${SECRET_KEY:-"django-insecure-videoplanet-temp-key-$(date +%s)"}
-export DEBUG=${DEBUG:-"False"}
-export PORT=${PORT:-"8000"}
+set -e  # 에러 발생 시 스크립트 중단
 
-echo ""
-echo "🔧 환경변수:"
-echo "DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE"
-echo "DEBUG: $DEBUG"
-echo "PORT: $PORT"
+# 로깅 함수
+log_info() {
+    echo "[INFO] $(date '+%Y-%m-%d %H:%M:%S') - $1"
+}
 
-# Django 설정 검증
-echo ""
-echo "🧪 Django 설정 검증..."
-python3 -c "
-import os, django, sys
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', '$DJANGO_SETTINGS_MODULE')
+log_error() {
+    echo "[ERROR] $(date '+%Y-%m-%d %H:%M:%S') - $1" >&2
+}
+
+log_info "=== VideoPlanet Backend 시작 ==="
+
+# 환경 변수 확인
+log_info "Django 설정: $DJANGO_SETTINGS_MODULE"
+log_info "데이터베이스 URL: ${DATABASE_URL:0:20}..."
+log_info "포트: $PORT"
+
+# 데이터베이스 연결 확인 (재시도 로직)
+log_info "데이터베이스 연결 확인 중..."
+for i in {1..5}; do
+    if python manage.py check --database default; then
+        log_info "데이터베이스 연결 성공!"
+        break
+    else
+        log_error "데이터베이스 연결 실패 ($i/5). 5초 후 재시도..."
+        sleep 5
+    fi
+    
+    if [ $i -eq 5 ]; then
+        log_error "데이터베이스 연결에 실패했습니다."
+        exit 1
+    fi
+done
+
+# 마이그레이션 상태 확인
+log_info "마이그레이션 상태 확인 중..."
+python manage.py showmigrations --verbosity=1
+
+# 미적용 마이그레이션 확인 및 실행
+log_info "미적용 마이그레이션 확인 중..."
+if python manage.py showmigrations --plan | grep -q '\[ \]'; then
+    log_info "미적용 마이그레이션 발견. 실행 중..."
+    python manage.py migrate --verbosity=2 --noinput
+    log_info "마이그레이션 완료!"
+else
+    log_info "모든 마이그레이션이 이미 적용되었습니다."
+fi
+
+# is_deleted 필드 확인 (특별 체크)
+log_info "User 모델 is_deleted 필드 확인 중..."
+python -c "
+import django
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
+django.setup()
+from django.db import connection
 try:
-    django.setup()
-    print('✅ Django 설정 성공')
-    from django.apps import apps
-    print(f'   등록된 앱: {len(apps.get_app_configs())}개')
-    # 데이터베이스 연결 테스트
-    from django.db import connection
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT 1')
-        print('   데이터베이스 연결: ✅ 성공')
+    cursor = connection.cursor()
+    cursor.execute('SELECT is_deleted FROM users_user LIMIT 1')
+    print('[INFO] is_deleted 필드 확인 완료!')
 except Exception as e:
-    print(f'❌ Django 설정 실패: {e}', file=sys.stderr)
-    sys.exit(1)
-" || exit 1
+    print(f'[ERROR] is_deleted 필드 오류: {e}')
+    raise
+"
 
-# 마이그레이션 실행 (간단히)
-echo ""
-echo "🔄 마이그레이션 실행..."
-# 전체 마이그레이션을 한 번에 실행
-python3 manage.py migrate --noinput || {
-    echo "⚠️ 마이그레이션 실패. fake 마이그레이션 시도..."
-    python3 manage.py migrate --fake --noinput || echo "마이그레이션 실패 (계속 진행)"
-}
-
-# 캐시 테이블 생성
-echo ""
-echo "🗄️ 캐시 테이블 생성..."
-python3 manage.py createcachetable || echo "캐시 테이블 생성 실패 (이미 존재할 수 있음)"
-
-# DevelopmentFramework 테이블 생성
-echo ""
-echo "🏗️ DevelopmentFramework 테이블 생성..."
-python3 manage.py create_framework_table || echo "DevelopmentFramework 테이블 생성 실패"
-
-# 정적 파일 수집
-echo ""
-echo "📦 정적 파일 수집..."
-python3 manage.py collectstatic --noinput
-
-# 미디어 디렉토리 생성
-echo ""
-echo "📁 미디어 디렉토리 생성..."
-mkdir -p media/feedback_file
-mkdir -p media/profile_images
-chmod -R 755 media
-
-# 기존 사용자 수정 (선택적)
-if [ "$FIX_EXISTING_USERS" = "true" ]; then
-    echo ""
-    echo "🔧 기존 사용자 이메일 인증 상태 수정..."
-    python3 manage.py fix_existing_users || echo "기존 사용자 수정 실패"
+# 정적 파일 수집 (운영 환경에서만)
+if [ "$DJANGO_SETTINGS_MODULE" = "config.settings.railway" ]; then
+    log_info "정적 파일 수집 중..."
+    python manage.py collectstatic --noinput --clear || {
+        log_error "정적 파일 수집 실패, 계속 진행..."
+    }
 fi
 
-# 테스트 사용자 생성 (선택적)
-if [ "$CREATE_TEST_USER" = "true" ]; then
-    echo ""
-    echo "👤 테스트 사용자 생성..."
-    python3 manage.py create_test_user || echo "테스트 사용자 생성 실패 (이미 존재할 수 있음)"
-fi
+# 서버 시작 전 최종 검증
+log_info "서버 시작 전 최종 검증..."
+python manage.py check --deploy --fail-level WARNING
 
-# 헬스 체크 테스트
-echo ""
-echo "🏥 헬스체크 테스트..."
-python3 manage.py check || {
-    echo "❌ Django check 실패"
-    exit 1
-}
-
-# 서버 시작
-echo ""
-echo "🚀 Gunicorn 서버 시작..."
-echo "헬스체크 URL: http://0.0.0.0:$PORT/"
-echo "API 헬스체크 URL: http://0.0.0.0:$PORT/api/health/"
-echo "========================================"
-
+log_info "Gunicorn 서버 시작..."
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:$PORT \
+    --timeout 120 \
     --workers 2 \
     --threads 4 \
-    --timeout 120 \
-    --keep-alive 5 \
-    --max-requests 1000 \
-    --max-requests-jitter 100 \
-    --preload \
+    --log-level info \
     --access-logfile - \
     --error-logfile - \
-    --log-level debug \
-    --capture-output \
-    --enable-stdio-inheritance \
-    --worker-tmp-dir /dev/shm
+    --preload \
+    --max-requests 1000 \
+    --max-requests-jitter 50
