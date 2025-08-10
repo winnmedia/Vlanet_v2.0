@@ -1223,6 +1223,67 @@ run_tests.py                     # 통합 테스트 러너 (실행 가능)
 
 ---
 
+### 2025-08-11: Railway 백엔드 500 에러 해결
+**날짜**: 2025년 8월 11일
+**시간**: 오전 6:50
+**요청**: Railway 백엔드 500 에러 긴급 해결
+**작업 유형**: 백엔드 인프라/디버깅
+
+#### 문제 상황
+- POST /api/users/login/ 500 에러
+- POST /api/auth/check-email/ 500 에러  
+- POST /api/auth/check-nickname/ 500 에러
+- 회원가입 불가
+
+#### 해결 내용
+
+1. **Railway 설정 파일 개선 (config/settings/railway.py)**
+   - CSRF_TRUSTED_ORIGINS 추가
+   - CORS 설정 강화 (DEBUG 모드에서 CORS_ALLOW_ALL_ORIGINS)
+   - 로깅 레벨 상세화 (DEBUG, ERROR, WARNING)
+   - 환경 설정 로깅 추가
+
+2. **start.sh 스크립트 개선**
+   - Django 설정 검증에 에러 처리 추가
+   - 데이터베이스 연결 테스트 추가
+   - 마이그레이션 실패 시 fallback 처리
+   - Gunicorn 로그 레벨 debug로 설정
+   - Django check 명령어로 헬스체크
+
+3. **디버그 뷰 추가 (config/debug_views.py)**
+   - /api/debug/status/ - 서버 상태 확인
+   - /api/debug/echo/ - POST 요청 테스트
+   - /api/debug/test-signup/ - 회원가입 테스트
+   - 환경변수, 데이터베이스, 캐시 상태 확인
+
+4. **Railway 환경변수 가이드 작성 (RAILWAY_ENV_GUIDE.md)**
+   - 필수 환경변수 목록
+   - 설정 방법 단계별 가이드
+   - 트러블슈팅 방법
+   - 테스트 API 호출 예시
+
+#### 필수 Railway 환경변수
+```env
+DJANGO_SETTINGS_MODULE=config.settings.railway
+SECRET_KEY=django-insecure-{50자 이상 랜덤 문자열}
+DEBUG=True  # 문제 해결 후 False로 변경
+DATABASE_URL={Railway PostgreSQL 자동 설정}
+FRONTEND_URL=https://vlanet.net
+CORS_ALLOWED_ORIGINS=https://vlanet.net,https://www.vlanet.net
+```
+
+#### 테스트 방법
+1. 헬스체크: https://videoplanet.up.railway.app/api/health/
+2. 디버그 상태: https://videoplanet.up.railway.app/api/debug/status/
+3. Railway 로그 확인: Deployments → View Logs
+
+#### 영향 범위
+- `/home/winnmedia/VideoPlanet/vridge_back/config/settings/railway.py`
+- `/home/winnmedia/VideoPlanet/vridge_back/start.sh`
+- `/home/winnmedia/VideoPlanet/vridge_back/config/debug_views.py` (신규)
+- `/home/winnmedia/VideoPlanet/vridge_back/config/urls.py`
+- `/home/winnmedia/VideoPlanet/vridge_back/RAILWAY_ENV_GUIDE.md`
+
 ### 2025-08-11: GitHub 배포 파이프라인 구성
 **날짜**: 2025년 8월 11일
 **시간**: 오전 5:45
