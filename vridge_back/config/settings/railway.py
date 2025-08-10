@@ -203,19 +203,7 @@ LOGGING = {
     },
 }
 
-# Sentry 설정 (선택사항)
-SENTRY_DSN = os.environ.get('SENTRY_DSN')
-if SENTRY_DSN:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-    
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        traces_sample_rate=0.1,
-        send_default_pii=False,
-        environment='production',
-    )
+# Sentry 설정 비활성화 (Railway 502 문제 해결을 위해)
 
 # 파일 업로드 크기 제한
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
@@ -259,10 +247,6 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# 환경 설정 로깅
+# 환경 설정 로깅 - 간단하게
 import sys
-print(f"✅ Railway 설정 로드 완료", file=sys.stderr)
-print(f"   - DEBUG: {DEBUG}", file=sys.stderr)
-print(f"   - DATABASE: {'PostgreSQL' if DATABASE_URL else 'SQLite'}", file=sys.stderr)
-print(f"   - ALLOWED_HOSTS: {ALLOWED_HOSTS}", file=sys.stderr)
-print(f"   - CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS[:3] if CORS_ALLOWED_ORIGINS else 'All origins allowed'}...", file=sys.stderr)
+print(f"Railway settings loaded - DEBUG={DEBUG}", file=sys.stderr)

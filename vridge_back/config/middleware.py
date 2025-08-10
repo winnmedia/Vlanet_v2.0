@@ -69,12 +69,7 @@ class RailwayHealthCheckMiddleware(MiddlewareMixin):
         # 헬스체크 경로면 무조건 OK 반환 (Railway 헬스체크는 User-Agent 없을 수 있음)
         if request.path in health_paths and request.method == 'GET':
             return JsonResponse({
-                'status': 'ok',
-                'message': 'healthy',
-                'timestamp': timezone.now().isoformat(),
-                'service': 'videoplanet-backend',
-                'database': 'connected',
-                'version': '2.1.0'
+                'status': 'ok'
             }, status=200)
         return None
 

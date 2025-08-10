@@ -125,25 +125,24 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    # "config.cors_solution.OptionsHandlerMiddleware",  # 임시 비활성화 - import 오류 방지
-    "config.middleware.RailwayHealthCheckMiddleware",  # 헬스체크
+    "config.middleware.RailwayHealthCheckMiddleware",  # 헬스체크 - 가장 먼저
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    # "config.cors_solution.RailwayCORSMiddleware",  # 임시 비활성화 - import 오류 방지
-    "corsheaders.middleware.CorsMiddleware",  # django-cors-headers 재활성화
-    "config.middleware.CORSDebugMiddleware",  # CORS 디버그 미들웨어 재활성화
+    "corsheaders.middleware.CorsMiddleware",  # django-cors-headers
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "config.middleware.SecurityHeadersMiddleware",  # 보안 헤더 추가
-    "config.rate_limit_middleware.RateLimitMiddleware",  # Rate Limiting 추가
-    "config.rate_limit_middleware.SecurityAuditMiddleware",  # 보안 감사 추가
-    "config.middleware.PerformanceMiddleware",
-    "feedbacks.middleware.MediaHeadersMiddleware",
-    "projects.middleware.IdempotencyMiddleware",
+    # 일단 아래 미들웨어들은 비활성화 (Railway 502 문제 해결 후 재활성화)
+    # "config.middleware.CORSDebugMiddleware",
+    # "config.middleware.SecurityHeadersMiddleware",
+    # "config.rate_limit_middleware.RateLimitMiddleware",
+    # "config.rate_limit_middleware.SecurityAuditMiddleware",
+    # "config.middleware.PerformanceMiddleware",
+    # "feedbacks.middleware.MediaHeadersMiddleware",
+    # "projects.middleware.IdempotencyMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
