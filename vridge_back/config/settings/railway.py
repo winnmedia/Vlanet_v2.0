@@ -116,6 +116,24 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
+# Static files 설정 (Railway용)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# STATICFILES_DIRS 재정의 - Railway 환경에서는 존재하는 디렉토리만 포함
+STATICFILES_DIRS = []
+static_dir = os.path.join(BASE_DIR, 'static')
+if os.path.exists(static_dir):
+    STATICFILES_DIRS.append(static_dir)
+
+# Frontend 빌드 디렉토리가 있으면 추가 (Railway에서는 보통 없음)
+frontend_static = os.path.join(BASE_DIR, '../vridge_front/build/static')
+if os.path.exists(frontend_static):
+    STATICFILES_DIRS.append(frontend_static)
+
+# WhiteNoise 설정
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # 로깅 설정 (더 상세한 에러 로깅)
 LOGGING = {
     'version': 1,
