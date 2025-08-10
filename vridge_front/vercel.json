@@ -5,7 +5,19 @@
   "installCommand": "npm install --legacy-peer-deps",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://videoplanet.up.railway.app",
-    "NEXT_PUBLIC_ENV": "production"
+    "NEXT_PUBLIC_ENV": "production",
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production",
+      "NEXT_TELEMETRY_DISABLED": "1"
+    }
+  },
+  "functions": {
+    "app/video-feedback/page.tsx": {
+      "runtime": "nodejs20.x"
+    }
   },
   "regions": ["icn1"],
   "github": {
