@@ -79,19 +79,33 @@ class RailwayHealthCheckMiddleware(MiddlewareMixin):
         return None
 
 
-class CORSOptionsMiddleware(MiddlewareMixin):
-    """Handle OPTIONS requests for CORS preflight"""
+class CORSDebugMiddleware(MiddlewareMixin):
+    """Debug and ensure CORS headers are properly set"""
     
-    def process_request(self, request):
+    def process_response(self, request, response):
+        # 디버깅을 위해 CORS 헤더 확인 및 강제 설정
+        origin = request.META.get('HTTP_ORIGIN')
+        
+        # OPTIONS 요청에 대한 특별 처리
         if request.method == 'OPTIONS':
-            response = HttpResponse()
-            response['Access-Control-Allow-Origin'] = request.META.get('HTTP_ORIGIN', '*')
-            response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-            response['Access-Control-Allow-Headers'] = 'accept, accept-encoding, authorization, content-type, dnt, origin, user-agent, x-csrftoken, x-requested-with'
+            if not response.has_header('Access-Control-Allow-Origin'):
+                response['Access-Control-Allow-Origin'] = origin or '*'
+            if not response.has_header('Access-Control-Allow-Methods'):
+                response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+            if not response.has_header('Access-Control-Allow-Headers'):
+                response['Access-Control-Allow-Headers'] = 'accept, accept-encoding, authorization, content-type, dnt, origin, user-agent, x-csrftoken, x-requested-with, cache-control, pragma'
+            if not response.has_header('Access-Control-Allow-Credentials'):
+                response['Access-Control-Allow-Credentials'] = 'true'
+            if not response.has_header('Access-Control-Max-Age'):
+                response['Access-Control-Max-Age'] = '86400'
+        
+        # 모든 요청에 대해 CORS 헤더 확인
+        if origin and not response.has_header('Access-Control-Allow-Origin'):
+            # corsheaders 미들웨어가 설정하지 않았다면 강제 설정
+            response['Access-Control-Allow-Origin'] = origin
             response['Access-Control-Allow-Credentials'] = 'true'
-            response['Access-Control-Max-Age'] = '86400'
-            return response
-        return None
+            
+        return response
 
 
 class SecurityHeadersMiddleware(MiddlewareMixin):

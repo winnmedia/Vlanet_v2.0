@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoPlanet CORS 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #1631F8;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #1631F8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #0f24c7;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .config-section {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 VideoPlanet CORS 테스트 도구</h1>
+    
+    <div class="test-section config-section">
+        <h2>⚙️ 설정</h2>
+        <label for="backendUrl">Backend URL:</label>
+        <input type="text" id="backendUrl" value="https://videoplanet.up.railway.app">
+        
+        <label for="frontendOrigin">Frontend Origin:</label>
+        <input type="text" id="frontendOrigin" value="https://vlanet.net">
+    </div>
+    
+    <div class="test-section">
+        <h2>🔍 빠른 테스트</h2>
+        <button class="test-button" onclick="testHealthCheck()">Health Check</button>
+        <button class="test-button" onclick="testCheckEmail()">Check Email API</button>
+        <button class="test-button" onclick="testCheckNickname()">Check Nickname API</button>
+        <button class="test-button" onclick="testLogin()">Login API</button>
+        <button class="test-button" onclick="testCorsDebug()">CORS Debug</button>
+        <button class="test-button" onclick="runAllTests()">모든 테스트 실행</button>
+        
+        <div id="quickResult" class="result" style="display:none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 상세 테스트 결과</h2>
+        <div id="detailedResult" class="result info">테스트를 실행하면 여기에 결과가 표시됩니다.</div>
+    </div>
+
+    <script>
+        function getConfig() {
+            return {
+                backendUrl: document.getElementById('backendUrl').value.replace(/\/$/, ''),
+                frontendOrigin: document.getElementById('frontendOrigin').value
+            };
+        }
+        
+        function showResult(message, type = 'info', detailed = false) {
+            const resultDiv = detailed ? document.getElementById('detailedResult') : document.getElementById('quickResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result ' + type;
+            
+            if (detailed) {
+                resultDiv.innerHTML = message;
+            } else {
+                resultDiv.textContent = message;
+            }
+        }
+        
+        async function testEndpoint(endpoint, method = 'GET', body = null) {
+            const config = getConfig();
+            const url = `${config.backendUrl}${endpoint}`;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'Origin': config.frontendOrigin,
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            };
+            
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    if (key.toLowerCase().includes('access-control') || key.toLowerCase().includes('vary')) {
+                        headers[key] = value;
+                    }
+                });
+                
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    data = await response.text();
+                }
+                
+                return {
+                    success: true,
+                    status: response.status,
+                    headers: headers,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+        
+        async function testHealthCheck() {
+            showResult('Testing health check...', 'info');
+            const result = await testEndpoint('/api/health/');
+            
+            if (result.success) {
+                showResult(`✅ Health Check 성공! Status: ${result.status}`, 'success');
+                showDetailedResult('Health Check', result);
+            } else {
+                showResult(`❌ Health Check 실패: ${result.error}`, 'error');
+            }
+        }
+        
+        async function testCheckEmail() {
+            showResult('Testing check-email API...', 'info');
+            const result = await testEndpoint('/api/auth/check-email/', 'POST', {
+                email: 'test@example.com'
+            });
+            
+            if (result.success) {
+                showResult(`✅ Check Email API 성공! Status: ${result.status}`, 'success');
+                showDetailedResult('Check Email', result);
+            } else {
+                showResult(`❌ Check Email API 실패: ${result.error}`, 'error');
+            }
+        }
+        
+        async function testCheckNickname() {
+            showResult('Testing check-nickname API...', 'info');
+            const result = await testEndpoint('/api/auth/check-nickname/', 'POST', {
+                nickname: 'testuser'
+            });
+            
+            if (result.success) {
+                showResult(`✅ Check Nickname API 성공! Status: ${result.status}`, 'success');
+                showDetailedResult('Check Nickname', result);
+            } else {
+                showResult(`❌ Check Nickname API 실패: ${result.error}`, 'error');
+            }
+        }
+        
+        async function testLogin() {
+            showResult('Testing login API...', 'info');
+            const result = await testEndpoint('/api/users/login/', 'POST', {
+                email: 'test@example.com',
+                password: 'testpass123'
+            });
+            
+            if (result.success) {
+                showResult(`✅ Login API 성공! Status: ${result.status}`, 'success');
+                showDetailedResult('Login', result);
+            } else {
+                showResult(`❌ Login API 실패: ${result.error}`, 'error');
+            }
+        }
+        
+        async function testCorsDebug() {
+            showResult('Testing CORS debug endpoint...', 'info');
+            const result = await testEndpoint('/api/debug/cors/');
+            
+            if (result.success) {
+                showResult(`✅ CORS Debug 성공! Status: ${result.status}`, 'success');
+                showDetailedResult('CORS Debug', result);
+            } else {
+                showResult(`❌ CORS Debug 실패: ${result.error}`, 'error');
+            }
+        }
+        
+        function showDetailedResult(testName, result) {
+            let html = `<h3>${testName} 결과</h3>\n`;
+            html += `<strong>Status:</strong> ${result.status || 'N/A'}\n\n`;
+            
+            if (result.headers && Object.keys(result.headers).length > 0) {
+                html += `<strong>CORS Headers:</strong>\n`;
+                for (const [key, value] of Object.entries(result.headers)) {
+                    const icon = key.toLowerCase().includes('access-control') ? '✅' : 'ℹ️';
+                    html += `${icon} ${key}: ${value}\n`;
+                }
+                html += '\n';
+            } else {
+                html += `<strong>⚠️ CORS Headers가 없습니다!</strong>\n\n`;
+            }
+            
+            if (result.data) {
+                html += `<strong>Response Data:</strong>\n`;
+                if (typeof result.data === 'object') {
+                    html += JSON.stringify(result.data, null, 2);
+                } else {
+                    html += result.data;
+                }
+            }
+            
+            if (result.error) {
+                html += `<strong>Error:</strong> ${result.error}`;
+            }
+            
+            showResult(html, result.success ? 'success' : 'error', true);
+        }
+        
+        async function runAllTests() {
+            showResult('모든 테스트 실행 중...', 'info', true);
+            
+            const tests = [
+                { name: 'Health Check', fn: () => testEndpoint('/api/health/') },
+                { name: 'Check Email', fn: () => testEndpoint('/api/auth/check-email/', 'POST', { email: 'test@example.com' }) },
+                { name: 'Check Nickname', fn: () => testEndpoint('/api/auth/check-nickname/', 'POST', { nickname: 'testuser' }) },
+                { name: 'Login', fn: () => testEndpoint('/api/users/login/', 'POST', { email: 'test@example.com', password: 'testpass123' }) },
+                { name: 'CORS Debug', fn: () => testEndpoint('/api/debug/cors/') },
+            ];
+            
+            let html = '<h3>전체 테스트 결과</h3>\n';
+            let allSuccess = true;
+            
+            for (const test of tests) {
+                const result = await test.fn();
+                const hasCorHeaders = result.headers && result.headers['access-control-allow-origin'];
+                const status = result.success && hasCorHeaders ? '✅' : '❌';
+                
+                if (!result.success || !hasCorHeaders) {
+                    allSuccess = false;
+                }
+                
+                html += `\n<strong>${status} ${test.name}</strong>\n`;
+                html += `   Status: ${result.status || 'Failed'}\n`;
+                
+                if (hasCorHeaders) {
+                    html += `   CORS Origin: ${result.headers['access-control-allow-origin']}\n`;
+                    html += `   CORS Credentials: ${result.headers['access-control-allow-credentials'] || 'Not set'}\n`;
+                } else {
+                    html += `   ⚠️ CORS 헤더 없음\n`;
+                }
+                
+                if (result.error) {
+                    html += `   Error: ${result.error}\n`;
+                }
+            }
+            
+            html += `\n<strong>결론: ${allSuccess ? '✅ 모든 테스트 통과!' : '❌ 일부 테스트 실패'}</strong>`;
+            
+            showResult(html, allSuccess ? 'success' : 'error', true);
+        }
+        
+        // 페이지 로드 시 현재 origin 표시
+        window.onload = function() {
+            const currentOrigin = window.location.origin;
+            if (currentOrigin !== 'https://vlanet.net' && currentOrigin !== 'http://localhost:3000') {
+                showResult(`ℹ️ 현재 페이지 Origin: ${currentOrigin}\n브라우저의 CORS 정책으로 인해 일부 테스트가 실패할 수 있습니다.`, 'info', true);
+            }
+        };
+    </script>
+</body>
+</html>

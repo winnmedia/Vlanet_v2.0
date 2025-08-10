@@ -42,22 +42,25 @@ else:
         }
     }
 
-# CORS 설정
-CORS_ALLOWED_ORIGINS = [
-    "https://vlanet.net",
-    "https://www.vlanet.net", 
-    "https://videoplanet-seven.vercel.app",
-    "https://*.vercel.app",
-    "http://localhost:3000",
-    "http://localhost:3001",
-]
+# CORS 설정 - 새로운 통합 미들웨어를 사용하므로 django-cors-headers 설정은 백업용으로만 유지
+# 실제 CORS 처리는 config.cors_solution.RailwayCORSMiddleware에서 수행됨
 
-# Railway 배포 시 CORS 모두 허용 (임시)
-CORS_ALLOW_ALL_ORIGINS = True
-    
+# django-cors-headers 설정 (백업용)
+CORS_ALLOW_ALL_ORIGINS = False  # 보안을 위해 특정 origin만 허용
 CORS_ALLOW_CREDENTIALS = True
 
-# CORS 허용 헤더 추가
+# 허용된 origin 목록 (새 미들웨어와 동기화)
+CORS_ALLOWED_ORIGINS = [
+    "https://vlanet.net",
+    "https://www.vlanet.net",
+    "https://videoplanet-seven.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+]
+
+# 허용할 헤더
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -68,6 +71,30 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'cache-control',
+    'pragma',
+    'x-idempotency-key',
+]
+
+# 허용할 메서드
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'HEAD',
+]
+
+# Preflight 캐시 시간
+CORS_PREFLIGHT_MAX_AGE = 86400
+
+# 노출할 헤더
+CORS_EXPOSE_HEADERS = [
+    'Content-Type',
+    'X-CSRFToken',
+    'Content-Length',
 ]
 
 # 정적 파일 설정
@@ -241,4 +268,4 @@ print(f"✅ Railway 설정 로드 완료", file=sys.stderr)
 print(f"   - DEBUG: {DEBUG}", file=sys.stderr)
 print(f"   - DATABASE: {'PostgreSQL' if DATABASE_URL else 'SQLite'}", file=sys.stderr)
 print(f"   - ALLOWED_HOSTS: {ALLOWED_HOSTS}", file=sys.stderr)
-print(f"   - CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS[:3]}...", file=sys.stderr)
+print(f"   - CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS[:3] if CORS_ALLOWED_ORIGINS else 'All origins allowed'}...", file=sys.stderr)

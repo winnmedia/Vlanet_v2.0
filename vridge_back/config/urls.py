@@ -34,6 +34,14 @@ from users.views_signup_safe import SafeSignUp, SafeSignIn
 from users.views_test import TestSignUp, TestCreate
 from rest_framework_simplejwt.views import TokenRefreshView
 
+# CORS 디버그 뷰 임포트
+try:
+    from .cors_debug import CORSDebugView
+    cors_debug_view = CORSDebugView.as_view()
+except ImportError:
+    def cors_debug_view(request):
+        return JsonResponse({"error": "CORS debug view not available"}, status=500)
+
 # Fallback 시스템을 통한 안정적인 인증 뷰 로드
 from .auth_fallback import get_auth_views
 
@@ -168,6 +176,7 @@ urlpatterns = auth_patterns + [
     path("api/debug/urls/", URLDebugView.as_view() if HAS_DEBUG_VIEWS else simple_health, name="debug_urls"),
     path("api/debug/auth-status/", auth_endpoint_status if HAS_DEBUG_VIEWS else simple_health, name="debug_auth_status"),
     path("api/debug/auth-test/", AuthTestView.as_view() if HAS_DEBUG_VIEWS else simple_health, name="debug_auth_test"),
+    path("api/debug/cors/", cors_debug_view, name="debug_cors"),  # CORS 디버그 엔드포인트
     path("admin/", admin.site.urls),
     path("admin-dashboard/", include("admin_dashboard.urls")),  # 관리자 대시보드
     

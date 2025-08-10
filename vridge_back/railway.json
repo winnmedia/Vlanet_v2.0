@@ -5,8 +5,14 @@
     "buildCommand": "pip install -r requirements.txt"
   },
   "deploy": {
-    "startCommand": "chmod +x start_minimal.sh && ./start_minimal.sh",
+    "startCommand": "DJANGO_SETTINGS_MODULE=config.settings.railway python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-level info",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 3
+    "restartPolicyMaxRetries": 3,
+    "healthcheckPath": "/api/health/",
+    "healthcheckTimeout": 30
+  },
+  "variables": {
+    "DJANGO_SETTINGS_MODULE": "config.settings.railway",
+    "RAILWAY_ENVIRONMENT": "production"
   }
 }

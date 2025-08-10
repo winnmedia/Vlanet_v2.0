@@ -125,10 +125,13 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "config.middleware.RailwayHealthCheckMiddleware",  # 가장 위에 배치
+    "config.cors_solution.OptionsHandlerMiddleware",  # OPTIONS 요청 최우선 처리
+    "config.middleware.RailwayHealthCheckMiddleware",  # 헬스체크
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    "config.cors_solution.RailwayCORSMiddleware",  # 새로운 통합 CORS 미들웨어
+    # "corsheaders.middleware.CorsMiddleware",  # 비활성화 - 새 미들웨어로 대체
+    # "config.middleware.CORSDebugMiddleware",  # 비활성화 - 새 미들웨어로 대체
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -279,20 +282,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
 }
 
-# CORS settings (removed - defined later in file)
-
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-    "vridge_session",
-]
+# CORS settings are now handled by config.cors_solution.RailwayCORSMiddleware
+# Old django-cors-headers settings removed to avoid conflicts
 
 # Email settings
 from .email_settings import configure_email_settings
@@ -374,7 +365,9 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 3600  # 1 hour
 CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 
-# CORS Settings
+# CORS Settings - These are now handled by config.cors_solution.RailwayCORSMiddleware
+# The new middleware provides more reliable CORS handling for Railway deployment
+# Settings are kept here for reference but not actively used by django-cors-headers
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
@@ -384,31 +377,11 @@ CORS_ALLOWED_ORIGINS = [
     "https://videoplanet.up.railway.app",
     "https://vlanet.net",
     "https://www.vlanet.net",
-    "https://api.vlanet.net",  # API 서브도메인 추가
-    "https://videoplanet-seven.vercel.app",  # 스테이징 환경
-    "https://*.vercel.app",  # Vercel 프리뷰 배포
+    "https://api.vlanet.net",
+    "https://videoplanet-seven.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'range',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'x-idempotency-key',
-]
-
-CORS_EXPOSE_HEADERS = [
-    'Content-Type',
-    'X-CSRFToken',
-]
 
 # CSRF Settings
 CSRF_TRUSTED_ORIGINS = [
