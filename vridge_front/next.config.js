@@ -10,6 +10,8 @@ const nextConfig = {
   
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    // Disable Partial Pre-rendering
+    ppr: false,
   },
   
   images: {

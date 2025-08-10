@@ -192,10 +192,13 @@ export default function VideoFeedbackContent() {
   }
 
   // user 객체가 없는 경우 기본값 제공
-  const currentUserData = user || {
+  const currentUserData: User = user || {
     id: 'guest',
     username: 'Guest User',
-    email: 'guest@example.com'
+    email: 'guest@example.com',
+    avatar_url: undefined,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
   return (

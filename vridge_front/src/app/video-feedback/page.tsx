@@ -3,6 +3,11 @@
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+
 // 전체 컨텐츠를 dynamic import로 처리
 const VideoFeedbackContent = dynamic(
   () => import('./VideoFeedbackContent'),
@@ -17,6 +22,15 @@ const VideoFeedbackContent = dynamic(
 );
 
 export default function VideoFeedbackPage() {
+  // Ensure client-side only rendering
+  if (typeof window === 'undefined') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-screen">
