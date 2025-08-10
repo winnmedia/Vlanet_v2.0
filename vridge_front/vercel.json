@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "devCommand": "npm run dev",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "functions": {
     "app/api/**.ts": {
       "maxDuration": 10
@@ -30,15 +30,23 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "NEXT_PUBLIC_API_URL": "https://videoplanet.up.railway.app",
+    "NEXT_PUBLIC_ENV": "production",
+    "NEXT_PUBLIC_APP_NAME": "VideoPlanet",
+    "NEXT_PUBLIC_APP_URL": "https://vlanet.net"
   },
   "build": {
     "env": {
-      "NEXT_TELEMETRY_DISABLED": "1"
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "NEXT_PUBLIC_API_URL": "https://videoplanet.up.railway.app",
+      "NEXT_PUBLIC_ENV": "production"
     }
   },
+  "regions": ["icn1"],
   "github": {
     "silent": false,
-    "autoAlias": true
+    "autoAlias": true,
+    "enabled": true
   }
 }
