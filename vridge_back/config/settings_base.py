@@ -125,13 +125,13 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "config.cors_solution.OptionsHandlerMiddleware",  # OPTIONS 요청 최우선 처리
+    # "config.cors_solution.OptionsHandlerMiddleware",  # 임시 비활성화 - import 오류 방지
     "config.middleware.RailwayHealthCheckMiddleware",  # 헬스체크
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "config.cors_solution.RailwayCORSMiddleware",  # 새로운 통합 CORS 미들웨어
-    # "corsheaders.middleware.CorsMiddleware",  # 비활성화 - 새 미들웨어로 대체
-    # "config.middleware.CORSDebugMiddleware",  # 비활성화 - 새 미들웨어로 대체
+    # "config.cors_solution.RailwayCORSMiddleware",  # 임시 비활성화 - import 오류 방지
+    "corsheaders.middleware.CorsMiddleware",  # django-cors-headers 재활성화
+    "config.middleware.CORSDebugMiddleware",  # CORS 디버그 미들웨어 재활성화
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

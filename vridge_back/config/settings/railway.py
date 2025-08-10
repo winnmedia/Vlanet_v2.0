@@ -42,11 +42,8 @@ else:
         }
     }
 
-# CORS 설정 - 새로운 통합 미들웨어를 사용하므로 django-cors-headers 설정은 백업용으로만 유지
-# 실제 CORS 처리는 config.cors_solution.RailwayCORSMiddleware에서 수행됨
-
-# django-cors-headers 설정 (백업용)
-CORS_ALLOW_ALL_ORIGINS = False  # 보안을 위해 특정 origin만 허용
+# CORS 설정 - django-cors-headers 사용
+CORS_ALLOW_ALL_ORIGINS = True  # 임시로 모든 origin 허용 (배포 테스트용)
 CORS_ALLOW_CREDENTIALS = True
 
 # 허용된 origin 목록 (새 미들웨어와 동기화)
