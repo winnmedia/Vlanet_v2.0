@@ -1,59 +1,93 @@
 """
-VideoPlanet   
- API    
+VideoPlanet Enhanced API Response Handler
+Provides standardized, CORS-aware, and performance-optimized API responses
 """
 
 from django.http import JsonResponse
 from rest_framework.response import Response
 from .error_messages import ErrorMessages
 import logging
+import time
+import uuid
 
 logger = logging.getLogger(__name__)
 
 
 class StandardResponse:
-    """ API """
+    """Enhanced API Response Handler with CORS support and performance monitoring"""
     
     @staticmethod
-    def success(data=None, message="", status_code=200):
-        """ """
-        response = {
+    def _add_response_metadata(response_data, request=None):
+        """Add metadata and performance info to response"""
+        if request and hasattr(request, '_start_time'):
+            response_data['performance'] = {
+                'response_time_ms': round((time.time() - request._start_time) * 1000, 2)
+            }
+        
+        response_data['timestamp'] = time.time()
+        response_data['request_id'] = str(uuid.uuid4())[:8]
+        return response_data
+    
+    @staticmethod
+    def _create_cors_response(data, status_code=200, request=None):
+        """Create JsonResponse with CORS headers already applied"""
+        response = JsonResponse(data, status=status_code, safe=False)
+        
+        # The CORSDebugMiddleware will handle the CORS headers
+        # but we can add some additional headers here for API responses
+        response['Content-Type'] = 'application/json; charset=utf-8'
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        
+        return response
+    
+    @staticmethod
+    def success(data=None, message="Success", status_code=200, request=None):
+        """Enhanced success response"""
+        response_data = {
             "success": True,
+            "status": "success",
             "message": message
         }
         
         if data is not None:
-            response["data"] = data
+            response_data["data"] = data
         
-        #  JsonResponse  (Django View )
-        return JsonResponse(response, status=status_code)
+        response_data = StandardResponse._add_response_metadata(response_data, request)
+        return StandardResponse._create_cors_response(response_data, status_code, request)
     
     @staticmethod
-    def error(error_key="SERVER_ERROR", message=None, status_code=400, details=None):
-        """ """
+    def error(error_key="SERVER_ERROR", message=None, status_code=400, details=None, request=None):
+        """Enhanced error response with proper logging and CORS"""
         if message is None:
             message = getattr(ErrorMessages, error_key, ErrorMessages.SERVER_ERROR)
         
-        response = {
+        response_data = {
             "success": False,
+            "status": "error",
             "error": {
                 "code": error_key,
-                "message": message
+                "message": message,
+                "status": status_code
             }
         }
         
         if details:
-            response["error"]["details"] = details
+            response_data["error"]["details"] = details
         
-        #  
-        logger.error(f"API Error: {error_key} - {message}", extra={
+        # Add metadata
+        response_data = StandardResponse._add_response_metadata(response_data, request)
+        
+        # Enhanced logging
+        logger.error(f"API Error [{response_data['request_id']}]: {error_key} - {message}", extra={
             "error_code": error_key,
             "details": details,
-            "status_code": status_code
+            "status_code": status_code,
+            "request_id": response_data['request_id']
         })
         
-        #  JsonResponse  (Django View )
-        return JsonResponse(response, status=status_code)
+        return StandardResponse._create_cors_response(response_data, status_code, request)
     
     @staticmethod
     def paginated(data, page=1, total_pages=1, total_count=0, message=" "):

@@ -20,61 +20,134 @@ export class AuthService extends APIClient {
   // ========================================
 
   /**
-   *  
+   * Enhanced Login with improved error handling and response parsing
    */
   async login(credentials: LoginRequest): Promise<APIResponse<LoginResponse>> {
-    console.log('[AuthService]  :', { email: credentials.email });
+    console.log('[AuthService] Login attempt:', { email: credentials.email });
     
     try {
-      //  fetch   
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+      const startTime = Date.now();
+      
       const response = await fetch(`${apiUrl}/api/users/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        credentials: 'include', // Include cookies for CORS
         body: JSON.stringify(credentials),
       });
 
-      const data = await response.json();
-      console.log('[AuthService]  :', data);
+      const responseTime = Date.now() - startTime;
+      console.log(`[AuthService] API Response time: ${responseTime}ms`);
 
-      if (response.ok && data) {
-        //  
-        if (data.access) {
-          localStorage.setItem('access_token', data.access);
-        }
-        if (data.refresh) {
-          localStorage.setItem('refresh_token', data.refresh);
-        }
-        if (data.vridge_session) {
-          localStorage.setItem('vridge_session', data.vridge_session);
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error('[AuthService] Failed to parse response JSON:', parseError);
+        return {
+          success: false,
+          error: {
+            status: response.status,
+            message: 'Invalid server response format',
+            code: 'PARSE_ERROR'
+          }
+        };
+      }
+
+      console.log('[AuthService] Response data:', {
+        success: data.success,
+        status: response.status,
+        hasData: !!data.data,
+        requestId: data.request_id,
+        responseTime: data.performance?.response_time_ms
+      });
+
+      if (response.ok && data.success) {
+        // Enhanced token handling with validation
+        const tokenData = data.data;
+        
+        if (tokenData.access_token || tokenData.access) {
+          const accessToken = tokenData.access_token || tokenData.access;
+          const refreshToken = tokenData.refresh_token || tokenData.refresh;
+          const vrideSession = tokenData.vridge_session;
+          
+          // Store tokens
+          localStorage.setItem('access_token', accessToken);
+          if (refreshToken) {
+            localStorage.setItem('refresh_token', refreshToken);
+          }
+          if (vrideSession) {
+            localStorage.setItem('vridge_session', vrideSession);
+          }
+          
+          // Store token expiry
+          if (tokenData.expires_in) {
+            const expiryTime = Date.now() + (tokenData.expires_in * 1000);
+            localStorage.setItem('token_expiry', expiryTime.toString());
+          }
+          
+          // Store user data
+          if (tokenData.user) {
+            localStorage.setItem('user_data', JSON.stringify(tokenData.user));
+          }
+          
+          console.log('[AuthService] Login successful:', {
+            userId: tokenData.user?.id,
+            email: tokenData.user?.email,
+            expiresIn: tokenData.expires_in
+          });
         }
         
-        return { success: true, data };
+        return { success: true, data: tokenData };
+        
       } else {
+        // Handle API error response
+        const errorInfo = data.error || {};
+        console.error('[AuthService] Login failed:', {
+          status: response.status,
+          code: errorInfo.code,
+          message: errorInfo.message,
+          requestId: data.request_id
+        });
+        
         return { 
           success: false, 
           error: {
             status: response.status,
-            message: data.message || ' .',
-            code: 'LOGIN_FAILED'
+            message: errorInfo.message || data.message || 'Login failed',
+            code: errorInfo.code || 'LOGIN_FAILED',
+            details: errorInfo.details,
+            requestId: data.request_id
           }
         };
       }
     } catch (error) {
-      console.error('[AuthService]  :', error);
+      console.error('[AuthService] Network/unexpected error:', error);
+      
+      // Handle specific error types
+      let errorMessage = 'A network error occurred. Please check your connection and try again.';
+      let errorCode = 'NETWORK_ERROR';
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = 'Unable to connect to server. Please check your internet connection.';
+        errorCode = 'CONNECTION_ERROR';
+      } else if (error instanceof Error) {
+        errorMessage = `Request failed: ${error.message}`;
+        errorCode = 'REQUEST_ERROR';
+      }
+      
       return {
         success: false,
         error: {
           status: 0,
-          message: '  .',
-          code: 'NETWORK_ERROR'
+          message: errorMessage,
+          code: errorCode
         }
       };
     }
-
-    //      (  )
   }
 
   /**

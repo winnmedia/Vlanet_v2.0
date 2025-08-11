@@ -139,12 +139,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "config.middleware.CORSDebugMiddleware",  # CORS  
-    #     (Railway 502    )
-    # "config.middleware.SecurityHeadersMiddleware",
+    "config.middleware.CORSDebugMiddleware",  # CORS headers with error handling
+    "config.middleware.PerformanceMonitoringMiddleware",  # Performance monitoring
+    "config.middleware.SecurityHeadersMiddleware",  # Security headers
+    # Rate limiting and audit middleware (disabled for Railway stability)
     # "config.rate_limit_middleware.RateLimitMiddleware",
     # "config.rate_limit_middleware.SecurityAuditMiddleware",
-    # "config.middleware.PerformanceMiddleware",
     # "feedbacks.middleware.MediaHeadersMiddleware",
     # "projects.middleware.IdempotencyMiddleware",
 ]

@@ -309,55 +309,146 @@ class RailwayHealthCheckMiddleware(MiddlewareMixin):
 
 
 class CORSDebugMiddleware(MiddlewareMixin):
-    """Debug and ensure CORS headers are properly set"""
+    """Enhanced CORS middleware that ensures headers are always present, including on errors"""
     
     def process_response(self, request, response):
-        #   CORS     
-        origin = request.META.get('HTTP_ORIGIN')
+        origin = request.META.get('HTTP_ORIGIN', '')
         
-        # OPTIONS    
-        if request.method == 'OPTIONS':
-            if not response.has_header('Access-Control-Allow-Origin'):
-                response['Access-Control-Allow-Origin'] = origin or '*'
-            if not response.has_header('Access-Control-Allow-Methods'):
-                response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-            if not response.has_header('Access-Control-Allow-Headers'):
-                response['Access-Control-Allow-Headers'] = 'accept, accept-encoding, authorization, content-type, dnt, origin, user-agent, x-csrftoken, x-requested-with, cache-control, pragma'
-            if not response.has_header('Access-Control-Allow-Credentials'):
-                response['Access-Control-Allow-Credentials'] = 'true'
-            if not response.has_header('Access-Control-Max-Age'):
-                response['Access-Control-Max-Age'] = '86400'
+        # Validate origin against allowed origins for security
+        allowed_origins = [
+            'https://vlanet.net',
+            'https://www.vlanet.net',
+            'https://vlanet-v2-0-krye028sg-vlanets-projects.vercel.app',
+            'https://vlanet-v2-0.vercel.app',
+            'http://localhost:3000',
+            'http://localhost:3001',
+        ]
         
-        #    CORS  
-        if origin and not response.has_header('Access-Control-Allow-Origin'):
-            # corsheaders     
-            response['Access-Control-Allow-Origin'] = origin
+        # Check against regex patterns for Vercel dynamic URLs
+        import re
+        origin_patterns = [
+            r"^https://vlanet-v2-0-.*\.vercel\.app$",
+            r"^https://.*-vlanets-projects\.vercel\.app$",
+            r"^https://vlanet-.*\.vercel\.app$",
+        ]
+        
+        is_valid_origin = False
+        if origin in allowed_origins:
+            is_valid_origin = True
+        else:
+            for pattern in origin_patterns:
+                if re.match(pattern, origin):
+                    is_valid_origin = True
+                    break
+        
+        # Set CORS headers for valid origins or all origins in development
+        from django.conf import settings
+        if is_valid_origin or settings.DEBUG:
+            response['Access-Control-Allow-Origin'] = origin if origin else '*'
             response['Access-Control-Allow-Credentials'] = 'true'
+            response['Access-Control-Expose-Headers'] = 'Content-Type, X-CSRFToken, Content-Length, X-Request-ID'
+            
+            # Always set these headers for any response
+            if request.method == 'OPTIONS':
+                response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD'
+                response['Access-Control-Allow-Headers'] = (
+                    'accept, accept-encoding, authorization, content-type, dnt, origin, '
+                    'user-agent, x-csrftoken, x-requested-with, cache-control, pragma, '
+                    'x-idempotency-key'
+                )
+                response['Access-Control-Max-Age'] = '86400'
+                response.status_code = 200
+        
+        # Add request ID for debugging
+        import uuid
+        if not response.has_header('X-Request-ID'):
+            response['X-Request-ID'] = str(uuid.uuid4())[:8]
             
         return response
+    
+    def process_exception(self, request, exception):
+        """Ensure CORS headers are set even when exceptions occur"""
+        from django.http import JsonResponse
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        logger.error(f"Exception in request: {exception}", exc_info=True)
+        
+        # Create error response with CORS headers
+        response = JsonResponse({
+            'success': False,
+            'error': {
+                'code': 'INTERNAL_SERVER_ERROR',
+                'message': 'An internal server error occurred',
+                'status': 500
+            }
+        }, status=500)
+        
+        # Apply CORS headers
+        return self.process_response(request, response)
 
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
     """Add security headers to all responses"""
     
     def process_response(self, request, response):
-        # XSS 
+        # XSS Protection
         response['X-XSS-Protection'] = '1; mode=block'
         
-        # Content Type  
+        # Content Type Options
         response['X-Content-Type-Options'] = 'nosniff'
         
-        # Clickjacking  ( Django    )
+        # Clickjacking protection
         if 'X-Frame-Options' not in response:
             response['X-Frame-Options'] = 'DENY'
         
-        # HSTS (HTTPS )
+        # HSTS for HTTPS requests
         if request.is_secure():
             response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         
         # Referrer Policy
         response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         
+        return response
+
+
+class PerformanceMonitoringMiddleware(MiddlewareMixin):
+    """Monitor API response times and log slow requests"""
+    
+    def process_request(self, request):
+        """Mark request start time"""
+        import time
+        request._start_time = time.time()
+        return None
+    
+    def process_response(self, request, response):
+        """Log response time and add performance headers"""
+        import time
+        import logging
+        
+        if hasattr(request, '_start_time'):
+            response_time = time.time() - request._start_time
+            response_time_ms = round(response_time * 1000, 2)
+            
+            # Add performance header
+            response['X-Response-Time'] = f"{response_time_ms}ms"
+            
+            # Log slow requests (>200ms)
+            if response_time_ms > 200:
+                logger = logging.getLogger(__name__)
+                logger.warning(f"Slow API request: {request.method} {request.path} - {response_time_ms}ms", extra={
+                    'response_time_ms': response_time_ms,
+                    'method': request.method,
+                    'path': request.path,
+                    'status_code': response.status_code
+                })
+            
+            # Log API metrics for monitoring
+            if request.path.startswith('/api/'):
+                logger = logging.getLogger('api.performance')
+                logger.info(f"API {request.method} {request.path} - {response.status_code} - {response_time_ms}ms")
+        
+        return response
         # Permissions Policy ( Feature Policy)
         response['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
         

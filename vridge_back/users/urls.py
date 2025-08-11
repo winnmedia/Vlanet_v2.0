@@ -2,6 +2,7 @@ from .api_urls import urlpatterns as api_patterns
 
 from django.urls import path
 from . import views
+from . import views_api  # Import enhanced API views
 from .create_users_endpoint import CreateTestUsers
 from rest_framework_simplejwt.views import TokenRefreshView
 #     
@@ -13,18 +14,28 @@ from . import views_email_monitor
 from . import views_account_management
 
 urlpatterns = api_patterns + [
-    path("login/", views.SignIn.as_view()),
-    path("signup/", views.SignUp.as_view()),  #   ( )
-    path("me/", views.UserMe.as_view()),  #   
-    path("refresh/", TokenRefreshView.as_view()),  # JWT  
+    # Enhanced API endpoints with improved error handling and CORS
+    path("login/", views_api.LoginAPIView.as_view(), name='login'),
+    path("signup/", views_api.SignupAPIView.as_view(), name='signup'),
+    path("me/", views_api.UserMeAPIView.as_view(), name='user_me'),
+    path("refresh/", TokenRefreshView.as_view(), name='token_refresh'),  # JWT refresh
+    
+    # Legacy endpoints (fallback)
+    path("login-legacy/", views.SignIn.as_view(), name='login_legacy'),
+    path("signup-legacy/", views.SignUp.as_view(), name='signup_legacy'),
     
     #      ( )
     # path("signup/request/", views_signup_with_email.SignUpRequest.as_view()),  # Step 1:   
     # path("signup/verify/", views_signup_with_email.SignUpVerify.as_view()),     # Step 2:  
     # path("signup/complete/", views_signup_with_email.SignUpComplete.as_view()),  # Step 3:  
     
-    path("check-email/", views.CheckEmail.as_view()),  #   
-    path("check-nickname/", views.CheckNickname.as_view()),  #   
+    # Enhanced validation endpoints
+    path("check-email/", views_api.CheckEmailAPIView.as_view(), name='check_email'),
+    path("check-nickname/", views_api.CheckNicknameAPIView.as_view(), name='check_nickname'),
+    
+    # Legacy validation endpoints (fallback)
+    path("check-email-legacy/", views.CheckEmail.as_view()),
+    path("check-nickname-legacy/", views.CheckNickname.as_view()),
     path("send-authnumber/<str:types>/", views.SendAuthNumber.as_view()),  #   ()
     path("signup-emailauth/<str:types>/", views.EmailAuth.as_view()),  #   ()
     path("password-reset/", views.ResetPassword.as_view()),
