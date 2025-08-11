@@ -190,10 +190,35 @@ class DashboardDataView(APIView):
             end_date = timezone.now().date()
             start_date = end_date - timedelta(days=days)
             
-            # 기본 통계
-            total_sessions = UserSession.objects.filter(
-                start_time__date__gte=start_date
-            ).count()
+            # 데이터베이스 테이블이 없을 경우 빈 데이터 반환
+            try:
+                # 기본 통계
+                total_sessions = UserSession.objects.filter(
+                    start_time__date__gte=start_date
+                ).count()
+            except Exception:
+                # 테이블이 없거나 에러가 발생하면 기본값 반환
+                return Response({
+                    'summary': {
+                        'total_sessions': 0,
+                        'total_users': 0,
+                        'completion_rate': 0,
+                        'full_completion_rate': 0,
+                    },
+                    'step_stats': [],
+                    'daily_stats': [],
+                    'popular_buttons': [],
+                    'popular_fields': [],
+                    'error_stats': [],
+                    'date_range': {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'days': days
+                    },
+                    'message': 'Analytics tables not yet created. Please run migrations.'
+                })
+            
+            # 기본 통계 (테이블이 존재하는 경우)
             
             total_users = UserSession.objects.filter(
                 start_time__date__gte=start_date,
