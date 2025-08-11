@@ -112,6 +112,8 @@ PROJECT_APPS = [
     "ai_video",
     "admin_dashboard",
     "documents",
+    "calendars",
+    "invitations",
     "analytics",
 ]
 
