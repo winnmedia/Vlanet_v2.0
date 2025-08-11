@@ -12,30 +12,30 @@ class User(AbstractUser):
         ("naver", "Naver"),
     )
 
-    nickname = models.CharField(verbose_name="닉네임", max_length=100, blank=True)
+    nickname = models.CharField(verbose_name="", max_length=100, blank=True)
     login_method = models.CharField(
-        max_length=50, verbose_name="로그인 방식", choices=LOGIN_CHOICES, default="email"
+        max_length=50, verbose_name=" ", choices=LOGIN_CHOICES, default="email"
     )
-    email_secret = models.CharField(verbose_name="비밀번호 찾기(인증번호)", max_length=10, null=True, blank=True)
-    email_verified = models.BooleanField(default=False, verbose_name="이메일 인증 완료")
-    email_verified_at = models.DateTimeField(null=True, blank=True, verbose_name="이메일 인증 완료 시간")
+    email_secret = models.CharField(verbose_name=" ()", max_length=10, null=True, blank=True)
+    email_verified = models.BooleanField(default=False, verbose_name="  ")
+    email_verified_at = models.DateTimeField(null=True, blank=True, verbose_name="   ")
     
-    # Soft delete 관련 필드
-    is_deleted = models.BooleanField(default=False, verbose_name="삭제 여부")
-    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name="삭제 시간")
+    # Soft delete  
+    is_deleted = models.BooleanField(default=False, verbose_name=" ")
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name=" ")
     deletion_reason = models.CharField(
-        max_length=200, null=True, blank=True, verbose_name="삭제 사유"
+        max_length=200, null=True, blank=True, default='', verbose_name=" "
     )
     
-    # 계정 복구 관련
-    can_recover = models.BooleanField(default=True, verbose_name="복구 가능 여부")
-    recovery_deadline = models.DateTimeField(null=True, blank=True, verbose_name="복구 마감일")
+    #   
+    can_recover = models.BooleanField(default=True, verbose_name="  ")
+    recovery_deadline = models.DateTimeField(null=True, blank=True, verbose_name=" ")
     
     objects = managers.CustomUserManager()
 
     class Meta:
-        verbose_name = "사용자"
-        verbose_name_plural = "사용자"
+        verbose_name = ""
+        verbose_name_plural = ""
         indexes = [
             models.Index(fields=['email']),
             models.Index(fields=['username']),
@@ -43,19 +43,19 @@ class User(AbstractUser):
             models.Index(fields=['is_deleted', 'deleted_at']),
         ]
     
-    def soft_delete(self, reason="사용자 요청"):
-        """사용자 계정을 소프트 삭제"""
+    def soft_delete(self, reason=" "):
+        """   """
         from django.utils import timezone
         self.is_deleted = True
         self.deleted_at = timezone.now()
         self.deletion_reason = reason
-        # 복구 마감일 설정 (30일)
+        #    (30)
         self.recovery_deadline = timezone.now() + timezone.timedelta(days=30)
         self.is_active = False
         self.save()
     
     def restore_account(self):
-        """계정 복구"""
+        """ """
         self.is_deleted = False
         self.deleted_at = None
         self.deletion_reason = None
@@ -64,7 +64,7 @@ class User(AbstractUser):
         self.save()
     
     def can_be_recovered(self):
-        """복구 가능한지 확인"""
+        """  """
         if not self.is_deleted or not self.can_recover:
             return False
         if self.recovery_deadline:
@@ -74,163 +74,163 @@ class User(AbstractUser):
 
 
 class UserProfile(core_model.TimeStampedModel):
-    """사용자 프로필 정보"""
+    """  """
     user = models.OneToOneField(
         User, 
         on_delete=models.CASCADE, 
         related_name='profile',
-        verbose_name="사용자"
+        verbose_name=""
     )
     profile_image = models.ImageField(
-        verbose_name="프로필 이미지", 
+        verbose_name=" ", 
         upload_to="profile_images/", 
         null=True, 
         blank=True
     )
-    bio = models.TextField(verbose_name="자기소개", max_length=500, blank=True)
-    phone = models.CharField(verbose_name="전화번호", max_length=20, blank=True)
-    company = models.CharField(verbose_name="회사/소속", max_length=100, blank=True)
-    position = models.CharField(verbose_name="직책", max_length=100, blank=True)
+    bio = models.TextField(verbose_name="", max_length=500, blank=True)
+    phone = models.CharField(verbose_name="", max_length=20, blank=True)
+    company = models.CharField(verbose_name="/", max_length=100, blank=True)
+    position = models.CharField(verbose_name="", max_length=100, blank=True)
     
     class Meta:
-        verbose_name = "사용자 프로필"
-        verbose_name_plural = "사용자 프로필"
+        verbose_name = " "
+        verbose_name_plural = " "
     
     def __str__(self):
-        return f"{self.user.username}의 프로필"
+        return f"{self.user.username} "
 
 
 class EmailVerify(core_model.TimeStampedModel):
-    email = models.CharField(verbose_name="발송 이메일", max_length=200)
-    auth_number = models.CharField(verbose_name="인증번호", max_length=10)
+    email = models.CharField(verbose_name=" ", max_length=200)
+    auth_number = models.CharField(verbose_name="", max_length=10)
 
     def __str__(self):
         return f"{self.email} - {self.auth_number}"
 
     class Meta:
-        verbose_name = "이메일 인증번호"
-        verbose_name_plural = "이메일 인증번호"
+        verbose_name = " "
+        verbose_name_plural = " "
 
 
 class EmailVerificationToken(core_model.TimeStampedModel):
-    """회원가입 이메일 인증 토큰"""
+    """   """
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="verification_tokens",
-        verbose_name="사용자"
+        verbose_name=""
     )
     token = models.UUIDField(
         default=uuid.uuid4,
         editable=False,
-        verbose_name="인증 토큰"
+        verbose_name=" "
     )
-    email = models.EmailField(verbose_name="인증할 이메일")
-    is_verified = models.BooleanField(default=False, verbose_name="인증 완료 여부")
-    verified_at = models.DateTimeField(null=True, blank=True, verbose_name="인증 완료 시간")
-    expires_at = models.DateTimeField(verbose_name="만료 시간")
+    email = models.EmailField(verbose_name=" ")
+    is_verified = models.BooleanField(default=False, verbose_name="  ")
+    verified_at = models.DateTimeField(null=True, blank=True, verbose_name="  ")
+    expires_at = models.DateTimeField(verbose_name=" ")
     
     class Meta:
-        verbose_name = "이메일 인증 토큰"
-        verbose_name_plural = "이메일 인증 토큰"
+        verbose_name = "  "
+        verbose_name_plural = "  "
         indexes = [
             models.Index(fields=['token']),
             models.Index(fields=['email', 'is_verified']),
         ]
     
     def __str__(self):
-        return f"{self.email} - {'인증완료' if self.is_verified else '인증대기'}"
+        return f"{self.email} - {'' if self.is_verified else ''}"
     
     def is_expired(self):
-        """토큰이 만료되었는지 확인"""
+        """  """
         from django.utils import timezone
         return timezone.now() > self.expires_at
 
 
 class UserMemo(core_model.TimeStampedModel):
     user = models.ForeignKey(
-        "User", related_name="memos", on_delete=models.CASCADE, verbose_name="메모", null=True, blank=True
+        "User", related_name="memos", on_delete=models.CASCADE, verbose_name="", null=True, blank=True
     )
-    date = models.DateField(verbose_name="날짜", null=True)
-    memo = models.TextField(verbose_name="메모", null=True, blank=False)
+    date = models.DateField(verbose_name="", null=True)
+    memo = models.TextField(verbose_name="", null=True, blank=False)
 
     class Meta:
-        verbose_name = "사용자 메모"
-        verbose_name_plural = "사용자 메모"
+        verbose_name = " "
+        verbose_name_plural = " "
 
     def __str__(self):
         return self.user.nickname
 
 
 class Notification(core_model.TimeStampedModel):
-    """사용자 알림 모델"""
+    """  """
     NOTIFICATION_TYPES = [
-        ('invitation_received', '초대를 받았습니다'),
-        ('invitation_accepted', '초대가 수락되었습니다'),
-        ('invitation_declined', '초대가 거절되었습니다'),
-        ('project_member_added', '프로젝트에 새 멤버가 추가되었습니다'),
-        ('feedback_added', '새 피드백이 추가되었습니다'),
-        ('project_updated', '프로젝트가 업데이트되었습니다'),
-        ('system', '시스템 알림'),
+        ('invitation_received', ' '),
+        ('invitation_accepted', ' '),
+        ('invitation_declined', ' '),
+        ('project_member_added', '   '),
+        ('feedback_added', '  '),
+        ('project_updated', ' '),
+        ('system', ' '),
     ]
     
     recipient = models.ForeignKey(
         "User",
         related_name="notifications",
         on_delete=models.CASCADE,
-        verbose_name="수신자"
+        verbose_name=""
     )
     
     notification_type = models.CharField(
         max_length=50,
         choices=NOTIFICATION_TYPES,
-        verbose_name="알림 타입"
+        verbose_name=" "
     )
     
     title = models.CharField(
         max_length=200,
-        verbose_name="알림 제목"
+        verbose_name=" "
     )
     
     message = models.TextField(
-        verbose_name="알림 내용"
+        verbose_name=" "
     )
     
-    # 관련 객체들 (선택사항)
+    #   ()
     project_id = models.IntegerField(
         null=True,
         blank=True,
-        verbose_name="관련 프로젝트 ID"
+        verbose_name="  ID"
     )
     
     invitation_id = models.IntegerField(
         null=True,
         blank=True,
-        verbose_name="관련 초대 ID"
+        verbose_name="  ID"
     )
     
-    # 알림 상태
+    #  
     is_read = models.BooleanField(
         default=False,
-        verbose_name="읽음 여부"
+        verbose_name=" "
     )
     
     read_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name="읽은 시간"
+        verbose_name=" "
     )
     
-    # 추가 데이터 (JSON)
+    #   (JSON)
     extra_data = models.JSONField(
         default=dict,
         blank=True,
-        verbose_name="추가 데이터"
+        verbose_name=" "
     )
 
     class Meta:
-        verbose_name = "알림"
-        verbose_name_plural = "알림"
+        verbose_name = ""
+        verbose_name_plural = ""
         ordering = ['-created']
         indexes = [
             models.Index(fields=['recipient', '-created']),
@@ -243,43 +243,43 @@ class Notification(core_model.TimeStampedModel):
 
 
 class Friendship(core_model.TimeStampedModel):
-    """친구 관계 모델"""
+    """  """
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="friendships",
-        verbose_name="사용자"
+        verbose_name=""
     )
     friend = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="friend_of",
-        verbose_name="친구"
+        verbose_name=""
     )
     
     STATUS_CHOICES = [
-        ('pending', '대기중'),
-        ('accepted', '수락됨'),
-        ('declined', '거절됨'),
-        ('blocked', '차단됨'),
+        ('pending', ''),
+        ('accepted', ''),
+        ('declined', ''),
+        ('blocked', ''),
     ]
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='pending',
-        verbose_name="상태"
+        verbose_name=""
     )
     
-    # 친구 요청을 보낸 사람
+    #    
     requested_by = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="sent_friend_requests",
-        verbose_name="요청자"
+        verbose_name=""
     )
     
-    # 수락/거절 시간
-    responded_at = models.DateTimeField(null=True, blank=True, verbose_name="응답 시간")
+    # / 
+    responded_at = models.DateTimeField(null=True, blank=True, verbose_name=" ")
     
     class Meta:
         unique_together = [['user', 'friend']]
@@ -287,34 +287,34 @@ class Friendship(core_model.TimeStampedModel):
             models.Index(fields=['user', 'status']),
             models.Index(fields=['friend', 'status']),
         ]
-        verbose_name = "친구 관계"
-        verbose_name_plural = "친구 관계"
+        verbose_name = " "
+        verbose_name_plural = " "
     
     def __str__(self):
         return f"{self.user.email} - {self.friend.email} ({self.get_status_display()})"
 
 
 class RecentInvitation(core_model.TimeStampedModel):
-    """최근 초대한 사람 기록"""
+    """   """
     inviter = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="recent_invitations",
-        verbose_name="초대자"
+        verbose_name=""
     )
-    invitee_email = models.EmailField(verbose_name="초대받은 사람 이메일")
-    invitee_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="초대받은 사람 이름")
-    project_name = models.CharField(max_length=200, verbose_name="프로젝트명")
+    invitee_email = models.EmailField(verbose_name="  ")
+    invitee_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="  ")
+    project_name = models.CharField(max_length=200, verbose_name="")
     
-    # 초대 횟수 (동일한 사람을 여러 번 초대한 경우)
-    invitation_count = models.PositiveIntegerField(default=1, verbose_name="초대 횟수")
-    last_invited_at = models.DateTimeField(auto_now=True, verbose_name="마지막 초대 시간")
+    #   (     )
+    invitation_count = models.PositiveIntegerField(default=1, verbose_name=" ")
+    last_invited_at = models.DateTimeField(auto_now=True, verbose_name="  ")
     
     class Meta:
         unique_together = [['inviter', 'invitee_email']]
         ordering = ['-last_invited_at']
-        verbose_name = "최근 초대"
-        verbose_name_plural = "최근 초대"
+        verbose_name = " "
+        verbose_name_plural = " "
     
     def __str__(self):
-        return f"{self.inviter.email} -> {self.invitee_email} ({self.invitation_count}회)"
+        return f"{self.inviter.email} -> {self.invitee_email} ({self.invitation_count})"
