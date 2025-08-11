@@ -194,6 +194,7 @@ urlpatterns = auth_patterns + [
     path("api/video-analysis/", include("video_analysis.urls")),
     path("api/ai-video/", include("ai_video.urls")),  # AI 영상 생성 API
     path("api/documents/", include("documents.urls")),  # 문서 관리 API
+    path("api/analytics/", include("analytics.urls")),  # 분석 API
     
     # 레거시 경로 (하위 호환성) - /api/ 프리픽스가 없는 구 경로
     # 새로운 개발에서는 위의 /api/ 경로를 사용할 것을 권장
