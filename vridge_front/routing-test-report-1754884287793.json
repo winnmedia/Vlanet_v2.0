@@ -1,0 +1,212 @@
+{
+  "timestamp": "2025-08-11T03:51:27.793Z",
+  "config": {
+    "FRONTEND_URL": "https://vlanet.net",
+    "BACKEND_URL": "https://videoplanet.up.railway.app",
+    "TIMEOUT": 10000,
+    "MAX_RETRIES": 3,
+    "RETRY_DELAY": 2000
+  },
+  "summary": {
+    "total": 22,
+    "passed": 19,
+    "failed": 3,
+    "passRate": "86.4"
+  },
+  "results": [
+    {
+      "type": "frontend",
+      "route": "/",
+      "name": "Home Page",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/login",
+      "name": "Login Page",
+      "status": "FAIL",
+      "statusCode": 401,
+      "error": "Unexpected status code. Expected: 200, Got: 401",
+      "attempts": 3
+    },
+    {
+      "type": "frontend",
+      "route": "/signup",
+      "name": "Signup Page",
+      "status": "FAIL",
+      "statusCode": 401,
+      "error": "Unexpected status code. Expected: 200, Got: 401",
+      "attempts": 3
+    },
+    {
+      "type": "frontend",
+      "route": "/dashboard",
+      "name": "Dashboard",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/projects",
+      "name": "Projects",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/analytics",
+      "name": "Analytics (NEW)",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/teams",
+      "name": "Teams (NEW)",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/settings",
+      "name": "Settings (NEW)",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/feedbacks",
+      "name": "Feedbacks",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/video-feedback",
+      "name": "Video Feedback",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/video-planning",
+      "name": "Video Planning",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/mypage",
+      "name": "My Page",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "frontend",
+      "route": "/calendar",
+      "name": "Calendar",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/health/",
+      "name": "Health Check",
+      "status": "PASS",
+      "statusCode": 200,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/version/",
+      "name": "Version Info",
+      "status": "PASS",
+      "statusCode": 200,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/analytics/dashboard/",
+      "name": "Analytics API (NEW)",
+      "status": "FAIL",
+      "statusCode": 500,
+      "error": "Unexpected status code. Expected: 200 or 401 or 403, Got: 500",
+      "attempts": 3
+    },
+    {
+      "type": "backend",
+      "route": "/api/projects/",
+      "name": "Projects API",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/feedbacks/",
+      "name": "Feedbacks API",
+      "status": "PASS",
+      "statusCode": 200,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/users/me/",
+      "name": "User Profile API",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/video-planning/",
+      "name": "Video Planning API",
+      "status": "PASS",
+      "statusCode": 401,
+      "attempts": 1
+    },
+    {
+      "type": "backend",
+      "route": "/api/ai-video/",
+      "name": "AI Video API",
+      "status": "PASS",
+      "statusCode": 200,
+      "attempts": 1
+    }
+  ],
+  "errors": [
+    {
+      "type": "frontend",
+      "route": "/login",
+      "name": "Login Page",
+      "error": "Unexpected status code. Expected: 200, Got: 401",
+      "url": "https://vlanet.net/login"
+    },
+    {
+      "type": "frontend",
+      "route": "/signup",
+      "name": "Signup Page",
+      "error": "Unexpected status code. Expected: 200, Got: 401",
+      "url": "https://vlanet.net/signup"
+    },
+    {
+      "type": "backend",
+      "route": "/api/analytics/dashboard/",
+      "name": "Analytics API (NEW)",
+      "error": "Unexpected status code. Expected: 200 or 401 or 403, Got: 500",
+      "url": "https://videoplanet.up.railway.app/api/analytics/dashboard/"
+    }
+  ]
+}
