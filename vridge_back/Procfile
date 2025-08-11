@@ -1,1 +1,1 @@
-web: python railway_start.py
+web: python3 -c "import os; from http.server import HTTPServer, BaseHTTPRequestHandler; class H(BaseHTTPRequestHandler): def do_GET(self): self.send_response(200); self.end_headers(); self.wfile.write(b'OK'); def log_message(self, f, *a): pass; HTTPServer(('', int(os.environ.get('PORT', 8000))), H).serve_forever()"

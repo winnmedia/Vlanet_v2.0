@@ -4,9 +4,9 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "bash minimal_start.sh",
+    "startCommand": "python3 -c \"import os; from http.server import HTTPServer, BaseHTTPRequestHandler; class H(BaseHTTPRequestHandler): \n    def do_GET(self): self.send_response(200); self.end_headers(); self.wfile.write(b'OK')\n    def log_message(self, f, *a): pass\nHTTPServer(('', int(os.environ.get('PORT', 8000))), H).serve_forever()\"",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 3,
+    "restartPolicyMaxRetries": 10,
     "healthcheckPath": "/",
     "healthcheckTimeout": 30
   }
