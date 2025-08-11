@@ -29,6 +29,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
     'https://vlanet.net',
     'https://www.vlanet.net',
+    'https://vlanet-v2-0-krye028sg-vlanets-projects.vercel.app',
+    'https://vlanet-v2-0.vercel.app',
+    'https://*.vercel.app',
     'http://localhost:3000',
     'http://localhost:3001',
 ]
@@ -57,6 +60,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://vlanet.net",
     "https://www.vlanet.net",
     "https://videoplanet-seven.vercel.app",
+    "https://vlanet-v2-0-krye028sg-vlanets-projects.vercel.app",  # Vercel preview URL
+    "https://vlanet-v2-0.vercel.app",  # Alternative Vercel URL
     "http://localhost:3000",
     "http://localhost:3001",
     "http://127.0.0.1:3000",
@@ -92,6 +97,13 @@ CORS_ALLOW_METHODS = [
 
 # Preflight  
 CORS_PREFLIGHT_MAX_AGE = 86400
+
+# CORS URL 정규식 패턴 (Vercel dynamic URLs)
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://vlanet-v2-0-.*\.vercel\.app$",
+    r"^https://.*-vlanets-projects\.vercel\.app$",
+    r"^https://vlanet-.*\.vercel\.app$",
+]
 
 #  
 CORS_EXPOSE_HEADERS = [
