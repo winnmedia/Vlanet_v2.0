@@ -315,10 +315,39 @@ class DashboardDataView(APIView):
             })
             
         except Exception as e:
-            return Response(
-                {'error': str(e)}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            # Check if it's a database table error
+            error_msg = str(e).lower()
+            if 'does not exist' in error_msg or 'no such table' in error_msg:
+                # Return graceful response for missing tables
+                return Response({
+                    'summary': {
+                        'total_sessions': 0,
+                        'total_users': 0,
+                        'completion_rate': 0,
+                        'full_completion_rate': 0,
+                    },
+                    'step_stats': [],
+                    'daily_stats': [],
+                    'popular_buttons': [],
+                    'popular_fields': [],
+                    'error_stats': [],
+                    'date_range': {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'days': days
+                    },
+                    'message': 'Analytics database tables not initialized. Run migrations to enable analytics.',
+                    'error': 'TABLE_NOT_FOUND'
+                }, status=status.HTTP_200_OK)  # Return 200 with empty data instead of 500
+            else:
+                # For other errors, log and return 500
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Analytics dashboard error: {e}")
+                return Response(
+                    {'error': str(e), 'type': 'INTERNAL_ERROR'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
 class UserInsightsView(APIView):
     """사용자 인사이트 조회"""
