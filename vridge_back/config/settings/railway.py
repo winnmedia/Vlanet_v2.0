@@ -1,16 +1,16 @@
 """
-Railway 배포용 Django 설정 파일
-Production 환경 설정
+Railway  Django  
+Production  
 """
 import os
 import dj_database_url
 from ..settings_base import *
 
-# 보안 설정
+#  
 SECRET_KEY = os.environ.get('SECRET_KEY', os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-production-key-change-me'))
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# 보안 헤더 설정 (QA 권고사항)
+#    (QA )
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
@@ -20,10 +20,10 @@ ALLOWED_HOSTS = [
     '.railway.app',
     'localhost',
     '127.0.0.1',
-    '*',  # 임시로 모든 호스트 허용
+    '*',  #    
 ]
 
-# CSRF 설정 추가
+# CSRF  
 CSRF_TRUSTED_ORIGINS = [
     'https://videoplanet.up.railway.app',
     'https://*.railway.app',
@@ -33,7 +33,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3001',
 ]
 
-# 데이터베이스 설정 (Railway PostgreSQL)
+#   (Railway PostgreSQL)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {
@@ -48,11 +48,11 @@ else:
         }
     }
 
-# CORS 설정 - django-cors-headers 사용
-CORS_ALLOW_ALL_ORIGINS = False  # 보안 강화: 특정 origin만 허용
+# CORS  - django-cors-headers 
+CORS_ALLOW_ALL_ORIGINS = False  #  :  origin 
 CORS_ALLOW_CREDENTIALS = True
 
-# 허용된 origin 목록 (새 미들웨어와 동기화)
+#  origin  (  )
 CORS_ALLOWED_ORIGINS = [
     "https://vlanet.net",
     "https://www.vlanet.net",
@@ -63,7 +63,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3001",
 ]
 
-# 허용할 헤더
+#  
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -79,7 +79,7 @@ CORS_ALLOW_HEADERS = [
     'x-idempotency-key',
 ]
 
-# 허용할 메서드
+#  
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -90,17 +90,17 @@ CORS_ALLOW_METHODS = [
     'HEAD',
 ]
 
-# Preflight 캐시 시간
+# Preflight  
 CORS_PREFLIGHT_MAX_AGE = 86400
 
-# 노출할 헤더
+#  
 CORS_EXPOSE_HEADERS = [
     'Content-Type',
     'X-CSRFToken',
     'Content-Length',
 ]
 
-# 정적 파일 설정
+#   
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -108,7 +108,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Redis 캐시 설정
+# Redis  
 REDIS_URL = os.environ.get('REDIS_URL')
 if REDIS_URL:
     CACHES = {
@@ -126,7 +126,7 @@ else:
         }
     }
 
-# 이메일 설정
+#  
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
@@ -135,30 +135,30 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@videoplanet.com')
 
-# 보안 설정
-SECURE_SSL_REDIRECT = False  # Railway에서는 자체 처리
+#  
+SECURE_SSL_REDIRECT = False  # Railway  
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Static files 설정 (Railway용)
+# Static files  (Railway)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# STATICFILES_DIRS 재정의 - Railway 환경에서는 존재하는 디렉토리만 포함
+# STATICFILES_DIRS  - Railway    
 STATICFILES_DIRS = []
 static_dir = os.path.join(BASE_DIR, 'static')
 if os.path.exists(static_dir):
     STATICFILES_DIRS.append(static_dir)
 
-# Railway에서는 프론트엔드를 별도로 배포하므로 프론트엔드 빌드 디렉토리는 추가하지 않음
+# Railway        
 
-# WhiteNoise 설정
+# WhiteNoise 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# 로깅 설정 (더 상세한 에러 로깅)
+#   (   )
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -195,7 +195,7 @@ LOGGING = {
         },
         'django.db.backends': {
             'handlers': ['console'],
-            'level': 'WARNING',  # SQL 쿼리 로깅 비활성화
+            'level': 'WARNING',  # SQL   
             'propagate': False,
         },
         'users': {
@@ -206,13 +206,13 @@ LOGGING = {
     },
 }
 
-# Sentry 설정 비활성화 (Railway 502 문제 해결을 위해)
+# Sentry   (Railway 502   )
 
-# 파일 업로드 크기 제한
+#    
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 
-# REST Framework 설정
+# REST Framework 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -233,7 +233,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# JWT 설정
+# JWT 
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -250,6 +250,6 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# 환경 설정 로깅 - 간단하게
+#    - 
 import sys
 print(f"Railway settings loaded - DEBUG={DEBUG}", file=sys.stderr)

@@ -14,9 +14,9 @@ interface RequestOptions {
 }
 
 /**
- * VideoPlanet API 클라이언트 베이스 클래스
- * JWT 토큰 관리, 자동 토큰 갱신, 재시도 로직 등을 포함한
- * 타입 안전한 HTTP 클라이언트입니다.
+ * VideoPlanet API   
+ * JWT  ,   ,    
+ *   HTTP .
  */
 export class APIClient {
   private baseURL: string;
@@ -25,7 +25,7 @@ export class APIClient {
   private retryDelay: number;
 
   constructor(config?: APIClientConfig) {
-    // 프로덕션에서는 Next.js rewrites 사용, 로컬에서는 직접 Railway URL 사용
+    //  Next.js rewrites ,   Railway URL 
     this.baseURL = config?.baseURL || 
       process.env.NEXT_PUBLIC_API_URL || 
       (process.env.NODE_ENV === 'production' ? '' : 'https://videoplanet.up.railway.app');
@@ -36,7 +36,7 @@ export class APIClient {
   }
 
   /**
-   * 기본 HTTP 요청 메서드
+   *  HTTP  
    */
   private async request<T>(
     method: string,
@@ -55,7 +55,7 @@ export class APIClient {
 
     if (token && !options?.skipAuth) {
       (headers as any)['Authorization'] = `Bearer ${token}`;
-      console.log('[APIClient] 토큰 헤더 추가');
+      console.log('[APIClient]   ');
     }
 
     const config: RequestInit = {
@@ -69,21 +69,21 @@ export class APIClient {
       const response = await this.fetchWithRetry(url, config);
       
       if (!response.ok) {
-        console.log(`[APIClient] 에러 응답: ${response.status}`);
+        console.log(`[APIClient]  : ${response.status}`);
         return this.handleErrorResponse(response);
       }
 
       const data = await response.json();
-      console.log('[APIClient] 성공 응답:', data);
+      console.log('[APIClient]  :', data);
       return { success: true, data };
     } catch (error) {
-      console.error('[APIClient] 네트워크 에러:', error);
+      console.error('[APIClient]  :', error);
       return this.handleNetworkError(error);
     }
   }
 
   /**
-   * 재시도 로직이 포함된 fetch 메서드
+   *    fetch 
    */
   private async fetchWithRetry(
     url: string,
@@ -102,7 +102,7 @@ export class APIClient {
   }
 
   /**
-   * HTTP 에러 응답 처리
+   * HTTP   
    */
   private async handleErrorResponse(response: Response): Promise<APIResponse> {
     let error: APIError;
@@ -121,7 +121,7 @@ export class APIClient {
       };
     }
 
-    // 401 Unauthorized - 토큰 갱신 시도
+    // 401 Unauthorized -   
     if (response.status === 401) {
       await this.handleUnauthorized();
     }
@@ -130,7 +130,7 @@ export class APIClient {
   }
 
   /**
-   * 네트워크 에러 처리
+   *   
    */
   private handleNetworkError(error: any): APIResponse {
     return {
@@ -143,7 +143,7 @@ export class APIClient {
   }
 
   /**
-   * 401 Unauthorized 에러 처리 및 토큰 갱신
+   * 401 Unauthorized     
    */
   private async handleUnauthorized(): Promise<void> {
     const refreshToken = this.getRefreshToken();
@@ -152,14 +152,14 @@ export class APIClient {
       const result = await this.refreshAccessToken(refreshToken);
       
       if (!result.success) {
-        // 갱신 실패 시 로그아웃 처리
+        //     
         this.clearTokens();
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }
       }
     } else {
-      // 리프레시 토큰이 없을 경우 로그인 페이지로 리다이렉트
+      //       
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
       }
@@ -167,7 +167,7 @@ export class APIClient {
   }
 
   /**
-   * 액세스 토큰 갱신
+   *   
    */
   private async refreshAccessToken(refreshToken: string): Promise<APIResponse<AuthTokens>> {
     try {
@@ -190,14 +190,14 @@ export class APIClient {
   }
 
   /**
-   * 딜레이 유틸리티
+   *  
    */
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   // ========================================
-  // 토큰 관리 메서드
+  //   
   // ========================================
 
   private getAccessToken(): string | null {
@@ -234,14 +234,14 @@ export class APIClient {
   }
 
   // ========================================
-  // 공개 메서드
+  //  
   // ========================================
 
   /**
-   * 토큰 설정
+   *  
    */
   public setTokens(tokens: AuthTokens): void {
-    console.log('[APIClient] 토큰 설정:', tokens);
+    console.log('[APIClient]  :', tokens);
     if (tokens.access) {
       this.setAccessToken(tokens.access);
     }
@@ -251,40 +251,40 @@ export class APIClient {
   }
 
   /**
-   * GET 요청
+   * GET 
    */
   public async get<T>(endpoint: string, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>('GET', endpoint, options);
   }
 
   /**
-   * POST 요청
+   * POST 
    */
   public async post<T>(endpoint: string, body?: any, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>('POST', endpoint, { ...options, body });
   }
 
   /**
-   * PUT 요청
+   * PUT 
    */
   public async put<T>(endpoint: string, body?: any, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>('PUT', endpoint, { ...options, body });
   }
 
   /**
-   * DELETE 요청
+   * DELETE 
    */
   public async delete<T>(endpoint: string, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>('DELETE', endpoint, options);
   }
 
   /**
-   * PATCH 요청
+   * PATCH 
    */
   public async patch<T>(endpoint: string, body?: any, options?: RequestOptions): Promise<APIResponse<T>> {
     return this.request<T>('PATCH', endpoint, { ...options, body });
   }
 }
 
-// 싱글톤 인스턴스 export
+//   export
 export const apiClient = new APIClient();
