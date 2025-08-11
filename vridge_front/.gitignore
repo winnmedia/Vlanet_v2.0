@@ -48,6 +48,45 @@ next-env.d.ts
 logs
 *.log
 
+# =================================================================
+# VideoPlanet Frontend-Specific Ignores (2025-08-11)
+# =================================================================
+
+# Test results and reports
+*test-results*.json
+*test-report*.json
+routing-test-report*.json
+final-test-results*.json
+api-test-results*.json
+
+# Test scripts (development only)
+test-*.js
+deployment-test.js
+integration-test.js
+final-test.js
+test-login.js
+test-auth-flow.js
+
+# Validation and journey tests
+tests/frontend-validation-test.js
+tests/user-journey-test.js
+tests/comprehensive-integration-test.js
+
+# Keep important E2E tests
+!tests/e2e/*.spec.js
+!tests/e2e/*.spec.ts
+
+# Vercel deployment scripts (development only)
+scripts/validate-vercel-env.js
+scripts/vercel-deploy.sh
+scripts/vercel-health-check.js
+
+# Keep important deployment scripts
+!scripts/monitor-deployment.js
+!scripts/validate-deployment.js
+
+# End of VideoPlanet Frontend specific ignores
+
 # Runtime data
 pids
 *.pid

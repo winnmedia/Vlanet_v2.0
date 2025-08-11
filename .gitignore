@@ -48,6 +48,40 @@ next-env.d.ts
 logs
 *.log
 
+# =================================================================
+# VideoPlanet Root-Level Ignores (2025-08-11)
+# =================================================================
+
+# Shell scripts for deployment checks
+deployment_health_check.sh
+pre_deploy_check.sh
+
+# Python emoji removal script
+remove_emojis.py
+
+# Quality and performance test directories
+quality/
+tests/performance/
+
+# Scripts directory (development tools)
+scripts/
+
+# Documentation files (keep main README.md and essential docs)
+QA_STRATEGY.md
+BRANCH_PROTECTION.md
+GITHUB_SECRETS_SETUP.md
+
+# GitHub workflows are tracked in version control
+# .github/workflows/ should be committed
+
+# Deployment guides (keep for reference)
+!vridge_back/RAILWAY_DEPLOYMENT_GUIDE.md
+!vridge_back/RAILWAY_ENV_SETUP.md
+!vridge_back/STATIC_FILES_GUIDE.md
+!vridge_front/VERCEL_DEPLOYMENT_README.md
+
+# End of VideoPlanet root-level ignores
+
 # Runtime data
 pids
 *.pid
@@ -135,3 +169,86 @@ Thumbs.db
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Python/Django Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+static/
+staticfiles/
+.env
+.env.local
+.env.production
+.env.staging
+
+# Django migrations (keep structure, ignore content)
+# Uncomment the next line if you want to ignore migration files
+# */migrations/*
+# !*/migrations/__init__.py
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Railway/Deployment
+railway.json.backup
+.railway/
+
+# Database backups
+*.sql
+*.dump
+
+# CI/CD artifacts
+deployment-artifacts/
+test-results/
+*.test-report.*

@@ -416,3 +416,125 @@ vridge_google_login.json
 logs/
 staticfiles/
 media/
+
+# =================================================================
+# VideoPlanet Project-Specific Ignores (2025-08-11)
+# =================================================================
+
+# Backup and temporary settings
+backup_settings/
+*/backup_settings/
+settings_backup_*/
+
+# Test and check scripts (development only)
+check_*.py
+test_*.py
+create_*.py
+debug_*.py
+emergency_*.py
+diagnose_*.py
+force_*.py
+simple_*.py
+minimal_*.py
+standalone_*.py
+server_django_proxy*.py
+server_with_django.py
+*_test.py
+*_debug.py
+
+# Test results and reports
+*test-results*.json
+*test-report*.json
+*routing-test-report*.json
+qa_test_report.md
+final_success_report.md
+debug_completion_report.md
+
+# Temporary migration scripts
+direct_migrate.py
+reset_and_migrate.py
+migration_health.py
+migrations_enhanced/
+migrations_from_spec/
+
+# Development server scripts
+health_server.py
+health_test.py
+health_check.py
+deployment_checklist.py
+wait_for_db.py
+django_health_monitor.py
+
+# QA and automation test files
+qa_*.py
+comprehensive_*.py
+test-*.js
+integration-test.js
+deployment-test.js
+final-test.js
+
+# Railway deployment test scripts (keep railway.json)
+railway_debug.py
+railway_test.py
+railway_migrate.py
+
+# Model generators and templates
+generate_models_from_api.py
+enhanced_model_generator.py
+template_model_generator.py
+
+# Temporary fix scripts
+fix_remaining_404.py
+create_all_missing_urls.py
+create_invitations_tables.py
+test_allowed_hosts.py
+test_no_errors.py
+test_simple_validation.py
+test_system_integration*.py
+final_integration_test.py
+
+# Deployment checks (keep deployment configs)
+deployment_health_check.sh
+pre_deploy_check.sh
+deploy_railway.sh
+
+# Python script to remove emojis
+remove_emojis.py
+
+# Temporary views and improved files
+*_improved.py
+*_fixed.py
+*_enhanced.py
+*_safe.py
+*_compatibility.py
+workflow_views.py
+
+# Frontend test and validation scripts  
+vridge_front/test-*.js
+vridge_front/tests/frontend-validation-test.js
+vridge_front/tests/user-journey-test.js
+vridge_front/tests/comprehensive-integration-test.js
+
+# Vercel deployment scripts (keep vercel.json and .vercelignore)
+vridge_front/scripts/validate-vercel-env.js
+vridge_front/scripts/vercel-deploy.sh
+vridge_front/scripts/vercel-health-check.js
+
+# Keep important deployment and monitoring scripts
+!vridge_front/scripts/monitor-deployment.js
+!vridge_front/scripts/validate-deployment.js
+
+# Example and template files
+example_*.py
+
+# Temporary API URLs (keep main urls.py)
+*/api_urls.py
+
+# Application subdirectories for domain/application layers
+*/application/
+*/domain/
+
+# Static settings (keep main settings)
+config/static_settings.py
+
+# End of VideoPlanet specific ignores
