@@ -1,1 +1,1 @@
-web: python3 server_django_proxy.py
+web: python3 server_django_proxy_improved.py

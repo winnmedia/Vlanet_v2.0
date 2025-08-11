@@ -1,0 +1,33 @@
+
+# Railway Environment Variables Template
+# Copy these to Railway dashboard
+
+# CRITICAL - Must be set for production
+DJANGO_SECRET_KEY=<generate-a-secure-50+-character-key>
+DJANGO_ENV=production
+
+# Database (Usually auto-configured by Railway)
+DATABASE_URL=<auto-configured-by-railway>
+
+# Redis Cache (Optional but recommended)
+REDIS_URL=<redis-connection-string>
+
+# Email Configuration
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=<your-email@gmail.com>
+EMAIL_HOST_PASSWORD=<app-specific-password>
+DEFAULT_FROM_EMAIL=noreply@videoplanet.com
+
+# Security Settings
+SECURE_SSL_REDIRECT=False  # Railway handles SSL
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+
+# Application Settings
+DEBUG=False
+DJANGO_PORT=8001
+
+# Monitoring (Optional)
+SENTRY_DSN=<sentry-dsn-if-using>
+NEW_RELIC_LICENSE_KEY=<new-relic-key-if-using>

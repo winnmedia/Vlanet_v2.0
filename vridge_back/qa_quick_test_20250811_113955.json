@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-08-11T11:39:47.015173",
+  "base_url": "https://videoplanet.up.railway.app",
+  "tests": [
+    {
+      "name": "Health Check",
+      "status": "PASS",
+      "duration_ms": 1072.408676147461,
+      "details": {
+        "status_code": 200
+      }
+    },
+    {
+      "name": "CORS Security",
+      "status": "PASS",
+      "critical": false,
+      "details": {
+        "allow_origin": "",
+        "vulnerability": "CORS properly restricted"
+      }
+    },
+    {
+      "name": "Django Ready",
+      "status": "PASS",
+      "details": {
+        "status_code": 200,
+        "response": "Django Ready"
+      }
+    },
+    {
+      "name": "API Proxy",
+      "status": "PASS",
+      "details": {
+        "status_code": 200
+      }
+    },
+    {
+      "name": "Security Headers",
+      "status": "FAIL",
+      "details": {
+        "headers": {
+          "X-Content-Type-Options": null,
+          "X-Frame-Options": null,
+          "X-XSS-Protection": null
+        },
+        "missing": [
+          "X-Content-Type-Options",
+          "X-Frame-Options",
+          "X-XSS-Protection"
+        ]
+      }
+    },
+    {
+      "name": "Performance",
+      "status": "FAIL",
+      "details": {
+        "avg_latency_ms": 812.9446029663086,
+        "max_latency_ms": 1020.9498405456543,
+        "min_latency_ms": 551.356315612793
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 2,
+    "errors": 0,
+    "pass_rate": 66.66666666666666
+  }
+}

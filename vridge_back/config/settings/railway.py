@@ -7,8 +7,14 @@ import dj_database_url
 from ..settings_base import *
 
 # 보안 설정
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-production-key-change-me')
+SECRET_KEY = os.environ.get('SECRET_KEY', os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-production-key-change-me'))
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+# 보안 헤더 설정 (QA 권고사항)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 ALLOWED_HOSTS = [
     'videoplanet.up.railway.app',
     '.railway.app',
@@ -43,7 +49,7 @@ else:
     }
 
 # CORS 설정 - django-cors-headers 사용
-CORS_ALLOW_ALL_ORIGINS = True  # 임시로 모든 origin 허용 (배포 테스트용)
+CORS_ALLOW_ALL_ORIGINS = False  # 보안 강화: 특정 origin만 허용
 CORS_ALLOW_CREDENTIALS = True
 
 # 허용된 origin 목록 (새 미들웨어와 동기화)
