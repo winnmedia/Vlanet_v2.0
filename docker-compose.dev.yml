@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: videoplanet_postgres
+    environment:
+      POSTGRES_DB: videoplanet_dev
+      POSTGRES_USER: videoplanet
+      POSTGRES_PASSWORD: dev_password_2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U videoplanet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: videoplanet_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Django Backend
+  backend:
+    build:
+      context: ./vridge_back
+      dockerfile: Dockerfile.dev
+    container_name: videoplanet_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./vridge_back:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://videoplanet:dev_password_2025@postgres:5432/videoplanet_dev
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./vridge_front
+      dockerfile: Dockerfile.dev
+    container_name: videoplanet_frontend
+    command: npm run dev
+    volumes:
+      - ./vridge_front:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+  # Nginx (optional, for production-like environment)
+  nginx:
+    image: nginx:alpine
+    container_name: videoplanet_nginx
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/usr/share/nginx/html/static
+      - media_volume:/usr/share/nginx/html/media
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    profiles:
+      - with-nginx
+
+  # Mailhog (for email testing)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: videoplanet_mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    profiles:
+      - with-mail
+
+  # Adminer (Database GUI)
+  adminer:
+    image: adminer:latest
+    container_name: videoplanet_adminer
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    profiles:
+      - with-tools
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+
+networks:
+  default:
+    name: videoplanet_network
+    driver: bridge
