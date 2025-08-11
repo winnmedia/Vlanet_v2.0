@@ -25,8 +25,10 @@ export class APIClient {
   private retryDelay: number;
 
   constructor(config?: APIClientConfig) {
-    // 로컬 개발 환경에서는 localhost:8001 사용
-    this.baseURL = config?.baseURL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+    // 프로덕션에서는 Next.js rewrites 사용, 로컬에서는 직접 Railway URL 사용
+    this.baseURL = config?.baseURL || 
+      process.env.NEXT_PUBLIC_API_URL || 
+      (process.env.NODE_ENV === 'production' ? '' : 'https://videoplanet.up.railway.app');
     console.log('[APIClient] baseURL:', this.baseURL);
     this.timeout = config?.timeout || 30000;
     this.retryAttempts = config?.retryAttempts || 3;

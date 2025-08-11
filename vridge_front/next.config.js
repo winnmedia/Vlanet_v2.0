@@ -54,6 +54,16 @@ const nextConfig = {
     ];
   },
 
+  // API Proxy configuration
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://videoplanet.up.railway.app/api/:path*',
+      },
+    ];
+  },
+
   // Redirects for SEO and UX
   async redirects() {
     return [
