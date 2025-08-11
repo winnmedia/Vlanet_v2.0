@@ -85,10 +85,59 @@ VideoPlanet/
 
 ## 주요 URL
 - **프로덕션**: https://vlanet-v10.vercel.app
-- **GitHub**: https://github.com/winnmedia/Vlanet-v1.0
+- **GitHub**: https://github.com/winnmedia/Vlanet_v2.0
 - **API**: Railway 배포 Django 서버
 
 ## 개발 히스토리
+
+### 2025-01-13: Railway 백엔드 CORS 및 마이그레이션 문제 해결
+**날짜**: 2025년 1월 13일
+**시간**: 오후 5:30
+**요청**: Railway 백엔드 로그인 에러 근본적 해결
+**작업 유형**: 백엔드 인프라 / CORS / 데이터베이스
+
+#### 문제 상황
+1. **CORS 에러**: vlanet.net에서 Railway API 호출 시 "No 'Access-Control-Allow-Origin' 실패
+2. **502 Bad Gateway**: Railway 서버 자체 구동 문제
+3. **데이터베이스 에러**: `is_deleted` 필드 누락으로 인한 로그인 실패
+
+#### 해결 내용
+
+1. **CORS 문제 해결**
+   - CorsMiddleware를 미들웨어 스택 두 번째 위치로 이동 (헬스체크 다음)
+   - CORSDebugMiddleware 활성화로 백업 CORS 헤더 보장
+   - CORS_ALLOWED_ORIGINS에 vlanet.net, www.vlanet.net 명시적 추가
+   - OPTIONS preflight 요청 우선 처리
+
+2. **서버 구동 문제 해결**
+   - Procfile 단순화: `web: ./start.sh`
+   - railway.json 최소화: 불필요한 빌드 명령 제거
+   - 복잡한 미들웨어 임시 비활성화
+   - 정적 파일 경로 경고 해결
+
+3. **데이터베이스 마이그레이션 자동화**
+   - start.sh 스크립트에 자동 마이그레이션 시스템 구현
+   - 데이터베이스 연결 재시도 로직 (5회)
+   - 미적용 마이그레이션 자동 감지 및 실행
+   - `is_deleted` 필드 존재 확인 로직 추가
+
+#### 기술적 구현
+- `config/middleware.py`: CORSDebugMiddleware 구현
+- `config/settings/railway.py`: CORS 설정 최적화
+- `start.sh`: 자동 마이그레이션 스크립트
+- `railway.json`: 헬스체크 경로 `/api/health/`로 변경
+
+#### 성과
+- ✅ 서버 정상 구동 (헬스체크 200 응답)
+- ✅ CORS 에러 해결
+- ✅ 데이터베이스 마이그레이션 자동화
+- ✅ 로그인 기능 정상 작동
+
+#### 관련 커밋
+- `eacd694c`: 자동 마이그레이션 시스템 구현
+- `cbd75661`: CORS 미들웨어 순서 최적화
+- `afeb1ae7`: Railway 배포 최소화
+- `8878cdcc`: 누락된 __init__.py 파일 추가
 
 ### 2025-08-10: BullMQ 워커 연결 안정성 개선
 **날짜**: 2025년 8월 10일
@@ -1385,7 +1434,7 @@ CORS_ALLOWED_ORIGINS=https://vlanet.net,https://www.vlanet.net
 
 ---
 
-**마지막 업데이트**: 2025-08-11
+**마지막 업데이트**: 2025-01-13
 **최종 버전**: 
 - 프론트엔드: v2.2.0 (영상 생성 UI 시스템)
 - 백엔드: v1.0.32 (계정/캘린더 완성 + E2E Testing)  
