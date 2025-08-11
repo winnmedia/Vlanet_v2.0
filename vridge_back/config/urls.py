@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 from .views import health_check, root_view
 from .simple_health import simple_health_check
+from .fast_health import ultra_fast_health, root_health
 from api_health import csrf_token_view
 from users import views as user_views
 from users.views_signup_safe import SafeSignUp, SafeSignIn
@@ -158,14 +159,14 @@ if HAS_IMPROVED_AUTH_V2:
 
 # 메인 URL 패턴
 urlpatterns = auth_patterns + [
-    # 루트 경로 헬스체크 (Railway 기본 헬스체크용)
-    path("", simple_health_check, name="root_health"),
+    # 루트 경로 헬스체크 (Railway 기본 헬스체크용) - 최우선 처리
+    path("", ultra_fast_health, name="root_health"),
     
     # System API (헬스체크, 마이그레이션 상태 등)
     path("api/", include("system.urls")),  # 시스템 API 추가
     
-    # API 헬스체크 (기존 유지)
-    path("api/health/", simple_health_check, name="api_health"),  # 간단한 헬스체크
+    # API 헬스체크 (기존 유지) - 초고속 헬스체크로 변경
+    path("api/health/", ultra_fast_health, name="api_health"),  # 초고속 헬스체크
     path("api/health-full/", health_check, name="api_health_full"),  # 상세 헬스체크
     path("api/version/", api_version, name="api_version"),  # API 버전 정보
     path("health/", simple_health_check, name="health"),  # 레거시 헬스체크
