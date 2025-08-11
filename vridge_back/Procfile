@@ -1,1 +1,1 @@
-web: ./start_emergency.sh
+web: python minimal_server.py
