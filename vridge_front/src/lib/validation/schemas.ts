@@ -75,7 +75,7 @@ export const signupSchema = z.object({
   passwordConfirm: z.string()
     .min(1, VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED),
   nickname: nicknameSchema,
-  phone: phoneNumberSchema.optional(),
+  phone: z.string().optional(),
   company: z.string()
     .max(100, VALIDATION_MESSAGES.COMPANY_TOO_LONG)
     .optional(),
@@ -97,22 +97,22 @@ export const signupSchema = z.object({
  */
 export const passwordResetRequestSchema = z.object({
   email: z.string()
-    .min(1, ' ')
-    .email('   '),
+    .min(1, VALIDATION_MESSAGES.EMAIL_REQUIRED)
+    .email(VALIDATION_MESSAGES.INVALID_EMAIL_FORMAT),
 });
 
 /**
  *   
  */
 export const passwordResetSchema = z.object({
-  token: z.string().min(1, '  '),
+  token: z.string().min(1, '토큰이 필요합니다'),
   password: strongPasswordSchema,
   passwordConfirm: z.string()
-    .min(1, '  '),
+    .min(1, VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED),
 }).refine(
   (data) => data.password === data.passwordConfirm,
   {
-    message: '  ',
+    message: VALIDATION_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
     path: ['passwordConfirm'],
   }
 );
@@ -122,8 +122,8 @@ export const passwordResetSchema = z.object({
  */
 export const emailCheckSchema = z.object({
   email: z.string()
-    .min(1, ' ')
-    .email('   '),
+    .min(1, VALIDATION_MESSAGES.EMAIL_REQUIRED)
+    .email(VALIDATION_MESSAGES.INVALID_EMAIL_FORMAT),
 });
 
 /**

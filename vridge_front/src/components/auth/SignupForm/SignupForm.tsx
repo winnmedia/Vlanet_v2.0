@@ -158,10 +158,44 @@ export function SignupForm({
 
   const handleNextStep = async () => {
     const step1Fields = ['email', 'nickname', 'password', 'passwordConfirm'] as const;
+    
+    // 먼저 필드 유효성 검사 실행
     const isValid = await trigger(step1Fields);
     
-    if (isValid && emailCheckResult?.available && nicknameCheckResult?.available) {
+    // 이메일 중복 체크 확인
+    if (watchedEmail && !emailCheckResult) {
+      await checkEmailAvailability(watchedEmail);
+      return; // 중복 체크 결과를 기다림
+    }
+    
+    // 닉네임 중복 체크 확인
+    if (watchedNickname && !nicknameCheckResult) {
+      await checkNicknameAvailability(watchedNickname);
+      return; // 중복 체크 결과를 기다림
+    }
+    
+    // 모든 조건 확인 후 다음 단계로 이동
+    if (isValid && 
+        emailCheckResult?.available !== false && 
+        nicknameCheckResult?.available !== false) {
       setCurrentStep(2);
+    } else {
+      // 유효성 검사 실패 시 첫 번째 에러 필드로 포커스 이동
+      const errorField = step1Fields.find(field => {
+        if (errors[field]) return true;
+        if (field === 'email' && emailCheckResult?.available === false) return true;
+        if (field === 'nickname' && nicknameCheckResult?.available === false) return true;
+        return false;
+      });
+      
+      if (errorField) {
+        // 약간의 지연을 두어 UI 업데이트 후 포커스 이동
+        setTimeout(() => {
+          const element = document.getElementById(errorField);
+          element?.focus();
+          element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
     }
   };
 
@@ -212,11 +246,11 @@ export function SignupForm({
   const getPasswordStrengthText = (strength: number) => {
     switch (strength) {
       case 0:
-      case 1: return ' ';
-      case 2: return '';
-      case 3: return '';
-      case 4: return '';
-      case 5: return ' ';
+      case 1: return '매우 약함';
+      case 2: return '약함';
+      case 3: return '보통';
+      case 4: return '강함';
+      case 5: return '매우 강함';
       default: return '';
     }
   };
@@ -240,26 +274,26 @@ export function SignupForm({
       transition={{ duration: 0.4 }}
       className={cn('w-full max-w-lg mx-auto', className)}
     >
-      {/*   */}
-      <div className="flex items-center justify-center mb-8">
+      {/* 진행 단계 표시 */}
+      <div className="flex items-center justify-center mb-8" role="progressbar" aria-valuenow={currentStep} aria-valuemin={1} aria-valuemax={2} aria-label="회원가입 진행 단계">
         <div className="flex items-center">
           <div className={cn(
             'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
             currentStep === 1 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
-          )}>
+          )} aria-label="1단계: 기본 정보">
             1
           </div>
           <div className="w-12 h-0.5 bg-gray-200 mx-2" />
           <div className={cn(
             'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
             currentStep === 2 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
-          )}>
+          )} aria-label="2단계: 추가 정보 및 약관 동의">
             2
           </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" aria-label="회원가입 폼">
         {/* 1:   */}
         <AnimatePresence mode="wait">
           {currentStep === 1 && (
@@ -271,14 +305,14 @@ export function SignupForm({
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2"> </h2>
-                <p className="text-gray-600">   </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2" id="step1-heading">기본 정보 입력</h2>
+                <p className="text-gray-600">계정 생성을 위한 기본 정보를 입력해주세요</p>
               </div>
 
               {/*  */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                   <span className="text-red-500">*</span>
+                  이메일 주소 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -328,7 +362,7 @@ export function SignupForm({
               {/*  */}
               <div className="space-y-2">
                 <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">
-                   <span className="text-red-500">*</span>
+                  닉네임 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -347,7 +381,7 @@ export function SignupForm({
                         ? 'border-green-500 focus:ring-green-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="  "
+                    placeholder="사용할 닉네임을 입력해주세요"
                     autoComplete="username"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -378,7 +412,7 @@ export function SignupForm({
               {/*  */}
               <div className="space-y-2">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                   <span className="text-red-500">*</span>
+                  비밀번호 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -395,13 +429,14 @@ export function SignupForm({
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="8 , , ,  "
+                    placeholder="8자 이상, 영문 대소문자, 숫자, 특수문자 포함"
                     autoComplete="new-password"
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
                     className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-2 min-w-[48px] min-h-[48px] flex items-center justify-center"
+                    aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -409,9 +444,16 @@ export function SignupForm({
                 
                 {/*    */}
                 {password && (
-                  <div className="space-y-2">
+                  <div className="space-y-2" role="status" aria-live="polite">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="flex-1 bg-gray-200 rounded-full h-2" 
+                        role="progressbar"
+                        aria-valuenow={passwordStrength}
+                        aria-valuemin={0}
+                        aria-valuemax={5}
+                        aria-label="비밀번호 강도"
+                      >
                         <div 
                           className={cn(
                             'h-full rounded-full transition-all duration-300',
@@ -420,7 +462,7 @@ export function SignupForm({
                           style={{ width: `${(passwordStrength / 5) * 100}%` }}
                         />
                       </div>
-                      <span className="text-xs text-gray-600 min-w-16">
+                      <span className="text-xs text-gray-600 min-w-16" aria-describedby="password">
                         {getPasswordStrengthText(passwordStrength)}
                       </span>
                     </div>
@@ -445,7 +487,7 @@ export function SignupForm({
               {/*   */}
               <div className="space-y-2">
                 <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">
-                    <span className="text-red-500">*</span>
+                  비밀번호 확인 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -462,13 +504,14 @@ export function SignupForm({
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="  "
+                    placeholder="비밀번호를 다시 입력해주세요"
                     autoComplete="new-password"
                   />
                   <button
                     type="button"
                     onClick={togglePasswordConfirmVisibility}
                     className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-2 min-w-[48px] min-h-[48px] flex items-center justify-center"
+                    aria-label={showPasswordConfirm ? "비밀번호 확인 숨기기" : "비밀번호 확인 보기"}
                   >
                     {showPasswordConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -494,7 +537,7 @@ export function SignupForm({
                 className="w-full"
                 size="lg"
               >
-                 
+                다음 단계
               </Button>
             </motion.div>
           )}
@@ -509,14 +552,14 @@ export function SignupForm({
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2"> </h2>
-                <p className="text-gray-600">    </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2" id="step2-heading">추가 정보 입력</h2>
+                <p className="text-gray-600">서비스 이용을 위한 추가 정보를 입력해주세요</p>
               </div>
 
               {/*  */}
               <div className="space-y-2">
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  
+                  전화번호
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -527,7 +570,7 @@ export function SignupForm({
                     type="tel"
                     id="phone"
                     className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
-                    placeholder="010-0000-0000"
+                    placeholder="전화번호를 입력해주세요 (선택사항)"
                     autoComplete="tel"
                   />
                 </div>
@@ -549,7 +592,7 @@ export function SignupForm({
               {/*  */}
               <div className="space-y-2">
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700">
-                  
+                  회사명
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -560,7 +603,7 @@ export function SignupForm({
                     type="text"
                     id="company"
                     className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
-                    placeholder=" "
+                    placeholder="소속 회사명을 입력해주세요 (선택사항)"
                     autoComplete="organization"
                   />
                 </div>
@@ -581,7 +624,7 @@ export function SignupForm({
 
               {/*   */}
               <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900"> </h3>
+                <h3 className="text-lg font-medium text-gray-900">약관 동의</h3>
                 
                 <Controller
                   name="agreedToTerms"
@@ -596,10 +639,10 @@ export function SignupForm({
                       />
                       <div className="flex-1">
                         <span className="text-sm text-gray-900">
-                          <span className="text-red-500">*</span>  
+                          <span className="text-red-500">*</span> 이용약관에 동의합니다
                         </span>
                         <a href="/terms" target="_blank" className="text-brand-primary hover:underline ml-2 text-sm">
-                          
+                          자세히 보기
                         </a>
                       </div>
                     </label>
@@ -619,10 +662,10 @@ export function SignupForm({
                       />
                       <div className="flex-1">
                         <span className="text-sm text-gray-900">
-                          <span className="text-red-500">*</span>  
+                          <span className="text-red-500">*</span> 개인정보처리방침에 동의합니다
                         </span>
                         <a href="/privacy" target="_blank" className="text-brand-primary hover:underline ml-2 text-sm">
-                          
+                          자세히 보기
                         </a>
                       </div>
                     </label>
@@ -642,7 +685,7 @@ export function SignupForm({
                       />
                       <div className="flex-1">
                         <span className="text-sm text-gray-900">
-                              ()
+                          마케팅 정보 수신에 동의합니다 (선택사항)
                         </span>
                       </div>
                     </label>
@@ -658,7 +701,7 @@ export function SignupForm({
                       className="text-sm text-red-500 flex items-center gap-1"
                     >
                       <AlertCircle className="w-4 h-4" />
-                        
+                      필수 약관에 동의해주세요
                     </motion.p>
                   )}
                 </AnimatePresence>
@@ -690,7 +733,7 @@ export function SignupForm({
                   className="flex-1"
                   size="lg"
                 >
-                  
+                  이전 단계
                 </Button>
                 <Button
                   type="submit"
@@ -701,10 +744,10 @@ export function SignupForm({
                   {isSubmitting || isSignupLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <Spinner size="sm" color="white" />
-                       ...
+                      가입 중...
                     </span>
                   ) : (
-                    ' '
+                    '계정 만들기'
                   )}
                 </Button>
               </div>
@@ -720,7 +763,7 @@ export function SignupForm({
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500"></span>
+                <span className="px-4 bg-white text-gray-500">또는</span>
               </div>
             </div>
             
@@ -772,18 +815,6 @@ export function SignupForm({
           </>
         )}
 
-        {/*   */}
-        {currentStep === 1 && (
-          <p className="text-center text-sm text-gray-600">
-              ?{' '}
-            <a 
-              href="/login" 
-              className="font-medium text-brand-primary hover:text-brand-primary-dark transition-colors"
-            >
-              
-            </a>
-          </p>
-        )}
       </form>
     </motion.div>
   );
