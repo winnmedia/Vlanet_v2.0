@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoPlanet API 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 VideoPlanet API 테스트</h1>
+        
+        <div class="test-section">
+            <h2>1. 서버 상태 확인</h2>
+            <button onclick="testHealth()">헬스체크</button>
+            <button onclick="testReady()">Django 준비 상태</button>
+            <button onclick="testApiHealth()">API 헬스체크</button>
+            <div id="health-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. 로그인 테스트</h2>
+            <label>이메일:</label>
+            <input type="email" id="email" value="demo@test.com" />
+            <label>비밀번호:</label>
+            <input type="password" id="password" value="demo1234" />
+            <button onclick="testLogin()">로그인 테스트</button>
+            <button onclick="testSignup()">회원가입 테스트</button>
+            <div id="auth-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. CORS 테스트</h2>
+            <button onclick="testCORS()">CORS OPTIONS 테스트</button>
+            <button onclick="testCORSWithCredentials()">CORS with Credentials</button>
+            <div id="cors-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. API 엔드포인트 테스트</h2>
+            <button onclick="testUserMe()">사용자 정보 (/api/users/me/)</button>
+            <button onclick="testProjects()">프로젝트 목록 (/api/projects/)</button>
+            <div id="api-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Railway 백엔드 URL
+        const API_URL = 'https://videoplanet.up.railway.app';
+        let authToken = null;
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = typeof message === 'object' ? 
+                JSON.stringify(message, null, 2) : message;
+        }
+
+        async function testHealth() {
+            try {
+                const response = await fetch(`${API_URL}/`);
+                const text = await response.text();
+                showResult('health-result', 
+                    `✅ 헬스체크 성공!\nStatus: ${response.status}\nResponse: ${text}`, 
+                    'success');
+            } catch (error) {
+                showResult('health-result', 
+                    `❌ 헬스체크 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testReady() {
+            try {
+                const response = await fetch(`${API_URL}/ready`);
+                const text = await response.text();
+                showResult('health-result', 
+                    `Django 상태:\nStatus: ${response.status}\nResponse: ${text}`, 
+                    response.status === 200 ? 'success' : 'info');
+            } catch (error) {
+                showResult('health-result', 
+                    `❌ Ready 체크 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testApiHealth() {
+            try {
+                const response = await fetch(`${API_URL}/api/health/`);
+                const data = await response.text();
+                showResult('health-result', 
+                    `API 헬스체크:\nStatus: ${response.status}\nResponse: ${data}`, 
+                    'success');
+            } catch (error) {
+                showResult('health-result', 
+                    `❌ API 헬스체크 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.access;
+                    showResult('auth-result', 
+                        `✅ 로그인 성공!\n${JSON.stringify(data, null, 2)}`, 
+                        'success');
+                } else {
+                    showResult('auth-result', 
+                        `❌ 로그인 실패!\nStatus: ${response.status}\n${JSON.stringify(data, null, 2)}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResult('auth-result', 
+                    `❌ 로그인 요청 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testSignup() {
+            const timestamp = Date.now();
+            const testUser = {
+                email: `test${timestamp}@example.com`,
+                password: 'TestPass123!',
+                password2: 'TestPass123!',
+                nickname: `TestUser${timestamp}`
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/signup/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testUser),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('auth-result', 
+                        `✅ 회원가입 성공!\n${JSON.stringify(data, null, 2)}`, 
+                        'success');
+                } else {
+                    showResult('auth-result', 
+                        `회원가입 응답:\nStatus: ${response.status}\n${JSON.stringify(data, null, 2)}`, 
+                        'info');
+                }
+            } catch (error) {
+                showResult('auth-result', 
+                    `❌ 회원가입 요청 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testCORS() {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login/`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'https://vlanet.net',
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'content-type'
+                    }
+                });
+                
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    if (key.toLowerCase().includes('access-control')) {
+                        headers[key] = value;
+                    }
+                });
+                
+                showResult('cors-result', 
+                    `CORS 헤더:\nStatus: ${response.status}\n${JSON.stringify(headers, null, 2)}`, 
+                    response.status === 200 ? 'success' : 'error');
+            } catch (error) {
+                showResult('cors-result', 
+                    `❌ CORS 테스트 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testCORSWithCredentials() {
+            try {
+                const response = await fetch(`${API_URL}/api/health/`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Origin': 'https://vlanet.net'
+                    }
+                });
+                
+                showResult('cors-result', 
+                    `Credentials 포함 요청:\nStatus: ${response.status}\nResponse: ${await response.text()}`, 
+                    response.status === 200 ? 'success' : 'error');
+            } catch (error) {
+                showResult('cors-result', 
+                    `❌ Credentials 테스트 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testUserMe() {
+            if (!authToken) {
+                showResult('api-result', '먼저 로그인하세요!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/users/me/`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                showResult('api-result', 
+                    `사용자 정보:\nStatus: ${response.status}\n${JSON.stringify(data, null, 2)}`, 
+                    response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('api-result', 
+                    `❌ 사용자 정보 요청 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        async function testProjects() {
+            try {
+                const response = await fetch(`${API_URL}/api/projects/`, {
+                    headers: authToken ? {
+                        'Authorization': `Bearer ${authToken}`
+                    } : {},
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                showResult('api-result', 
+                    `프로젝트 목록:\nStatus: ${response.status}\n${JSON.stringify(data, null, 2)}`, 
+                    response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('api-result', 
+                    `❌ 프로젝트 목록 요청 실패!\n${error.message}`, 
+                    'error');
+            }
+        }
+
+        // 페이지 로드 시 자동 헬스체크
+        window.onload = () => {
+            testHealth();
+        };
+    </script>
+</body>
+</html>
