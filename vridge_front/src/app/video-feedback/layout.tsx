@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '영상 피드백 | VideoPlanet',
-  description: '실시간 영상 피드백 및 협업',
+  title: '  | VideoPlanet',
+  description: '    ',
 };
 
 // Force dynamic rendering for this entire route segment

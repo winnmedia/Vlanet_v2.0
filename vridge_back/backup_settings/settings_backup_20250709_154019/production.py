@@ -1,5 +1,5 @@
 """
-VideoPlanet Railway/Production 배포용 통합 설정
+VideoPlanet Railway/Production   
 """
 import os
 import dj_database_url
@@ -8,7 +8,7 @@ from datetime import timedelta
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-ROOT_DIR = BASE_DIR.parent  # VideoPlanet 루트
+ROOT_DIR = BASE_DIR.parent  # VideoPlanet 
 
 # Security
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-production-key')
@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    # 'daphne',  # Railway에서 WebSocket 지원 안함
-    # 'channels',  # Railway에서 WebSocket 지원 안함
+    # 'daphne',  # Railway WebSocket  
+    # 'channels',  # Railway WebSocket  
 ]
 
 MIDDLEWARE = [
@@ -54,14 +54,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls_production'  # 프론트엔드 + 백엔드 통합
+ROOT_URLCONF = 'config.urls_production'  #  +  
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'templates',
-            ROOT_DIR / 'vridge_front' / 'build',  # React 빌드 파일
+            ROOT_DIR / 'vridge_front' / 'build',  # React  
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -83,7 +83,7 @@ if DATABASE_URL:
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
 else:
-    # 개발/테스트용 SQLite
+    # / SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -109,7 +109,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
-    ROOT_DIR / 'vridge_front' / 'build' / 'static',  # 프론트엔드 정적 파일
+    ROOT_DIR / 'vridge_front' / 'build' / 'static',  #   
 ]
 
 # WhiteNoise configuration
@@ -197,7 +197,7 @@ KAKAO_API_KEY = os.environ.get('KAKAO_API_KEY')
 TWELVE_LABS_API_KEY = os.environ.get('TWELVE_LABS_API_KEY')
 TWELVE_LABS_INDEX_ID = os.environ.get('TWELVE_LABS_INDEX_ID')
 
-# Channels (WebSocket) - Railway에서 지원 안함
+# Channels (WebSocket) - Railway  
 # ASGI_APPLICATION = 'config.asgi.application'
 # CHANNEL_LAYERS = {
 #     'default': {

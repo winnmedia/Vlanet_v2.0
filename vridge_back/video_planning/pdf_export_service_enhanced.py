@@ -20,29 +20,29 @@ logger = logging.getLogger(__name__)
 
 
 class EnhancedPDFExportService:
-    """가로형 보고서 형태의 PDF 내보내기 서비스"""
+    """   PDF  """
     
     def __init__(self):
         self.setup_fonts()
         self.styles = self.setup_styles()
     
     def setup_fonts(self):
-        """한글 폰트 설정"""
+        """  """
         try:
             pdfmetrics.registerFont(UnicodeCIDFont('HeiseiMin-W3'))
             pdfmetrics.registerFont(UnicodeCIDFont('HeiseiKakuGo-W5'))
             pdfmetrics.registerFont(UnicodeCIDFont('HYSMyeongJo-Medium'))
             pdfmetrics.registerFont(UnicodeCIDFont('HYGothic-Medium'))
-            logger.info("CID 폰트 등록 완료")
+            logger.info("CID   ")
         except Exception as e:
-            logger.error(f"폰트 설정 오류: {str(e)}")
+            logger.error(f"  : {str(e)}")
     
     def setup_styles(self):
-        """PDF 스타일 설정"""
+        """PDF  """
         styles = getSampleStyleSheet()
         font_name = 'HYGothic-Medium'
         
-        # 커스텀 스타일 추가
+        #   
         styles.add(ParagraphStyle(
             name='CustomTitle',
             parent=styles['Title'],
@@ -95,15 +95,15 @@ class EnhancedPDFExportService:
         return styles
     
     def generate_pdf(self, planning_data, output_buffer=None):
-        """비디오 기획안을 가로형 PDF로 생성"""
+        """   PDF """
         if output_buffer is None:
             output_buffer = io.BytesIO()
         
-        # 사용자 입력 데이터를 JSON 형태로 정규화
+        #    JSON  
         normalized_data = self._normalize_planning_data(planning_data)
-        logger.info(f"정규화된 기획 데이터: {normalized_data}")
+        logger.info(f"  : {normalized_data}")
         
-        # PDF 문서 생성 (A4 가로)
+        # PDF   (A4 )
         doc = SimpleDocTemplate(
             output_buffer,
             pagesize=landscape(A4),
@@ -113,39 +113,39 @@ class EnhancedPDFExportService:
             bottomMargin=1.5*cm
         )
         
-        # 컨텐츠 구성
+        #  
         story = []
         
-        # 1. 타이틀 페이지
+        # 1.  
         story.extend(self._create_title_page(normalized_data))
         story.append(PageBreak())
         
-        # 2. 기획 개요 페이지
+        # 2.   
         story.extend(self._create_overview_page(normalized_data))
         story.append(PageBreak())
         
-        # 3. 스토리 구성 페이지
+        # 3.   
         story.extend(self._create_story_flow_page(normalized_data))
         story.append(PageBreak())
         
-        # 4. 씬별 상세 페이지
+        # 4.   
         story.extend(self._create_scenes_grid_layout(normalized_data))
         
-        # 5. 프로 옵션 페이지 (있는 경우)
+        # 5.    ( )
         if normalized_data.get('pro_options'):
             story.append(PageBreak())
             story.extend(self._create_pro_options_page(normalized_data))
         
-        # PDF 생성
+        # PDF 
         doc.build(story)
         output_buffer.seek(0)
         
         return output_buffer
     
     def _normalize_planning_data(self, planning_data):
-        """사용자 입력 데이터를 표준화된 JSON 형태로 변환"""
+        """    JSON  """
         return {
-            'title': planning_data.get('title', '제목 없음'),
+            'title': planning_data.get('title', ' '),
             'planning_text': planning_data.get('planning', '') or planning_data.get('planning_text', ''),
             'project_info': {
                 'type': planning_data.get('project_type', ''),
@@ -165,32 +165,32 @@ class EnhancedPDFExportService:
         }
     
     def _create_title_page(self, normalized_data):
-        """타이틀 페이지 생성 (가로형)"""
+        """   ()"""
         elements = []
         
-        # 제목
-        title = normalized_data.get('title', '영상 기획안')
+        # 
+        title = normalized_data.get('title', ' ')
         elements.append(Paragraph(title, self.styles['CustomTitle']))
         elements.append(Spacer(1, 2*cm))
         
-        # 프로젝트 정보를 2열로 구성
+        #   2 
         project_info = normalized_data.get('project_info', {})
         
         left_column_data = [
-            ['프로젝트 유형', project_info.get('type') or 'N/A'],
-            ['타겟 오디언스', project_info.get('target_audience') or 'N/A'],
-            ['러닝타임', project_info.get('duration') or 'N/A'],
-            ['장르', project_info.get('genre') or 'N/A']
+            [' ', project_info.get('type') or 'N/A'],
+            [' ', project_info.get('target_audience') or 'N/A'],
+            ['', project_info.get('duration') or 'N/A'],
+            ['', project_info.get('genre') or 'N/A']
         ]
         
         right_column_data = [
-            ['컨셉', project_info.get('concept') or 'N/A'],
-            ['톤앤매너', project_info.get('tone_manner') or 'N/A'],
-            ['핵심 메시지', project_info.get('key_message') or 'N/A'],
-            ['분위기', project_info.get('mood') or 'N/A']
+            ['', project_info.get('concept') or 'N/A'],
+            ['', project_info.get('tone_manner') or 'N/A'],
+            [' ', project_info.get('key_message') or 'N/A'],
+            ['', project_info.get('mood') or 'N/A']
         ]
         
-        # 2열 테이블 생성
+        # 2  
         main_table_data = []
         for i in range(4):
             row = left_column_data[i] + right_column_data[i]
@@ -222,13 +222,13 @@ class EnhancedPDFExportService:
         return elements
     
     def _create_overview_page(self, normalized_data):
-        """기획 개요 페이지 생성 (가로형)"""
+        """    ()"""
         elements = []
         
-        elements.append(Paragraph('기획 개요', self.styles['CustomHeading']))
+        elements.append(Paragraph(' ', self.styles['CustomHeading']))
         elements.append(Spacer(1, 1*cm))
         
-        # 기획 의도를 박스 형태로 표시
+        #     
         planning_text = normalized_data.get('planning_text', '')
         if planning_text:
             planning_box_data = [[Paragraph(planning_text, self.styles['CustomBody'])]]
@@ -246,27 +246,27 @@ class EnhancedPDFExportService:
         return elements
     
     def _create_story_flow_page(self, normalized_data):
-        """스토리 플로우 페이지 생성 (가로형 타임라인)"""
+        """    ( )"""
         elements = []
         
-        elements.append(Paragraph('스토리 구성', self.styles['CustomHeading']))
+        elements.append(Paragraph(' ', self.styles['CustomHeading']))
         elements.append(Spacer(1, 0.5*cm))
         
         stories = normalized_data.get('stories', [])
         if not stories:
             return elements
         
-        # 스토리를 타임라인 형태로 표시
-        story_phases = ['기', '승', '전', '결']
+        #    
+        story_phases = ['', '', '', '']
         story_data = []
         
-        # 헤더 행
+        #  
         header_row = []
         for idx, phase in enumerate(story_phases[:len(stories)]):
             header_row.append(Paragraph(f'<b>{phase}</b>', self.styles['CustomSubHeading']))
         story_data.append(header_row)
         
-        # 내용 행
+        #  
         content_row = []
         for story in stories[:4]:
             content = story.get('content', '')
@@ -274,12 +274,12 @@ class EnhancedPDFExportService:
             
             story_text = content
             if key_point:
-                story_text += f"<br/><br/><b>핵심:</b> {key_point}"
+                story_text += f"<br/><br/><b>:</b> {key_point}"
             
             content_row.append(Paragraph(story_text, self.styles['CustomBody']))
         story_data.append(content_row)
         
-        # 동일한 너비로 설정
+        #   
         col_width = 26*cm / len(content_row)
         story_table = Table(story_data, colWidths=[col_width] * len(content_row))
         story_table.setStyle(TableStyle([
@@ -301,17 +301,17 @@ class EnhancedPDFExportService:
         return elements
     
     def _create_scenes_grid_layout(self, normalized_data):
-        """씬별 상세를 그리드 레이아웃으로 생성"""
+        """    """
         elements = []
         
-        elements.append(Paragraph('씬 구성 상세', self.styles['CustomHeading']))
+        elements.append(Paragraph('  ', self.styles['CustomHeading']))
         elements.append(Spacer(1, 0.5*cm))
         
         scenes = normalized_data.get('scenes', [])
         if not scenes:
             return elements
         
-        # 2x2 그리드로 씬 표시 (한 페이지에 4개씬)
+        # 2x2    (  4)
         scenes_per_page = 4
         
         for page_idx in range(0, len(scenes), scenes_per_page):
@@ -321,7 +321,7 @@ class EnhancedPDFExportService:
             page_scenes = scenes[page_idx:page_idx + scenes_per_page]
             scene_grid_data = []
             
-            # 2행으로 구성
+            # 2 
             for row in range(2):
                 scene_row = []
                 for col in range(2):
@@ -349,16 +349,16 @@ class EnhancedPDFExportService:
         return elements
     
     def _create_scene_cell(self, scene, scene_number):
-        """개별 씬 셀 생성"""
+        """   """
         cell_content = []
         
-        # 씬 제목
-        scene_title = f"씬 {scene_number}"
+        #  
+        scene_title = f" {scene_number}"
         if scene.get('title'):
             scene_title += f": {scene.get('title')}"
         cell_content.append(Paragraph(scene_title, self.styles['SceneTitle']))
         
-        # 스토리보드 이미지
+        #  
         storyboards = scene.get('storyboards', [])
         if storyboards and len(storyboards) > 0:
             storyboard = storyboards[0]
@@ -368,33 +368,33 @@ class EnhancedPDFExportService:
                 if img_element:
                     cell_content.append(img_element)
         
-        # 씬 설명
+        #  
         description = scene.get('description', '')
         if description:
             cell_content.append(Paragraph(description[:150] + '...' if len(description) > 150 else description, 
                                         self.styles['CustomBody']))
         
-        # 촬영 정보 (있는 경우)
+        #   ( )
         if scene.get('location'):
-            cell_content.append(Paragraph(f"<b>장소:</b> {scene.get('location')}", self.styles['CustomBody']))
+            cell_content.append(Paragraph(f"<b>:</b> {scene.get('location')}", self.styles['CustomBody']))
         
         return cell_content
     
     def _create_pro_options_page(self, normalized_data):
-        """프로 옵션 페이지 생성"""
+        """   """
         elements = []
         
-        elements.append(Paragraph('프로 옵션 설정', self.styles['CustomHeading']))
+        elements.append(Paragraph('  ', self.styles['CustomHeading']))
         elements.append(Spacer(1, 1*cm))
         
         pro_options = normalized_data.get('pro_options', {})
         
         options_data = [
-            ['색감 톤', pro_options.get('colorTone', 'natural')],
-            ['화면 비율', pro_options.get('aspectRatio', '16:9')],
-            ['카메라 타입', pro_options.get('cameraType', 'dslr')],
-            ['렌즈 타입', pro_options.get('lensType', '35mm')],
-            ['카메라 움직임', pro_options.get('cameraMovement', 'static')]
+            [' ', pro_options.get('colorTone', 'natural')],
+            [' ', pro_options.get('aspectRatio', '16:9')],
+            [' ', pro_options.get('cameraType', 'dslr')],
+            [' ', pro_options.get('lensType', '35mm')],
+            [' ', pro_options.get('cameraMovement', 'static')]
         ]
         
         options_table = Table(options_data, colWidths=[6*cm, 20*cm])
@@ -417,17 +417,17 @@ class EnhancedPDFExportService:
         return elements
     
     def _create_image_element(self, image_url, max_width=12*cm, max_height=8*cm):
-        """이미지 URL로부터 ReportLab Image 요소 생성"""
+        """ URL ReportLab Image  """
         try:
-            # 이미지 다운로드
+            #  
             response = requests.get(image_url, timeout=10)
             if response.status_code != 200:
                 return None
             
-            # PIL로 이미지 열기
+            # PIL  
             img = PILImage.open(BytesIO(response.content))
             
-            # 이미지 크기 조정
+            #   
             img_width, img_height = img.size
             aspect_ratio = img_width / img_height
             
@@ -442,20 +442,20 @@ class EnhancedPDFExportService:
                 new_width = img_width
                 new_height = img_height
             
-            # 임시 파일로 저장
+            #   
             with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
                 img.save(tmp_file.name, 'PNG')
                 tmp_path = tmp_file.name
             
-            # ReportLab Image 객체 생성
+            # ReportLab Image  
             rl_img = Image(tmp_path, width=new_width, height=new_height)
             
-            # 임시 파일 삭제
+            #   
             if os.path.exists(tmp_path):
                 os.unlink(tmp_path)
             
             return rl_img
             
         except Exception as e:
-            logger.error(f"이미지 요소 생성 실패: {str(e)}")
+            logger.error(f"   : {str(e)}")
             return None

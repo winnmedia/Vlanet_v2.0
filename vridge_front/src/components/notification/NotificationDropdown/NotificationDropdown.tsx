@@ -11,7 +11,7 @@ const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // 클릭 외부 영역 감지
+  //    
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -23,33 +23,33 @@ const NotificationDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // 우선순위별 아이콘 및 색상
+  //    
   const getPriorityInfo = (priority: 'low' | 'medium' | 'high') => {
     switch (priority) {
       case 'high':
-        return { icon: '🔴', color: 'text-red-600', bgColor: 'bg-red-50' }
+        return { icon: '', color: 'text-red-600', bgColor: 'bg-red-50' }
       case 'medium':
-        return { icon: '🟡', color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
+        return { icon: '', color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
       case 'low':
-        return { icon: '🟢', color: 'text-green-600', bgColor: 'bg-green-50' }
+        return { icon: '', color: 'text-green-600', bgColor: 'bg-green-50' }
     }
   }
 
-  // 타입별 아이콘
+  //  
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'event_due':
         return '⏰'
       case 'event_overdue':
-        return '⚠️'
+        return ''
       case 'invitation_received':
-        return '📧'
+        return ''
       case 'invitation_accepted':
-        return '✅'
+        return ''
       case 'project_deadline':
-        return '📅'
+        return ''
       default:
-        return '🔔'
+        return ''
     }
   }
 
@@ -65,7 +65,7 @@ const NotificationDropdown = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* 알림 버튼 */}
+      {/*   */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
         variant="ghost"
@@ -85,7 +85,7 @@ const NotificationDropdown = () => {
           />
         </svg>
         
-        {/* 읽지 않은 알림 개수 뱃지 */}
+        {/*      */}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {unreadCount > 99 ? '99+' : unreadCount}
@@ -93,13 +93,13 @@ const NotificationDropdown = () => {
         )}
       </Button>
 
-      {/* 드롭다운 메뉴 */}
+      {/*   */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
-          {/* 헤더 */}
+          {/*  */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800">
-              알림 {unreadCount > 0 && <span className="text-blue-600">({unreadCount})</span>}
+               {unreadCount > 0 && <span className="text-blue-600">({unreadCount})</span>}
             </h3>
             {notifications.length > 0 && (
               <Button
@@ -107,17 +107,17 @@ const NotificationDropdown = () => {
                 variant="ghost"
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
-                모두 읽음
+                 
               </Button>
             )}
           </div>
 
-          {/* 알림 목록 */}
+          {/*   */}
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
-                <div className="text-4xl mb-2">🔔</div>
-                <p>새로운 알림이 없습니다</p>
+                <div className="text-4xl mb-2"></div>
+                <p>  </p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -134,12 +134,12 @@ const NotificationDropdown = () => {
                       }`}
                     >
                       <div className="flex items-start space-x-3">
-                        {/* 아이콘 */}
+                        {/*  */}
                         <div className={`flex-shrink-0 w-8 h-8 rounded-full ${priorityInfo.bgColor} flex items-center justify-center`}>
                           <span className="text-sm">{typeIcon}</span>
                         </div>
 
-                        {/* 내용 */}
+                        {/*  */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <h4 className={`text-sm font-medium ${
@@ -174,8 +174,8 @@ const NotificationDropdown = () => {
                               })}
                             </span>
                             <span className={`text-xs px-2 py-1 rounded-full ${priorityInfo.bgColor} ${priorityInfo.color}`}>
-                              {notification.priority === 'high' ? '긴급' : 
-                               notification.priority === 'medium' ? '보통' : '낮음'}
+                              {notification.priority === 'high' ? '' : 
+                               notification.priority === 'medium' ? '' : ''}
                             </span>
                           </div>
                         </div>
@@ -187,7 +187,7 @@ const NotificationDropdown = () => {
             )}
           </div>
 
-          {/* 더 보기 링크 */}
+          {/*    */}
           {notifications.length > 10 && (
             <div className="p-3 border-t border-gray-200 text-center">
               <Button
@@ -198,7 +198,7 @@ const NotificationDropdown = () => {
                 variant="ghost"
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
-                모든 알림 보기 ({notifications.length - 10}개 더)
+                   ({notifications.length - 10} )
               </Button>
             </div>
           )}

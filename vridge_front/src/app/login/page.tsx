@@ -20,14 +20,14 @@ function LoginContent() {
   const [loginMessage, setLoginMessage] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // 초대 관련 파라미터
+  //   
   const uid = searchParams.get('uid');
   const token = searchParams.get('token');
   const returnUrl = searchParams.get('returnUrl');
   const fromPage = searchParams.get('from');
   const message = searchParams.get('message');
 
-  // 이미 로그인된 경우 리다이렉트
+  //    
   useEffect(() => {
     if (isAuthenticated) {
       if (uid && token) {
@@ -51,56 +51,56 @@ function LoginContent() {
   };
 
   const handleLogin = async () => {
-    console.log('[LoginPage] 로그인 버튼 클릭');
-    console.log('[LoginPage] 입력값:', inputs);
+    console.log('[LoginPage]   ');
+    console.log('[LoginPage] :', inputs);
     
     if (!inputs.email || !inputs.password) {
       if (!inputs.email) {
-        setLoginMessage('이메일을 입력해주세요.');
+        setLoginMessage(' .');
       } else {
-        setLoginMessage('비밀번호를 입력해주세요.');
+        setLoginMessage(' .');
       }
       return;
     }
 
     if (isLoggingIn) {
-      console.log('[LoginPage] 이미 로그인 중...');
+      console.log('[LoginPage]   ...');
       return;
     }
 
     setIsLoggingIn(true);
     setLoginMessage('');
-    console.log('[LoginPage] 로그인 API 호출 시작');
+    console.log('[LoginPage]  API  ');
     console.log('[LoginPage] API URL:', process.env.NEXT_PUBLIC_API_URL);
 
     try {
       const success = await login({ email: inputs.email, password: inputs.password });
-      console.log('[LoginPage] 로그인 결과:', success);
+      console.log('[LoginPage]  :', success);
       
       if (success) {
-        toast.success('로그인에 성공했습니다!');
+        toast.success(' !');
         
-        // 리다이렉트 처리
+        //  
         const redirectUrl = uid && token 
           ? `/EmailCheck?uid=${uid}&token=${token}`
           : returnUrl || fromPage || '/cmshome';
         
-        console.log('[LoginPage] 리다이렉트:', redirectUrl);
+        console.log('[LoginPage] :', redirectUrl);
         router.push(redirectUrl);
       } else {
-        setLoginMessage('이메일 또는 비밀번호가 올바르지 않습니다.');
+        setLoginMessage('    .');
       }
     } catch (error: any) {
-      console.error('[LoginPage] 로그인 에러:', error);
+      console.error('[LoginPage]  :', error);
       
       if (error.response?.status === 401) {
-        setLoginMessage('이메일 또는 비밀번호가 올바르지 않습니다.');
+        setLoginMessage('    .');
       } else if (error.response?.status === 403 && error.response?.data?.error_code === 'EMAIL_NOT_VERIFIED') {
-        setLoginMessage(error.response.data.message || '이메일 인증이 필요합니다.');
+        setLoginMessage(error.response.data.message || '  .');
       } else if (error.response?.data?.message) {
         setLoginMessage(error.response.data.message);
       } else {
-        setLoginMessage('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        setLoginMessage('  .    .');
       }
     } finally {
       setIsLoggingIn(false);
@@ -109,19 +109,19 @@ function LoginContent() {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      console.log('[LoginPage] Enter 키 눌림');
+      console.log('[LoginPage] Enter  ');
       e.preventDefault();
       handleLogin();
     }
   };
 
   const handleSocialLogin = (provider: string) => {
-    toast.info(`${provider} 로그인 준비중입니다.`);
+    toast.info(`${provider}  .`);
   };
 
   return (
     <div className={styles.user}>
-      {/* 왼쪽 인트로 섹션 */}
+      {/*    */}
       <div className={styles.intro}>
         <div className={styles.intro_wrap}>
           <h1 className={styles.logo}>
@@ -137,10 +137,10 @@ function LoginContent() {
             </Link>
           </h1>
           <div className={styles.slogun}>
-            당신의 창의력에
+             
             <br />
-            날개를 달아 줄<br />
-            <span>콘텐츠 제작 협업툴</span>
+              <br />
+            <span>  </span>
           </div>
           <div className={styles.etc}>
             <ul>
@@ -165,12 +165,12 @@ function LoginContent() {
         </div>
       </div>
 
-      {/* 오른쪽 폼 섹션 */}
+      {/*    */}
       <div className={styles.form}>
         <div className={styles.form_wrap}>
-          <div className={styles.title}>로그인</div>
+          <div className={styles.title}></div>
           
-          {/* 초대 메시지 표시 */}
+          {/*    */}
           {message && (
             <div style={{
               background: 'linear-gradient(135deg, #E8EBFF 0%, #D1D8FF 100%)',
@@ -187,7 +187,7 @@ function LoginContent() {
                 fontWeight: '600',
                 fontSize: '15px'
               }}>
-                🎬 {message}
+                 {message}
               </p>
             </div>
           )}
@@ -195,7 +195,7 @@ function LoginContent() {
           <input
             type="email"
             name="email"
-            placeholder="이메일"
+            placeholder=""
             className={`${styles.ty01} ${styles.mt50}`}
             value={inputs.email}
             onChange={handleChange}
@@ -206,7 +206,7 @@ function LoginContent() {
           <input
             type="password"
             name="password"
-            placeholder="비밀번호"
+            placeholder=""
             className={`${styles.ty01} ${styles.mt10}`}
             value={inputs.password}
             onChange={handleChange}
@@ -222,7 +222,7 @@ function LoginContent() {
             className={styles.find_link}
             onClick={() => router.push('/resetpw')}
           >
-            비밀번호 찾기
+             
           </div>
           
           <button 
@@ -230,17 +230,17 @@ function LoginContent() {
             className={`${styles.submit} ${styles.mt20}`}
             onClick={(e) => {
               e.preventDefault();
-              console.log('[LoginPage] 로그인 버튼 클릭 이벤트');
+              console.log('[LoginPage]    ');
               handleLogin();
             }}
             disabled={isLoggingIn || !inputs.email || !inputs.password}
           >
-            {isLoggingIn ? '로그인 중...' : '로그인'}
+            {isLoggingIn ? ' ...' : ''}
           </button>
           
           <div className={styles.signup_link}>
-            브이래닛이 처음이신가요?
-            <span onClick={() => router.push('/signup')}>간편 가입하기</span>
+             ?
+            <span onClick={() => router.push('/signup')}> </span>
           </div>
 
           <div className={styles.line}></div>
@@ -280,9 +280,9 @@ export default function LoginPage() {
         <div className={styles.intro}></div>
         <div className={styles.form}>
           <div className={styles.form_wrap}>
-            <div className={styles.title}>로그인</div>
+            <div className={styles.title}></div>
             <div style={{ textAlign: 'center', marginTop: '50px', color: '#999' }}>
-              로딩 중...
+               ...
             </div>
           </div>
         </div>

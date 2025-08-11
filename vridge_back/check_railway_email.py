@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Railway 환경에서 이메일 설정 확인 스크립트
-Railway 대시보드에서 직접 실행하거나 배포 로그에서 확인용
+Railway     
+Railway      
 """
 import os
 import sys
@@ -16,7 +16,7 @@ print(f"GOOGLE_APP_PASSWORD: {'Set' if os.environ.get('GOOGLE_APP_PASSWORD') els
 print(f"SENDGRID_API_KEY: {'Set' if os.environ.get('SENDGRID_API_KEY') else 'Not set'}")
 print(f"DEFAULT_FROM_EMAIL: {os.environ.get('DEFAULT_FROM_EMAIL', 'Not set')}")
 
-# Django 설정을 로드해서 실제 사용되는 값 확인
+# Django      
 try:
     if 'DJANGO_SETTINGS_MODULE' in os.environ:
         import django
@@ -35,9 +35,9 @@ except Exception as e:
 
 print("\n=== Recommendations ===")
 if not os.environ.get('EMAIL_HOST_USER') and not os.environ.get('GOOGLE_ID'):
-    print("❌ No email credentials found!")
+    print(" No email credentials found!")
     print("Please set either:")
     print("  - EMAIL_HOST_USER and EMAIL_HOST_PASSWORD")
     print("  - GOOGLE_ID and GOOGLE_APP_PASSWORD")
 else:
-    print("✅ Email credentials appear to be configured")
+    print(" Email credentials appear to be configured")

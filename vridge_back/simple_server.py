@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Railway 헬스체크 테스트용 초간단 서버
+Railway    
 """
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -23,7 +23,7 @@ class HealthHandler(BaseHTTPRequestHandler):
             self.end_headers()
             
     def log_message(self, format, *args):
-        # 로그 출력
+        #  
         print(f"{self.address_string()} - {format % args}")
 
 def run_server():

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """
-Railway 배포 상태 확인 스크립트
+Railway    
 """
 import os
 import sys
 import django
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
 django.setup()
 
@@ -18,11 +18,11 @@ from feedbacks.models import FeedBack, FeedBackComment
 User = get_user_model()
 
 def check_database_tables():
-    """데이터베이스 테이블 확인"""
-    print("🔍 데이터베이스 테이블 확인 중...")
+    """  """
+    print("    ...")
     
     with connection.cursor() as cursor:
-        # PostgreSQL 테이블 목록 조회
+        # PostgreSQL   
         cursor.execute("""
             SELECT tablename 
             FROM pg_tables 
@@ -31,37 +31,37 @@ def check_database_tables():
         """)
         tables = cursor.fetchall()
         
-        print(f"\n📋 총 {len(tables)}개의 테이블:")
+        print(f"\n  {len(tables)} :")
         for table in tables:
             print(f"  - {table[0]}")
     
-    # 주요 모델 확인
-    print("\n📊 주요 모델 데이터:")
-    print(f"  - 사용자 수: {User.objects.count()}")
-    print(f"  - 프로젝트 수: {Project.objects.count()}")
-    print(f"  - 피드백 파일 수: {FeedBack.objects.count()}")
-    print(f"  - 피드백 코멘트 수: {FeedBackComment.objects.count()}")
+    #   
+    print("\n   :")
+    print(f"  -  : {User.objects.count()}")
+    print(f"  -  : {Project.objects.count()}")
+    print(f"  -   : {FeedBack.objects.count()}")
+    print(f"  -   : {FeedBackComment.objects.count()}")
 
 def check_user_fields():
-    """User 모델 필드 확인"""
-    print("\n🔍 User 모델 필드 확인 중...")
+    """User   """
+    print("\n User    ...")
     
-    # 첫 번째 사용자 가져오기
+    #    
     user = User.objects.first()
     if user:
         fields = [f.name for f in User._meta.get_fields()]
-        print(f"  User 모델 필드 ({len(fields)}개):")
+        print(f"  User   ({len(fields)}):")
         for field in sorted(fields):
             print(f"    - {field}")
     else:
-        print("  ❌ 사용자가 없습니다.")
+        print("    .")
 
 def check_missing_columns():
-    """누락된 컬럼 확인"""
-    print("\n🔍 누락된 컬럼 확인 중...")
+    """  """
+    print("\n    ...")
     
     with connection.cursor() as cursor:
-        # email_verified 컬럼 확인
+        # email_verified  
         cursor.execute("""
             SELECT column_name 
             FROM information_schema.columns 
@@ -70,11 +70,11 @@ def check_missing_columns():
         """)
         
         if cursor.fetchone():
-            print("  ✅ email_verified 컬럼 존재")
+            print("   email_verified  ")
         else:
-            print("  ❌ email_verified 컬럼 누락")
+            print("   email_verified  ")
         
-        # 다른 중요 컬럼들도 확인
+        #    
         important_columns = [
             ('users_user', 'nickname'),
             ('users_user', 'login_method'),
@@ -91,22 +91,22 @@ def check_missing_columns():
             """, [table, column])
             
             if cursor.fetchone():
-                print(f"  ✅ {table}.{column} 존재")
+                print(f"   {table}.{column} ")
             else:
-                print(f"  ❌ {table}.{column} 누락")
+                print(f"   {table}.{column} ")
 
 if __name__ == '__main__':
     try:
-        print("🚀 Railway 배포 상태 확인 시작...\n")
+        print(" Railway    ...\n")
         
         check_database_tables()
         check_user_fields()
         check_missing_columns()
         
-        print("\n✅ 확인 완료!")
+        print("\n  !")
         
     except Exception as e:
-        print(f"\n❌ 오류 발생: {str(e)}")
+        print(f"\n  : {str(e)}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

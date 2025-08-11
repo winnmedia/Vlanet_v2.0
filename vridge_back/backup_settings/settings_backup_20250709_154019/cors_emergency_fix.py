@@ -1,19 +1,19 @@
-# 긴급 CORS 수정 - 최소 설정
+#  CORS  -  
 from .railway import *
 
-# Railway 설정에서 캐시 설정이 상속되는지 확인
+# Railway     
 if 'CACHES' in locals():
     print(f"[CORS Emergency Fix] Cache backend: {CACHES.get('default', {}).get('BACKEND', 'Not configured')}")
 else:
     print("[CORS Emergency Fix] WARNING: No cache configuration found!")
 
-# CORS 앱이 설치되어 있는지 확인
+# CORS    
 if 'corsheaders' not in INSTALLED_APPS:
     INSTALLED_APPS.insert(0, 'corsheaders')
 
-# 미들웨어 강제 재설정
+#   
 MIDDLEWARE = [
-    'middleware.force_cors.ForceCorsMiddleware',  # 강제 CORS 헤더
+    'middleware.force_cors.ForceCorsMiddleware',  #  CORS 
     'corsheaders.middleware.CorsMiddleware',      # django-cors-headers
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -25,13 +25,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS 설정 - 최대한 관대하게
-CORS_ALLOW_ALL_ORIGINS = True  # 일단 모든 origin 허용
+# CORS  -  
+CORS_ALLOW_ALL_ORIGINS = True  #   origin 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_METHODS = ['*']  # 모든 메서드 허용
-CORS_ALLOW_HEADERS = ['*']  # 모든 헤더 허용
+CORS_ALLOW_METHODS = ['*']  #   
+CORS_ALLOW_HEADERS = ['*']  #   
 
-# CSRF 설정도 완화
+# CSRF  
 CSRF_TRUSTED_ORIGINS = [
     'https://vlanet.net',
     'https://www.vlanet.net',
@@ -39,10 +39,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
 ]
 
-# 보안 헤더 비활성화 (CORS 충돌 방지)
+#    (CORS  )
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
-# 이메일 설정 유지
+#   
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587

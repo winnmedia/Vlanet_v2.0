@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Django 통합 프록시 서버 v2
-개선된 프로세스 관리와 상세한 모니터링 기능 포함
+Django    v2
+      
 """
 import os
 import sys
@@ -17,7 +17,7 @@ from urllib.parse import urlparse
 import http.client
 from datetime import datetime
 
-# 전역 상태 관리
+#   
 class DjangoManager:
     def __init__(self):
         self.process = None
@@ -30,26 +30,26 @@ class DjangoManager:
         self.startup_logs = []
         
     def add_log(self, message):
-        """시작 로그 추가"""
+        """  """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_entry = f"[{timestamp}] {message}"
         self.startup_logs.append(log_entry)
         print(log_entry)
         
     def is_port_available(self):
-        """포트가 사용 가능한지 확인"""
+        """   """
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(1)
             result = sock.connect_ex(('127.0.0.1', self.port))
             sock.close()
-            return result != 0  # 연결 실패 = 포트 사용 가능
+            return result != 0  #   =   
         except Exception as e:
             self.add_log(f"Port check error: {e}")
             return True
             
     def check_django_health(self):
-        """Django 서버 상태 확인"""
+        """Django   """
         self.health_check_count += 1
         self.last_health_check = datetime.now()
         
@@ -60,7 +60,7 @@ class DjangoManager:
             sock.close()
             
             if result == 0:
-                # 실제 Django 응답 확인
+                #  Django  
                 try:
                     conn = http.client.HTTPConnection('127.0.0.1', self.port, timeout=2)
                     conn.request("GET", "/api/health/")
@@ -75,24 +75,24 @@ class DjangoManager:
             return False
     
     def start(self):
-        """Django 서버 시작"""
+        """Django  """
         self.status = "STARTING"
         self.start_time = datetime.now()
         self.add_log("Starting Django initialization...")
         
         try:
-            # 포트 확인
+            #  
             if not self.is_port_available():
                 self.add_log(f"Port {self.port} is already in use, attempting to kill existing process...")
                 self.kill_port_process()
                 time.sleep(2)
             
-            # 환경 변수 설정
+            #   
             env = os.environ.copy()
             env['DJANGO_SETTINGS_MODULE'] = 'config.settings.railway'
             env['PYTHONUNBUFFERED'] = '1'
             
-            # 데이터베이스 연결 테스트
+            #   
             self.add_log("Testing database connection...")
             db_test = subprocess.run(
                 [sys.executable, 'manage.py', 'dbshell', '--command=SELECT 1;'],
@@ -104,11 +104,11 @@ class DjangoManager:
             
             if db_test.returncode != 0:
                 self.add_log(f"Database connection failed: {db_test.stderr}")
-                # 데이터베이스 실패해도 계속 진행 (SQLite fallback 가능)
+                #     (SQLite fallback )
             else:
                 self.add_log("Database connection successful")
             
-            # 마이그레이션 실행
+            #  
             self.add_log("Running database migrations...")
             migrate_result = subprocess.run(
                 [sys.executable, 'manage.py', 'migrate', '--noinput'],
@@ -123,7 +123,7 @@ class DjangoManager:
             else:
                 self.add_log("Migrations completed successfully")
             
-            # Static 파일 수집 (production에서만)
+            # Static   (production)
             if not os.environ.get('DEBUG', 'False') == 'True':
                 self.add_log("Collecting static files...")
                 subprocess.run(
@@ -133,7 +133,7 @@ class DjangoManager:
                     timeout=30
                 )
             
-            # Gunicorn 시작
+            # Gunicorn 
             self.add_log(f"Starting Gunicorn on port {self.port}...")
             cmd = [
                 'gunicorn',
@@ -158,7 +158,7 @@ class DjangoManager:
                 bufsize=1
             )
             
-            # 프로세스 출력 모니터링 스레드
+            #    
             def monitor_output():
                 for line in self.process.stdout:
                     if line.strip():
@@ -171,7 +171,7 @@ class DjangoManager:
             monitor_thread = threading.Thread(target=monitor_output, daemon=True)
             monitor_thread.start()
             
-            # Django 시작 대기
+            # Django  
             self.add_log("Waiting for Django to start...")
             max_attempts = 30
             for i in range(max_attempts):
@@ -182,7 +182,7 @@ class DjangoManager:
                     return True
                     
                 if self.process.poll() is not None:
-                    # 프로세스가 종료됨
+                    #  
                     self.status = "FAILED"
                     self.error = f"Gunicorn process exited with code {self.process.returncode}"
                     self.add_log(self.error)
@@ -201,7 +201,7 @@ class DjangoManager:
             return False
     
     def kill_port_process(self):
-        """포트를 사용 중인 프로세스 종료"""
+        """    """
         try:
             result = subprocess.run(
                 f"lsof -ti:{self.port} | xargs kill -9",
@@ -213,7 +213,7 @@ class DjangoManager:
             pass
     
     def stop(self):
-        """Django 서버 중지"""
+        """Django  """
         if self.process:
             self.add_log("Stopping Django...")
             self.process.terminate()
@@ -223,7 +223,7 @@ class DjangoManager:
             self.status = "STOPPED"
     
     def get_status(self):
-        """상태 정보 반환"""
+        """  """
         uptime = None
         if self.start_time:
             uptime = str(datetime.now() - self.start_time).split('.')[0]
@@ -236,10 +236,10 @@ class DjangoManager:
             "health_checks": self.health_check_count,
             "last_health_check": self.last_health_check.isoformat() if self.last_health_check else None,
             "is_healthy": self.check_django_health(),
-            "startup_logs": self.startup_logs[-20:]  # 마지막 20개 로그
+            "startup_logs": self.startup_logs[-20:]  #  20 
         }
 
-# Django 매니저 인스턴스
+# Django  
 django_manager = DjangoManager()
 
 class ImprovedProxyHandler(BaseHTTPRequestHandler):
@@ -264,7 +264,7 @@ class ImprovedProxyHandler(BaseHTTPRequestHandler):
         self.end_headers()
     
     def handle_request(self):
-        # 기본 헬스체크 - Railway 헬스체크용
+        #   - Railway 
         if self.path in ['/', '/health', '/healthz']:
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain')
@@ -272,7 +272,7 @@ class ImprovedProxyHandler(BaseHTTPRequestHandler):
             self.wfile.write(b'OK')
             return
         
-        # Django 상태 확인 엔드포인트
+        # Django   
         if self.path == '/django-status':
             status = django_manager.get_status()
             self.send_response(200)
@@ -281,7 +281,7 @@ class ImprovedProxyHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(status, indent=2).encode())
             return
         
-        # Django 준비 상태
+        # Django  
         if self.path == '/ready':
             if django_manager.status == "RUNNING" and django_manager.check_django_health():
                 self.send_response(200)
@@ -299,7 +299,7 @@ class ImprovedProxyHandler(BaseHTTPRequestHandler):
                 }, indent=2).encode())
             return
         
-        # API 요청 처리
+        # API  
         if self.path.startswith('/api/') or self.path.startswith('/admin/'):
             if django_manager.status != "RUNNING":
                 self.send_response(503)
@@ -334,55 +334,55 @@ class ImprovedProxyHandler(BaseHTTPRequestHandler):
         }).encode())
     
     def proxy_to_django(self):
-        """Django로 요청 프록시"""
-        # 요청 본문 읽기
+        """Django  """
+        #   
         content_length = int(self.headers.get('Content-Length', 0))
         body = self.rfile.read(content_length) if content_length else None
         
-        # Django 연결
+        # Django 
         conn = http.client.HTTPConnection('127.0.0.1', django_manager.port, timeout=30)
         
-        # 헤더 복사
+        #  
         headers = {}
         for key, value in self.headers.items():
             if key.lower() not in ['host', 'connection']:
                 headers[key] = value
         
-        # 요청 전송
+        #  
         conn.request(self.command, self.path, body, headers)
         
-        # 응답 받기
+        #  
         response = conn.getresponse()
         
-        # 응답 전송
+        #  
         self.send_response(response.status)
         for key, value in response.getheaders():
             if key.lower() not in ['connection', 'transfer-encoding']:
                 self.send_header(key, value)
         self.end_headers()
         
-        # 본문 전송
+        #  
         self.wfile.write(response.read())
         conn.close()
     
     def log_message(self, format, *args):
-        # 헬스체크 로그 필터링
+        #   
         message = format % args
         if not any(path in message for path in ['/', '/health', '/healthz']) or '/api/' in message:
             print(f"[PROXY] {message}")
 
 def signal_handler(signum, frame):
-    """시그널 핸들러"""
+    """ """
     print(f"\nReceived signal {signum}, shutting down...")
     django_manager.stop()
     sys.exit(0)
 
 def main():
-    # 시그널 핸들러 등록
+    #   
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
     
-    # 포트 설정
+    #  
     proxy_port = int(os.environ.get('PORT', '8000'))
     
     print("="*70)
@@ -392,12 +392,12 @@ def main():
     print(f"Environment: {'DEBUG' if os.environ.get('DEBUG') == 'True' else 'PRODUCTION'}")
     print("="*70)
     
-    # Django 시작
+    # Django 
     print("\n[INIT] Starting Django server...")
     django_thread = threading.Thread(target=django_manager.start, daemon=True)
     django_thread.start()
     
-    # 프록시 서버 시작
+    #   
     print(f"\n[INIT] Starting proxy server on port {proxy_port}...")
     server = HTTPServer(('', proxy_port), ImprovedProxyHandler)
     

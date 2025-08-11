@@ -19,7 +19,7 @@ def run_critical_tests():
         "tests": []
     }
     
-    print("🔍 Running Critical QA Tests...")
+    print(" Running Critical QA Tests...")
     print("="*50)
     
     # Test 1: Health Check
@@ -36,14 +36,14 @@ def run_critical_tests():
             "details": {"status_code": response.status_code}
         }
         results["tests"].append(test_result)
-        print(f"   ✅ Health Check: {test_result['status']} ({duration:.2f}ms)")
+        print(f"    Health Check: {test_result['status']} ({duration:.2f}ms)")
     except Exception as e:
         results["tests"].append({
             "name": "Health Check",
             "status": "ERROR",
             "error": str(e)
         })
-        print(f"   ❌ Health Check: ERROR - {e}")
+        print(f"    Health Check: ERROR - {e}")
     
     # Test 2: CORS Security
     print("2. Testing CORS Security...")
@@ -66,16 +66,16 @@ def run_critical_tests():
         results["tests"].append(test_result)
         
         if is_vulnerable:
-            print(f"   🔴 CORS Security: CRITICAL VULNERABILITY - Allows all origins!")
+            print(f"    CORS Security: CRITICAL VULNERABILITY - Allows all origins!")
         else:
-            print(f"   ✅ CORS Security: PASS - Properly restricted")
+            print(f"    CORS Security: PASS - Properly restricted")
     except Exception as e:
         results["tests"].append({
             "name": "CORS Security",
             "status": "ERROR",
             "error": str(e)
         })
-        print(f"   ❌ CORS Security: ERROR - {e}")
+        print(f"    CORS Security: ERROR - {e}")
     
     # Test 3: Django Ready
     print("3. Testing Django Readiness...")
@@ -93,16 +93,16 @@ def run_critical_tests():
         results["tests"].append(test_result)
         
         if response.status_code == 200:
-            print(f"   ✅ Django Ready: PASS")
+            print(f"    Django Ready: PASS")
         else:
-            print(f"   ⚠️  Django Ready: {response.status_code} - {response.text[:50]}")
+            print(f"     Django Ready: {response.status_code} - {response.text[:50]}")
     except Exception as e:
         results["tests"].append({
             "name": "Django Ready",
             "status": "ERROR",
             "error": str(e)
         })
-        print(f"   ❌ Django Ready: ERROR - {e}")
+        print(f"    Django Ready: ERROR - {e}")
     
     # Test 4: API Proxy
     print("4. Testing API Proxy...")
@@ -117,16 +117,16 @@ def run_critical_tests():
         results["tests"].append(test_result)
         
         if response.status_code < 500:
-            print(f"   ✅ API Proxy: PASS ({response.status_code})")
+            print(f"    API Proxy: PASS ({response.status_code})")
         else:
-            print(f"   ❌ API Proxy: FAIL - Server Error {response.status_code}")
+            print(f"    API Proxy: FAIL - Server Error {response.status_code}")
     except Exception as e:
         results["tests"].append({
             "name": "API Proxy",
             "status": "ERROR",
             "error": str(e)
         })
-        print(f"   ❌ API Proxy: ERROR - {e}")
+        print(f"    API Proxy: ERROR - {e}")
     
     # Test 5: Security Headers
     print("5. Testing Security Headers...")
@@ -152,16 +152,16 @@ def run_critical_tests():
         results["tests"].append(test_result)
         
         if missing:
-            print(f"   ⚠️  Security Headers: Missing {', '.join(missing)}")
+            print(f"     Security Headers: Missing {', '.join(missing)}")
         else:
-            print(f"   ✅ Security Headers: All present")
+            print(f"    Security Headers: All present")
     except Exception as e:
         results["tests"].append({
             "name": "Security Headers",
             "status": "ERROR",
             "error": str(e)
         })
-        print(f"   ❌ Security Headers: ERROR - {e}")
+        print(f"    Security Headers: ERROR - {e}")
     
     # Test 6: Performance Check
     print("6. Testing Performance...")
@@ -187,20 +187,20 @@ def run_critical_tests():
         results["tests"].append(test_result)
         
         if avg_latency < 200:
-            print(f"   ✅ Performance: PASS (avg: {avg_latency:.2f}ms)")
+            print(f"    Performance: PASS (avg: {avg_latency:.2f}ms)")
         else:
-            print(f"   ⚠️  Performance: High latency (avg: {avg_latency:.2f}ms)")
+            print(f"     Performance: High latency (avg: {avg_latency:.2f}ms)")
     except Exception as e:
         results["tests"].append({
             "name": "Performance",
             "status": "ERROR",
             "error": str(e)
         })
-        print(f"   ❌ Performance: ERROR - {e}")
+        print(f"    Performance: ERROR - {e}")
     
     # Calculate summary
     print("\n" + "="*50)
-    print("📊 TEST SUMMARY")
+    print(" TEST SUMMARY")
     print("="*50)
     
     passed = sum(1 for t in results["tests"] if t["status"] == "PASS")
@@ -217,29 +217,29 @@ def run_critical_tests():
     }
     
     print(f"Total Tests: {total}")
-    print(f"Passed: {passed} ✅")
-    print(f"Failed: {failed} ❌")
-    print(f"Errors: {errors} ⚠️")
+    print(f"Passed: {passed} ")
+    print(f"Failed: {failed} ")
+    print(f"Errors: {errors} ")
     print(f"Pass Rate: {results['summary']['pass_rate']:.1f}%")
     
     # Critical issues
     critical_issues = [t for t in results["tests"] if t.get("critical")]
     if critical_issues:
-        print("\n🚨 CRITICAL ISSUES FOUND:")
+        print("\n CRITICAL ISSUES FOUND:")
         for issue in critical_issues:
             print(f"   - {issue['name']}: {issue['details'].get('vulnerability', 'Critical failure')}")
     
     # Recommendations
-    print("\n💡 RECOMMENDATIONS:")
+    print("\n RECOMMENDATIONS:")
     if any(t["name"] == "CORS Security" and t.get("critical") for t in results["tests"]):
-        print("   1. 🔴 CRITICAL: Fix CORS configuration immediately")
+        print("   1.  CRITICAL: Fix CORS configuration immediately")
     if any(t["name"] == "Security Headers" and t["status"] == "FAIL" for t in results["tests"]):
-        print("   2. ⚠️  HIGH: Add missing security headers")
+        print("   2.   HIGH: Add missing security headers")
     if any(t["name"] == "Performance" and t["status"] == "FAIL" for t in results["tests"]):
-        print("   3. ⚠️  MEDIUM: Optimize response times")
+        print("   3.   MEDIUM: Optimize response times")
     
     if results["summary"]["pass_rate"] == 100:
-        print("   ✅ All tests passed! System is healthy.")
+        print("    All tests passed! System is healthy.")
     
     # Save results
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -247,7 +247,7 @@ def run_critical_tests():
     with open(filename, 'w') as f:
         json.dump(results, f, indent=2)
     
-    print(f"\n📁 Full results saved to: {filename}")
+    print(f"\n Full results saved to: {filename}")
     
     return results
 

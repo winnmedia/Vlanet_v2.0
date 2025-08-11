@@ -1,5 +1,5 @@
 """
-AI 영상 분석 관리자 인터페이스
+AI    
 """
 from django.contrib import admin
 from django.utils.html import format_html
@@ -12,13 +12,13 @@ from .models import VideoAnalysisResult, AIFeedbackItem, AIAnalysisSettings
 
 @admin.register(AIAnalysisSettings)
 class AIAnalysisSettingsAdmin(admin.ModelAdmin):
-    """AI 분석 설정 관리"""
+    """AI   """
     
     fieldsets = (
-        ('기본 설정', {
+        (' ', {
             'fields': ('is_enabled', 'ai_server_url', 'api_key')
         }),
-        ('분석 옵션', {
+        (' ', {
             'fields': (
                 'analyze_composition', 
                 'analyze_lighting', 
@@ -28,10 +28,10 @@ class AIAnalysisSettingsAdmin(admin.ModelAdmin):
                 'analyze_motion'
             )
         }),
-        ('성능 설정', {
+        (' ', {
             'fields': ('max_video_duration', 'analysis_timeout')
         }),
-        ('시스템 정보', {
+        (' ', {
             'fields': ('updated_at', 'updated_by'),
             'classes': ('collapse',)
         })
@@ -44,7 +44,7 @@ class AIAnalysisSettingsAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
     
     def has_add_permission(self, request):
-        # 설정은 하나만 존재하도록 제한
+        #    
         return not AIAnalysisSettings.objects.exists()
     
     def has_delete_permission(self, request, obj=None):
@@ -52,20 +52,20 @@ class AIAnalysisSettingsAdmin(admin.ModelAdmin):
 
 
 class AIFeedbackItemInline(admin.TabularInline):
-    """AI 피드백 항목 인라인"""
+    """AI   """
     model = AIFeedbackItem
     extra = 0
     readonly_fields = ('created_at',)
     
     def get_readonly_fields(self, request, obj=None):
-        if obj:  # 편집 모드
+        if obj:  #  
             return self.readonly_fields + ('feedback_type', 'score', 'message', 'timestamp', 'confidence')
         return self.readonly_fields
 
 
 @admin.register(VideoAnalysisResult)
 class VideoAnalysisResultAdmin(admin.ModelAdmin):
-    """영상 분석 결과 관리"""
+    """   """
     
     list_display = [
         'id', 
@@ -98,21 +98,21 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
     ]
     
     fieldsets = (
-        ('기본 정보', {
+        (' ', {
             'fields': ('feedback', 'status', 'overall_score')
         }),
-        ('AI 정보', {
+        ('AI ', {
             'fields': ('ai_server_url', 'ai_model_version', 'processing_time')
         }),
-        ('분석 결과', {
+        (' ', {
             'fields': ('analysis_data_display',),
             'classes': ('collapse',)
         }),
-        ('오류 정보', {
+        (' ', {
             'fields': ('error_display',),
             'classes': ('collapse',)
         }),
-        ('시간 정보', {
+        (' ', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         })
@@ -121,20 +121,20 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
     inlines = [AIFeedbackItemInline]
     
     def feedback_link(self, obj):
-        """피드백 링크"""
+        """ """
         if obj.feedback:
             url = reverse('admin:feedbacks_feedback_change', args=[obj.feedback.id])
             return format_html('<a href="{}">{}</a>', url, obj.feedback.title)
         return '-'
-    feedback_link.short_description = '피드백'
+    feedback_link.short_description = ''
     
     def status_badge(self, obj):
-        """상태 배지"""
+        """ """
         colors = {
-            'pending': '#ffc107',      # 노랑
-            'processing': '#007bff',   # 파랑  
-            'completed': '#28a745',    # 초록
-            'failed': '#dc3545'        # 빨강
+            'pending': '#ffc107',      # 
+            'processing': '#007bff',   #   
+            'completed': '#28a745',    # 
+            'failed': '#dc3545'        # 
         }
         
         color = colors.get(obj.status, '#6c757d')
@@ -143,17 +143,17 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
             color,
             obj.get_status_display()
         )
-    status_badge.short_description = '상태'
+    status_badge.short_description = ''
     
     def overall_score_display(self, obj):
-        """전체 점수 표시"""
+        """  """
         if obj.overall_score is not None:
             if obj.overall_score >= 8:
-                color = '#28a745'  # 초록
+                color = '#28a745'  # 
             elif obj.overall_score >= 6:
-                color = '#ffc107'  # 노랑
+                color = '#ffc107'  # 
             else:
-                color = '#dc3545'  # 빨강
+                color = '#dc3545'  # 
             
             return format_html(
                 '<span style="color: {}; font-weight: bold;">{:.1f}/10</span>',
@@ -161,32 +161,32 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
                 obj.overall_score
             )
         return '-'
-    overall_score_display.short_description = '전체 점수'
+    overall_score_display.short_description = ' '
     
     def processing_time_display(self, obj):
-        """처리 시간 표시"""
+        """  """
         if obj.processing_time:
-            return f"{obj.processing_time:.1f}초"
+            return f"{obj.processing_time:.1f}"
         return '-'
-    processing_time_display.short_description = '처리 시간'
+    processing_time_display.short_description = ' '
     
     def analysis_data_display(self, obj):
-        """분석 데이터 표시"""
+        """  """
         if obj.analysis_data:
             formatted_json = json.dumps(obj.analysis_data, indent=2, ensure_ascii=False)
             return format_html('<pre style="font-size: 12px;">{}</pre>', formatted_json)
         return '-'
-    analysis_data_display.short_description = '분석 데이터'
+    analysis_data_display.short_description = ' '
     
     def error_display(self, obj):
-        """에러 메시지 표시"""
+        """  """
         if obj.error_message:
             return format_html(
                 '<div style="background-color: #f8d7da; padding: 10px; border-radius: 5px; color: #721c24;">{}</div>',
                 obj.error_message
             )
         return '-'
-    error_display.short_description = '오류 메시지'
+    error_display.short_description = ' '
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('feedback', 'feedback__user')
@@ -194,7 +194,7 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
     actions = ['retry_failed_analyses', 'export_analysis_data']
     
     def retry_failed_analyses(self, request, queryset):
-        """실패한 분석 재시도"""
+        """  """
         from .tasks import analyze_video_task
         
         failed_analyses = queryset.filter(status='failed')
@@ -206,15 +206,15 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
                 analysis.error_message = ''
                 analysis.save()
                 
-                # 재분석 태스크 실행
+                #   
                 analyze_video_task.delay(analysis.id, analysis.feedback.file.path)
                 count += 1
         
-        self.message_user(request, f'{count}개의 실패한 분석을 재시도합니다.')
-    retry_failed_analyses.short_description = '실패한 분석 재시도'
+        self.message_user(request, f'{count}   .')
+    retry_failed_analyses.short_description = '  '
     
     def export_analysis_data(self, request, queryset):
-        """분석 데이터 내보내기"""
+        """  """
         import csv
         from django.http import HttpResponse
         
@@ -223,8 +223,8 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
         
         writer = csv.writer(response)
         writer.writerow([
-            'ID', '피드백 제목', '사용자', '상태', '전체 점수', 
-            'AI 모델', '처리 시간', '생성 시간'
+            'ID', ' ', '', '', ' ', 
+            'AI ', ' ', ' '
         ])
         
         for analysis in queryset:
@@ -240,12 +240,12 @@ class VideoAnalysisResultAdmin(admin.ModelAdmin):
             ])
         
         return response
-    export_analysis_data.short_description = '분석 데이터 CSV 내보내기'
+    export_analysis_data.short_description = '  CSV '
 
 
 @admin.register(AIFeedbackItem)
 class AIFeedbackItemAdmin(admin.ModelAdmin):
-    """AI 피드백 항목 관리"""
+    """AI   """
     
     list_display = [
         'id',
@@ -271,13 +271,13 @@ class AIFeedbackItemAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
     
     def analysis_result_link(self, obj):
-        """분석 결과 링크"""
+        """  """
         url = reverse('admin:video_analysis_videoanalysisresult_change', args=[obj.analysis_result.id])
-        return format_html('<a href="{}">분석 #{}</a>', url, obj.analysis_result.id)
-    analysis_result_link.short_description = '분석 결과'
+        return format_html('<a href="{}"> #{}</a>', url, obj.analysis_result.id)
+    analysis_result_link.short_description = ' '
     
     def feedback_type_badge(self, obj):
-        """피드백 유형 배지"""
+        """  """
         colors = {
             'composition': '#007bff',
             'lighting': '#ffc107', 
@@ -295,10 +295,10 @@ class AIFeedbackItemAdmin(admin.ModelAdmin):
             color,
             obj.get_feedback_type_display()
         )
-    feedback_type_badge.short_description = '유형'
+    feedback_type_badge.short_description = ''
     
     def score_display(self, obj):
-        """점수 표시"""
+        """ """
         if obj.score >= 8:
             color = '#28a745'
         elif obj.score >= 6:
@@ -311,24 +311,24 @@ class AIFeedbackItemAdmin(admin.ModelAdmin):
             color,
             obj.score
         )
-    score_display.short_description = '점수'
+    score_display.short_description = ''
     
     def message_preview(self, obj):
-        """메시지 미리보기"""
+        """ """
         if len(obj.message) > 50:
             return obj.message[:50] + '...'
         return obj.message
-    message_preview.short_description = '메시지'
+    message_preview.short_description = ''
     
     def timestamp_display(self, obj):
-        """타임스탬프 표시"""
+        """ """
         minutes = int(obj.timestamp // 60)
         seconds = int(obj.timestamp % 60)
         return f"{minutes:02d}:{seconds:02d}"
-    timestamp_display.short_description = '시점'
+    timestamp_display.short_description = ''
     
     def confidence_display(self, obj):
-        """신뢰도 표시"""
+        """ """
         percentage = obj.confidence * 100
         if percentage >= 90:
             color = '#28a745'
@@ -342,4 +342,4 @@ class AIFeedbackItemAdmin(admin.ModelAdmin):
             color,
             percentage
         )
-    confidence_display.short_description = '신뢰도'
+    confidence_display.short_description = ''

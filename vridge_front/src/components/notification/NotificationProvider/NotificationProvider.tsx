@@ -43,10 +43,10 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
   const { info, error: showError } = useToast()
   const [notifications, setNotifications] = useState<NotificationData[]>([])
 
-  // 알림 생성 헬퍼 함수
+  //    
   const generateId = () => `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
-  // 일정 체크 함수
+  //   
   const checkEventNotifications = async () => {
     try {
       const result = await calendarService.getEvents()
@@ -59,7 +59,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         const eventDateTime = new Date(`${event.date}T${event.time}`)
         const diffHours = (eventDateTime.getTime() - now.getTime()) / (1000 * 60 * 60)
 
-        // 24시간 이내 임박 알림
+        // 24   
         if (diffHours > 0 && diffHours <= 24) {
           const existingNotification = notifications.find(
             n => n.type === 'event_due' && n.actionUrl === `/calendar?event=${event.id}`
@@ -68,15 +68,15 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
           if (!existingNotification) {
             addNotification({
               type: 'event_due',
-              title: '일정 임박',
-              message: `"${event.title}"이(가) ${Math.ceil(diffHours)}시간 후 시작됩니다.`,
+              title: ' ',
+              message: `"${event.title}"() ${Math.ceil(diffHours)}  .`,
               priority: diffHours <= 4 ? 'high' : 'medium',
               actionUrl: `/calendar?event=${event.id}`
             })
           }
         }
 
-        // 지연된 일정 알림
+        //   
         if (diffHours < 0 && Math.abs(diffHours) <= 48) {
           const existingNotification = notifications.find(
             n => n.type === 'event_overdue' && n.actionUrl === `/calendar?event=${event.id}`
@@ -85,8 +85,8 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
           if (!existingNotification) {
             addNotification({
               type: 'event_overdue',
-              title: '일정 지연',
-              message: `"${event.title}"이(가) ${Math.ceil(Math.abs(diffHours))}시간 지연되었습니다.`,
+              title: ' ',
+              message: `"${event.title}"() ${Math.ceil(Math.abs(diffHours))} .`,
               priority: 'high',
               actionUrl: `/calendar?event=${event.id}`
             })
@@ -98,7 +98,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     }
   }
 
-  // 초대 알림 체크 함수
+  //    
   const checkInvitationNotifications = async () => {
     try {
       const result = await invitationService.getReceivedInvitations()
@@ -114,8 +114,8 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         if (!existingNotification) {
           addNotification({
             type: 'invitation_received',
-            title: '새 초대',
-            message: `${invitation.sender_name || invitation.sender_email}님이 ${invitation.project_title || '프로젝트'}에 초대했습니다.`,
+            title: ' ',
+            message: `${invitation.sender_name || invitation.sender_email} ${invitation.project_title || ''} .`,
             priority: 'medium',
             actionUrl: `/invitations?id=${invitation.id}`
           })
@@ -126,7 +126,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     }
   }
 
-  // 알림 추가
+  //  
   const addNotification = (notification: Omit<NotificationData, 'id' | 'createdAt' | 'isRead'>) => {
     const newNotification: NotificationData = {
       ...notification,
@@ -137,13 +137,13 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
 
     setNotifications(prev => [newNotification, ...prev])
 
-    // 높은 우선순위 알림은 토스트로도 표시
+    //     
     if (notification.priority === 'high') {
       info(notification.message)
     }
   }
 
-  // 알림 읽음 처리
+  //   
   const markAsRead = (id: string) => {
     setNotifications(prev =>
       prev.map(notification =>
@@ -152,38 +152,38 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     )
   }
 
-  // 모든 알림 읽음 처리
+  //    
   const markAllAsRead = () => {
     setNotifications(prev =>
       prev.map(notification => ({ ...notification, isRead: true }))
     )
   }
 
-  // 알림 제거
+  //  
   const removeNotification = (id: string) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id))
   }
 
-  // 읽지 않은 알림 개수
+  //    
   const unreadCount = notifications.filter(n => !n.isRead).length
 
-  // 주기적 체크 (5분마다)
+  //   (5)
   useEffect(() => {
     const checkNotifications = () => {
       checkEventNotifications()
       checkInvitationNotifications()
     }
 
-    // 초기 체크
+    //  
     checkNotifications()
 
-    // 5분마다 체크
+    // 5 
     const interval = setInterval(checkNotifications, 5 * 60 * 1000)
 
     return () => clearInterval(interval)
   }, [])
 
-  // 브라우저 포커스 시 체크
+  //    
   useEffect(() => {
     const handleFocus = () => {
       checkEventNotifications()
@@ -194,7 +194,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     return () => window.removeEventListener('focus', handleFocus)
   }, [])
 
-  // 로컬 스토리지에서 알림 복원
+  //    
   useEffect(() => {
     const savedNotifications = localStorage.getItem('videoplanet-notifications')
     if (savedNotifications) {
@@ -210,7 +210,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     }
   }, [])
 
-  // 알림을 로컬 스토리지에 저장
+  //    
   useEffect(() => {
     localStorage.setItem('videoplanet-notifications', JSON.stringify(notifications))
   }, [notifications])

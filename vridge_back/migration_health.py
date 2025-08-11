@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Railway에서 마이그레이션 상태를 확인하고 강제 실행하는 스크립트
+Railway      
 """
 import os
 import sys
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
 
 try:
@@ -15,21 +15,21 @@ try:
     from django.core.management import call_command
     from django.db import connection
     
-    print("🔧 마이그레이션 헬스체크 시작...")
+    print("   ...")
     print(f"DATABASE: {connection.vendor}")
     print(f"DATABASE_URL: {os.environ.get('DATABASE_URL', 'Not set')[:50]}...")
     
-    # 1. 마이그레이션 상태 확인
-    print("\n📋 현재 마이그레이션 상태:")
+    # 1.   
+    print("\n   :")
     call_command('showmigrations')
     
-    # 2. 마이그레이션 실행
-    print("\n🔄 마이그레이션 실행:")
+    # 2.  
+    print("\n  :")
     call_command('migrate', '--noinput')
     
-    # 3. 테이블 존재 확인
+    # 3.   
     with connection.cursor() as cursor:
-        # users_notification 테이블 확인
+        # users_notification  
         if connection.vendor == 'postgresql':
             cursor.execute("""
                 SELECT EXISTS (
@@ -47,7 +47,7 @@ try:
         result = cursor.fetchone()
         notification_exists = result[0] if result else False
         
-        # email_verified 컬럼 확인
+        # email_verified  
         if connection.vendor == 'postgresql':
             cursor.execute("""
                 SELECT EXISTS (
@@ -65,14 +65,14 @@ try:
             result = cursor.fetchone()
             email_verified_exists = result[0] if result else False
         
-        print(f"\n✅ 테이블 확인:")
-        print(f"   users_notification: {'✅ 존재' if notification_exists else '❌ 없음'}")
-        print(f"   email_verified 컬럼: {'✅ 존재' if email_verified_exists else '❌ 없음'}")
+        print(f"\n  :")
+        print(f"   users_notification: {' ' if notification_exists else ' '}")
+        print(f"   email_verified : {' ' if email_verified_exists else ' '}")
     
-    print("\n✅ 마이그레이션 헬스체크 완료!")
+    print("\n   !")
     
 except Exception as e:
-    print(f"\n❌ 오류 발생: {str(e)}")
+    print(f"\n  : {str(e)}")
     import traceback
     traceback.print_exc()
     sys.exit(1)

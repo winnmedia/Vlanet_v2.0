@@ -13,7 +13,7 @@ const QuickActions: React.FC = () => {
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">빠른 작업</h2>
+        <h2 className="text-lg font-semibold text-gray-900"> </h2>
       </div>
       <div className="p-6 space-y-3">
         <Link
@@ -21,28 +21,28 @@ const QuickActions: React.FC = () => {
           className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors min-h-[48px]"
         >
           <FolderOpen className="h-5 w-5 text-gray-600" />
-          <span className="text-gray-700">새 프로젝트 만들기</span>
+          <span className="text-gray-700">  </span>
         </Link>
         <Link
           href="/calendar"
           className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors min-h-[48px]"
         >
           <Calendar className="h-5 w-5 text-gray-600" />
-          <span className="text-gray-700">일정 확인하기</span>
+          <span className="text-gray-700"> </span>
         </Link>
         <Link
           href="/feedbacks"
           className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors min-h-[48px]"
         >
           <MessageSquare className="h-5 w-5 text-gray-600" />
-          <span className="text-gray-700">피드백 확인하기</span>
+          <span className="text-gray-700"> </span>
         </Link>
         <Link
           href="/mypage"
           className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors min-h-[48px]"
         >
           <Users className="h-5 w-5 text-gray-600" />
-          <span className="text-gray-700">팀원 관리</span>
+          <span className="text-gray-700"> </span>
         </Link>
       </div>
     </div>

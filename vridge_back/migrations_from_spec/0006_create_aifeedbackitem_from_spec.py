@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'aifeedbackitem_from_spec',
-                'verbose_name': 'AIFeedbackItem (API 스펙)',
-                'verbose_name_plural': 'AIFeedbackItems (API 스펙)',
+                'verbose_name': 'AIFeedbackItem (API )',
+                'verbose_name_plural': 'AIFeedbackItems (API )',
                 'ordering': ['-id'],
             },
         ),

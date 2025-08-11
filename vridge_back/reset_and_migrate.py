@@ -1,35 +1,35 @@
 #!/usr/bin/env python
 """
-Railway에서 마이그레이션을 강제로 실행하는 스크립트
+Railway    
 """
 import os
 import sys
 import django
 from django.core.management import call_command
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
 django.setup()
 
-print("🚀 마이그레이션 리셋 및 재실행 시작...")
+print("     ...")
 
 try:
-    # 1. 현재 마이그레이션 상태 확인
-    print("\n📋 현재 마이그레이션 상태:")
+    # 1.    
+    print("\n   :")
     call_command('showmigrations', 'users')
     
-    # 2. users 앱 마이그레이션 실행
-    print("\n🔧 users 앱 마이그레이션 실행:")
+    # 2. users   
+    print("\n users   :")
     call_command('migrate', 'users', '--noinput')
     
-    # 3. 모든 앱 마이그레이션 실행
-    print("\n🔧 전체 마이그레이션 실행:")
+    # 3.    
+    print("\n   :")
     call_command('migrate', '--noinput')
     
-    # 4. 테이블 존재 확인
+    # 4.   
     from django.db import connection
     with connection.cursor() as cursor:
-        # users_notification 테이블 확인
+        # users_notification  
         cursor.execute("""
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
@@ -39,7 +39,7 @@ try:
         """)
         notification_exists = cursor.fetchone()[0]
         
-        # email_verified 컬럼 확인
+        # email_verified  
         cursor.execute("""
             SELECT EXISTS (
                 SELECT FROM information_schema.columns 
@@ -49,13 +49,13 @@ try:
         """)
         email_verified_exists = cursor.fetchone()[0]
         
-        print(f"\n✅ users_notification 테이블: {'존재' if notification_exists else '❌ 없음'}")
-        print(f"✅ email_verified 컬럼: {'존재' if email_verified_exists else '❌ 없음'}")
+        print(f"\n users_notification : {'' if notification_exists else ' '}")
+        print(f" email_verified : {'' if email_verified_exists else ' '}")
     
-    print("\n✅ 마이그레이션 완료!")
+    print("\n  !")
     
 except Exception as e:
-    print(f"\n❌ 오류 발생: {str(e)}")
+    print(f"\n  : {str(e)}")
     import traceback
     traceback.print_exc()
     sys.exit(1)

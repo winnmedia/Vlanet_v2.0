@@ -6,21 +6,21 @@ import { EmailVerificationForm } from '@/components/auth/EmailVerificationForm';
 import { Spinner } from '@/components/ui/Spinner';
 
 /**
- * 이메일 인증 페이지
+ *   
  */
 function VerifyEmailPageContent() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSuccess = () => {
     setShowSuccess(true);
-    // 3초 후 로그인 페이지로 리다이렉트
+    // 3    
     setTimeout(() => {
       window.location.href = '/login';
     }, 3000);
   };
 
   const handleError = (error: Error) => {
-    console.error('이메일 인증 오류:', error);
+    console.error('  :', error);
   };
 
   if (showSuccess) {
@@ -40,10 +40,10 @@ function VerifyEmailPageContent() {
               </div>
               
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">이메일 인증 완료!</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">  !</h3>
                 <p className="text-gray-600">
-                  이메일 인증이 성공적으로 완료되었습니다.<br />
-                  이제 모든 서비스를 이용하실 수 있습니다.
+                     .<br />
+                       .
                 </p>
               </div>
 
@@ -52,7 +52,7 @@ function VerifyEmailPageContent() {
                   <svg className="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  3초 후 로그인 페이지로 이동합니다...
+                  3    ...
                 </p>
               </div>
 
@@ -61,13 +61,13 @@ function VerifyEmailPageContent() {
                   href="/login" 
                   className="inline-block w-full bg-brand-primary text-white py-2 px-4 rounded-lg hover:bg-brand-primary-dark transition-colors"
                 >
-                  지금 로그인하기
+                   
                 </a>
                 <a 
                   href="/dashboard" 
                   className="inline-block w-full text-brand-primary hover:text-brand-primary-dark transition-colors text-sm"
                 >
-                  대시보드로 바로 이동
+                    
                 </a>
               </div>
             </div>
@@ -85,7 +85,7 @@ function VerifyEmailPageContent() {
         transition={{ duration: 0.6 }}
         className="sm:mx-auto sm:w-full sm:max-w-md"
       >
-        {/* 헤더 */}
+        {/*  */}
         <div className="text-center mb-8">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -98,10 +98,10 @@ function VerifyEmailPageContent() {
             </svg>
           </motion.div>
           <h2 className="text-3xl font-bold text-gray-900">VideoPlanet</h2>
-          <p className="mt-2 text-gray-600">이메일 인증</p>
+          <p className="mt-2 text-gray-600"> </p>
         </div>
 
-        {/* 이메일 인증 폼 */}
+        {/*    */}
         <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10">
           <EmailVerificationForm
             onSuccess={handleSuccess}
@@ -110,20 +110,20 @@ function VerifyEmailPageContent() {
           />
         </div>
 
-        {/* 도움말 */}
+        {/*  */}
         <div className="mt-6 text-center space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
             <div className="flex items-center gap-2 mb-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <span className="font-medium">이메일 인증 안내</span>
+              <span className="font-medium">  </span>
             </div>
             <ul className="text-left space-y-1 text-xs">
-              <li>• 가입 시 입력한 이메일 주소로 인증 코드가 발송됩니다</li>
-              <li>• 인증 코드는 10분간 유효합니다</li>
-              <li>• 이메일이 오지 않는다면 스팸함을 확인해보세요</li>
-              <li>• 여전히 문제가 있다면 인증 코드를 재발송해보세요</li>
+              <li>•        </li>
+              <li>•   10 </li>
+              <li>•     </li>
+              <li>•      </li>
             </ul>
           </div>
 
@@ -133,7 +133,7 @@ function VerifyEmailPageContent() {
                 href="/login" 
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
-                로그인 페이지로 돌아가기
+                  
               </a>
             </div>
             <div>
@@ -141,7 +141,7 @@ function VerifyEmailPageContent() {
                 href="/signup" 
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
-                다시 회원가입하기
+                 
               </a>
             </div>
             <div>
@@ -149,7 +149,7 @@ function VerifyEmailPageContent() {
                 href="/" 
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
-                ← 홈으로 돌아가기
+                ←  
               </a>
             </div>
           </div>

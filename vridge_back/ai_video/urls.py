@@ -34,8 +34,8 @@ urlpatterns = [
 # - PUT    /api/ai-video/stories/{id}/                    - Update story
 # - DELETE /api/ai-video/stories/{id}/                    - Delete story
 # - POST   /api/ai-video/stories/{id}/transition/         - Transition story status
-# - POST   /api/ai-video/stories/{id}/lock/               - Lock story (기획 잠금)
-# - POST   /api/ai-video/stories/{id}/unlock/             - Unlock story (기획 해제)
+# - POST   /api/ai-video/stories/{id}/lock/               - Lock story ( )
+# - POST   /api/ai-video/stories/{id}/unlock/             - Unlock story ( )
 # - POST   /api/ai-video/stories/{id}/scenes/bulk/        - Create 12 scenes in bulk
 # - POST   /api/ai-video/stories/{id}/generate-prompts/   - Generate AI prompts
 # - POST   /api/ai-video/stories/{id}/generate_preview/   - Generate preview
@@ -79,7 +79,7 @@ urlpatterns = [
 #
 # Enhanced Story Actions (NEW):
 # - POST   /api/ai-video/stories/{id}/develop-story/               - Develop story from project
-# - POST   /api/ai-video/stories/{id}/generate-storyboard/         - Generate storyboard (콘티)
+# - POST   /api/ai-video/stories/{id}/generate-storyboard/         - Generate storyboard ()
 # - POST   /api/ai-video/stories/{id}/generate-pdf-brief/          - Generate PDF brief
 #
 # Enhanced Scene Actions (NEW):

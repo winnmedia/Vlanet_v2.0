@@ -1864,3 +1864,80 @@ VERCEL_PROJECT_ID=your-project-id
 **작업 완료**: 2025-08-11 20:45 KST
 **시스템 상태**: GitHub Actions CI/CD 완전 구축 완료
 **다음 액션**: GitHub Secrets 설정 후 첫 배포 테스트 실행
+
+### 2025-08-12: Railway 백엔드 500 Internal Server Error 해결
+**날짜**: 2025년 8월 12일
+**시간**: 오전 1:06
+
+#### 문제 상황
+- **증상**: POST https://videoplanet.up.railway.app/api/users/login/ 500 Internal Server Error
+- **환경**: Railway 배포 환경에서만 발생, 로컬에서는 정상 작동
+- **원인 분석**: users 앱의 deletion_reason 필드 및 관련 필드들의 마이그레이션 불일치
+
+#### 원인 분석 결과
+1. **마이그레이션 불일치**:
+   - 로컬: 마이그레이션 0018(TextField) → 0019(CharField) 정상 적용
+   - Railway: 마이그레이션 상태와 실제 스키마 불일치 가능성
+
+2. **필드 타입 변경 이력**:
+   - 0018: deletion_reason을 TextField로 생성
+   - 0019: deletion_reason을 CharField(max_length=200)로 변경
+   - 현재 models.py: CharField(max_length=200, default='')
+
+3. **연관 필드들**:
+   - email_verified, email_verified_at
+   - is_deleted, deleted_at, can_recover, recovery_deadline
+
+#### 해결책 구현
+**1. Railway 데이터베이스 진단 스크립트 생성**:
+- `railway_db_diagnosis.py`: 현재 상태 분석
+- `railway_validation_test.py`: 모델-스키마 일치 여부 검증
+
+**2. 안전한 마이그레이션 스크립트 생성**:
+- `railway_safe_migrate.py`: PostgreSQL 전용 안전한 스키마 수정
+- 특징: 
+  * 기존 필드가 있으면 건너뛰기
+  * 서버 다운타임 최소화
+  * 실패해도 서비스 계속 유지
+
+**3. 강제 수정 스크립트 생성**:
+- `railway_force_migration.py`: 직접적인 스키마 수정 및 테스트
+
+#### 핵심 해결 방안
+```sql
+-- 누락된 필드들 안전하게 추가
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS deletion_reason VARCHAR(200) DEFAULT '' NULL;
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE NOT NULL;
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ NULL;
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE NOT NULL;
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ NULL;
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS can_recover BOOLEAN DEFAULT TRUE NOT NULL;
+ALTER TABLE users_user ADD COLUMN IF NOT EXISTS recovery_deadline TIMESTAMPTZ NULL;
+```
+
+#### 배포 지침
+**Railway에서 실행할 명령어**:
+1. `python railway_safe_migrate.py` (권장)
+2. 서비스 재시작
+3. `https://videoplanet.up.railway.app/api/users/login/` 테스트
+
+**백업 방안**:
+- Railway 데이터베이스 스냅샷 생성 권장
+- 실패 시 `railway_force_migration.py` 실행
+
+#### 예상 결과
+- ✅ 500 Internal Server Error 해결
+- ✅ 사용자 로그인 기능 복구
+- ✅ JWT 토큰 정상 발급
+- ✅ 이메일 인증 기능 정상화
+
+#### 생성된 파일들
+- `/vridge_back/railway_db_diagnosis.py`: 진단 도구
+- `/vridge_back/railway_safe_migrate.py`: 안전한 마이그레이션
+- `/vridge_back/railway_force_migration.py`: 강제 마이그레이션
+- `/vridge_back/railway_validation_test.py`: 검증 도구
+- `/vridge_back/test_login_endpoint.py`: 로그인 테스트
+
+**작업 완료**: 2025-08-12 01:06 KST
+**상태**: 해결책 준비 완료, Railway 배포 대기
+**다음 액션**: Railway에서 railway_safe_migrate.py 실행 후 테스트

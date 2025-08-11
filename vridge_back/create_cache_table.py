@@ -25,12 +25,12 @@ try:
         print("Database cache detected, creating table...")
         try:
             call_command('createcachetable', 'django_cache_table')
-            print("✓ Cache table created successfully!")
+            print(" Cache table created successfully!")
         except Exception as e:
             if 'already exists' in str(e):
-                print("✓ Cache table already exists")
+                print(" Cache table already exists")
             else:
-                print(f"✗ Error creating cache table: {e}")
+                print(f" Error creating cache table: {e}")
     else:
         print("Not using database cache, skipping table creation")
         

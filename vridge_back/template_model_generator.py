@@ -1,13 +1,13 @@
 import json, os
 from pathlib import Path
 
-# 요청된 템플릿 스크립트 (원본 그대로)
-INPUT_SPEC = Path("api_traffic.har")    # 또는 Path("openapi.json")
+#    ( )
+INPUT_SPEC = Path("api_traffic.har")    #  Path("openapi.json")
 OUTPUT_DIR = Path("migrations_from_spec_template"); OUTPUT_DIR.mkdir(exist_ok=True)
 
-# 샘플 HAR 데이터 생성 (실제 파일이 없는 경우)
+#  HAR   (   )
 if not INPUT_SPEC.exists():
-    print(f"📝 {INPUT_SPEC} 파일이 없으므로 샘플 HAR 데이터를 생성합니다...")
+    print(f" {INPUT_SPEC}    HAR  ...")
     sample_har = {
         "log": {
             "entries": [
@@ -82,13 +82,13 @@ if not INPUT_SPEC.exists():
         }
     }
     INPUT_SPEC.write_text(json.dumps(sample_har, indent=2))
-    print(f"✅ 샘플 HAR 파일 생성: {INPUT_SPEC}")
+    print(f"  HAR  : {INPUT_SPEC}")
 
 try:
-    # 1) HAR 로드
+    # 1) HAR 
     har = json.loads(INPUT_SPEC.read_text())
 
-    # 2) 모델·필드 추론
+    # 2) · 
     models = {}
     for e in har["log"]["entries"]:
         url = e["request"]["url"]
@@ -113,7 +113,7 @@ try:
                 fields[k] = tp
             if fields: models[name] = fields
 
-    # 3) models.py 생성
+    # 3) models.py 
     models_py = Path("app_template/models_from_spec.py")
     models_py.parent.mkdir(exist_ok=True)
     models_py.write_text("from django.db import models\n\n" + "\n\n".join(
@@ -122,7 +122,7 @@ try:
          for name,flds in models.items()]
     ))
 
-    # 4) 마이그레이션 파일 생성
+    # 4)   
     i=1
     for name,flds in models.items():
         mig = f"""# Generated migration for {name}
@@ -146,10 +146,10 @@ class Migration(migrations.Migration):
         Path(OUTPUT_DIR/f"{i:04d}_create_{name.lower()}.py").write_text(mig)
         i+=1
 
-    print("✅ Django 모델 및 마이그레이션 생성 완료 (템플릿 스크립트)")
-    print(f"📁 생성된 모델: {len(models)}개")
-    print(f"📂 모델 파일: {models_py}")
-    print(f"📂 마이그레이션 디렉토리: {OUTPUT_DIR}")
+    print(" Django      ( )")
+    print(f"  : {len(models)}")
+    print(f"  : {models_py}")
+    print(f"  : {OUTPUT_DIR}")
 
 except Exception as e:
-    print(f"❌ 템플릿 스크립트 실행 오류: {e}")
+    print(f"    : {e}")

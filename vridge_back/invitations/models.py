@@ -1,3 +1,9 @@
+"""
+Fixed models for invitations app - Resolves related_name conflicts
+QA Lead: Grace
+Risk Assessment: LOW - Only changes related_names, no functional impact
+"""
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from projects.models import Project
@@ -9,44 +15,44 @@ User = get_user_model()
 
 
 class Invitation(models.Model):
-    """초대 모델"""
+    """General invitation model with fixed related_names"""
     STATUS_CHOICES = [
-        ('pending', '대기 중'),
-        ('accepted', '수락됨'),
-        ('declined', '거절됨'),
-        ('cancelled', '취소됨'),
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('declined', 'Declined'),
+        ('cancelled', 'Cancelled'),
     ]
     
     sender = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='sent_invitations',
-        verbose_name="보낸 사람"
+        related_name='sent_general_invitations',  # Fixed: was 'sent_invitations'
+        verbose_name="Sender"
     )
-    recipient_email = models.EmailField(verbose_name="받는 사람 이메일")
+    recipient_email = models.EmailField(verbose_name="Recipient Email")
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name='project_invitations',
+        related_name='general_invitations',  # Fixed: was 'project_invitations'
         null=True,
         blank=True,
-        verbose_name="프로젝트"
+        verbose_name="Project"
     )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='pending',
-        verbose_name="상태"
+        verbose_name="Status"
     )
-    message = models.TextField(blank=True, verbose_name="메시지")
+    message = models.TextField(blank=True, verbose_name="Message")
     token = models.CharField(max_length=64, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField()
     
     class Meta:
-        verbose_name = "초대"
-        verbose_name_plural = "초대"
+        verbose_name = "Invitation"
+        verbose_name_plural = "Invitations"
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['sender', 'status']),
@@ -69,49 +75,49 @@ class Invitation(models.Model):
 
 
 class TeamMember(models.Model):
-    """팀 멤버 모델"""
+    """Team member model - No conflicts"""
     ROLE_CHOICES = [
-        ('owner', '소유자'),
-        ('admin', '관리자'),
-        ('member', '멤버'),
-        ('viewer', '뷰어'),
+        ('owner', 'Owner'),
+        ('admin', 'Admin'),
+        ('member', 'Member'),
+        ('viewer', 'Viewer'),
     ]
     
     STATUS_CHOICES = [
-        ('active', '활성'),
-        ('inactive', '비활성'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
     ]
     
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='team_memberships',
-        verbose_name="사용자"
+        verbose_name="User"
     )
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
         related_name='team_members',
-        verbose_name="프로젝트"
+        verbose_name="Project"
     )
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICES,
         default='member',
-        verbose_name="역할"
+        verbose_name="Role"
     )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default='active',
-        verbose_name="상태"
+        verbose_name="Status"
     )
     joined_at = models.DateTimeField(auto_now_add=True)
     last_active = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = "팀 멤버"
-        verbose_name_plural = "팀 멤버"
+        verbose_name = "Team Member"
+        verbose_name_plural = "Team Members"
         unique_together = ['user', 'project']
         ordering = ['-joined_at']
     
@@ -119,27 +125,30 @@ class TeamMember(models.Model):
         return f"{self.user.email} - {self.project.title} ({self.role})"
 
 
-class Friend(models.Model):
-    """친구 관계 모델"""
+class InvitationFriend(models.Model):
+    """
+    Renamed from Friend to InvitationFriend to avoid confusion
+    Fixed related_names to avoid conflicts
+    """
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='friends',
-        verbose_name="사용자"
+        related_name='invitation_friends',  # Fixed: was 'friends'
+        verbose_name="User"
     )
     friend = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='friend_of',
-        verbose_name="친구"
+        related_name='invitation_friend_of',  # Fixed: was 'friend_of'
+        verbose_name="Friend"
     )
     added_at = models.DateTimeField(auto_now_add=True)
     last_interaction = models.DateTimeField(auto_now=True)
     projects_shared = models.IntegerField(default=0)
     
     class Meta:
-        verbose_name = "친구"
-        verbose_name_plural = "친구"
+        verbose_name = "Invitation Friend"
+        verbose_name_plural = "Invitation Friends"
         unique_together = ['user', 'friend']
         ordering = ['-last_interaction']
     

@@ -17,11 +17,11 @@ class DeploymentValidator {
 
   log(message, type = 'info') {
     const prefix = {
-      error: '❌',
-      warning: '⚠️',
-      success: '✅',
-      info: 'ℹ️'
-    }[type] || 'ℹ️';
+      error: '',
+      warning: '',
+      success: '',
+      info: 'ℹ'
+    }[type] || 'ℹ';
     
     console.log(`${prefix} ${message}`);
   }
@@ -38,7 +38,7 @@ class DeploymentValidator {
     try {
       const config = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf8'));
       
-      // Node.js 런타임 버전 검증
+      // Node.js   
       if (config.functions?.runtime) {
         const validRuntimes = ['nodejs18.x', 'nodejs20.x'];
         if (!validRuntimes.includes(config.functions.runtime)) {
@@ -46,7 +46,7 @@ class DeploymentValidator {
         }
       }
 
-      // 리다이렉트 규칙 검증
+      //   
       if (config.redirects) {
         config.redirects.forEach((redirect, index) => {
           if (!redirect.source || !redirect.destination) {
@@ -55,7 +55,7 @@ class DeploymentValidator {
         });
       }
 
-      // 헤더 규칙 검증
+      //   
       if (config.headers) {
         config.headers.forEach((header, index) => {
           if (!header.source || !header.headers) {
@@ -64,9 +64,9 @@ class DeploymentValidator {
         });
       }
 
-      // 함수 설정 검증
+      //   
       if (config.functions) {
-        // maxDuration 검증 (Hobby: 10s, Pro: 60s, Enterprise: 900s)
+        // maxDuration  (Hobby: 10s, Pro: 60s, Enterprise: 900s)
         if (config.functions.maxDuration && config.functions.maxDuration > 10) {
           this.warnings.push(`maxDuration ${config.functions.maxDuration}s requires Pro plan or higher`);
         }
@@ -95,7 +95,7 @@ class DeploymentValidator {
       .map(line => line.split('=')[0].trim())
       .filter(Boolean);
 
-    // 프로덕션 환경변수 확인
+    //   
     if (fs.existsSync(envProductionPath)) {
       const productionVars = fs.readFileSync(envProductionPath, 'utf8')
         .split('\n')
@@ -119,7 +119,7 @@ class DeploymentValidator {
     const packageJsonPath = path.join(this.projectRoot, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
-    // Next.js 버전 확인
+    // Next.js  
     const nextVersion = packageJson.dependencies?.next;
     if (nextVersion) {
       const majorVersion = parseInt(nextVersion.match(/\d+/)?.[0] || '0');
@@ -128,7 +128,7 @@ class DeploymentValidator {
       }
     }
 
-    // 필수 스크립트 확인
+    //   
     const requiredScripts = ['build', 'start'];
     const missingScripts = requiredScripts.filter(script => !packageJson.scripts?.[script]);
     
@@ -136,7 +136,7 @@ class DeploymentValidator {
       this.errors.push(`Missing required scripts: ${missingScripts.join(', ')}`);
     }
 
-    // Node 엔진 버전 확인
+    // Node   
     if (packageJson.engines?.node) {
       const nodeVersion = packageJson.engines.node;
       if (!nodeVersion.includes('18') && !nodeVersion.includes('20')) {
@@ -159,7 +159,7 @@ class DeploymentValidator {
     } catch (error) {
       this.errors.push('Build failed. Check build errors above');
       
-      // 일반적인 Next.js 15 오류 패턴 검사
+      //  Next.js 15   
       const output = error.stdout?.toString() || error.stderr?.toString() || '';
       
       if (output.includes('currentUser is not defined')) {
@@ -216,7 +216,7 @@ class DeploymentValidator {
 
     const configContent = fs.readFileSync(nextConfigPath, 'utf8');
     
-    // 위험한 설정 패턴 검사
+    //    
     if (configContent.includes('experimental:')) {
       this.warnings.push('Experimental features detected in next.config.js - may cause instability');
     }
@@ -231,7 +231,7 @@ class DeploymentValidator {
   checkCommonIssues() {
     this.log('Checking for common issues...');
     
-    // app 디렉토리 구조 확인
+    // app   
     const appDir = path.join(this.projectRoot, 'app');
     const srcAppDir = path.join(this.projectRoot, 'src/app');
     const pagesDir = path.join(this.projectRoot, 'pages');
@@ -244,13 +244,13 @@ class DeploymentValidator {
       this.warnings.push('Both app/ and pages/ directories found. This may cause routing conflicts');
     }
 
-    // public 디렉토리 확인
+    // public  
     const publicDir = path.join(this.projectRoot, 'public');
     if (!fs.existsSync(publicDir)) {
       this.warnings.push('public/ directory not found');
     }
 
-    // .vercelignore 확인
+    // .vercelignore 
     const vercelIgnorePath = path.join(this.projectRoot, '.vercelignore');
     if (!fs.existsSync(vercelIgnorePath)) {
       this.warnings.push('.vercelignore not found - all files will be uploaded to Vercel');
@@ -270,12 +270,12 @@ class DeploymentValidator {
     }
 
     if (this.errors.length > 0) {
-      console.log('\n❌ ERRORS (Must fix before deployment):');
+      console.log('\n ERRORS (Must fix before deployment):');
       this.errors.forEach(error => console.log(`  - ${error}`));
     }
 
     if (this.warnings.length > 0) {
-      console.log('\n⚠️  WARNINGS (Should review):');
+      console.log('\n  WARNINGS (Should review):');
       this.warnings.forEach(warning => console.log(`  - ${warning}`));
     }
 
@@ -291,7 +291,7 @@ class DeploymentValidator {
   }
 
   async run() {
-    console.log('🚀 Starting Vercel deployment validation...\n');
+    console.log(' Starting Vercel deployment validation...\n');
     
     this.validateVercelConfig();
     this.validateEnvironmentVariables();
@@ -299,7 +299,7 @@ class DeploymentValidator {
     this.validateNextConfig();
     this.checkCommonIssues();
     
-    // 빌드 테스트는 시간이 걸리므로 선택적으로 실행
+    //      
     if (process.argv.includes('--with-build')) {
       this.checkBuildErrors();
     } else {
@@ -319,7 +319,7 @@ class DeploymentValidator {
   }
 }
 
-// 실행
+// 
 const validator = new DeploymentValidator();
 validator.run().catch(error => {
   console.error('Validation failed:', error);

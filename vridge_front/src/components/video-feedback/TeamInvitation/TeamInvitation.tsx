@@ -42,9 +42,9 @@ interface InvitationForm {
 }
 
 const DEFAULT_MESSAGES = {
-  viewer: `${currentUser?.first_name || 'Someone'}님이 영상 검토에 초대했습니다. 영상을 확인하고 의견을 남겨주세요.`,
-  reviewer: `${currentUser?.first_name || 'Someone'}님이 영상 리뷰에 초대했습니다. 전문적인 피드백을 부탁드립니다.`,
-  editor: `${currentUser?.first_name || 'Someone'}님이 영상 편집 협업에 초대했습니다. 함께 작업해주세요.`
+  viewer: `${currentUser?.first_name || 'Someone'}   .    .`,
+  reviewer: `${currentUser?.first_name || 'Someone'}   .   .`,
+  editor: `${currentUser?.first_name || 'Someone'}    .  .`
 };
 
 export default function TeamInvitation({
@@ -74,28 +74,28 @@ export default function TeamInvitation({
   const [shareLink, setShareLink] = useState('');
   const [linkCopied, setLinkCopied] = useState(false);
 
-  // 이메일 추가
+  //  
   const addEmail = () => {
     const email = emailInput.trim().toLowerCase();
     
     if (!email) return;
     
-    // 이메일 유효성 검증
+    //   
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      error('올바른 이메일 주소를 입력해주세요.');
+      error('   .');
       return;
     }
     
-    // 중복 체크
+    //  
     if (form.emails.includes(email)) {
-      error('이미 추가된 이메일입니다.');
+      error('  .');
       return;
     }
     
-    // 기존 멤버 체크
+    //   
     if (existingMembers.some(member => member.email === email)) {
-      error('이미 팀에 속한 사용자입니다.');
+      error('   .');
       return;
     }
     
@@ -106,7 +106,7 @@ export default function TeamInvitation({
     setEmailInput('');
   };
 
-  // 이메일 제거
+  //  
   const removeEmail = (emailToRemove: string) => {
     setForm(prev => ({
       ...prev,
@@ -114,7 +114,7 @@ export default function TeamInvitation({
     }));
   };
 
-  // 역할 변경에 따른 권한 자동 설정
+  //      
   const handleRoleChange = (role: 'viewer' | 'reviewer' | 'editor') => {
     const permissions = {
       viewer: {
@@ -145,17 +145,17 @@ export default function TeamInvitation({
     }));
   };
 
-  // 초대 전송
+  //  
   const handleSendInvitations = async () => {
     if (form.emails.length === 0) {
-      error('초대할 이메일을 추가해주세요.');
+      error('  .');
       return;
     }
     
     setIsLoading(true);
     
     try {
-      // 기존 초대 시스템 사용
+      //    
       const invitationResult = await invitationService.sendInvitations({
         emails: form.emails,
         project_id: video.project_id,
@@ -164,14 +164,14 @@ export default function TeamInvitation({
       });
       
       if (invitationResult.success) {
-        // 영상별 초대도 추가로 전송 (영상 피드백 권한 포함)
+        //     (   )
         await videoFeedbackService.inviteToVideo(video.id, form.emails, form.message);
         
-        success(`${form.emails.length}명에게 초대를 전송했습니다.`);
+        success(`${form.emails.length}  .`);
         onInvitationSent?.(form.emails);
         onClose();
         
-        // 폼 리셋
+        //  
         setForm({
           emails: [],
           message: DEFAULT_MESSAGES.reviewer,
@@ -184,29 +184,29 @@ export default function TeamInvitation({
           }
         });
       } else {
-        throw new Error(invitationResult.error?.message || '초대 전송에 실패했습니다.');
+        throw new Error(invitationResult.error?.message || '  .');
       }
     } catch (err) {
-      console.error('초대 전송 오류:', err);
-      error('초대 전송에 실패했습니다.');
+      console.error('  :', err);
+      error('  .');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 공유 링크 생성
+  //   
   const generateShareLink = async () => {
     try {
-      // 실제로는 서버에서 공유 토큰을 생성해야 함
+      //      
       const baseUrl = window.location.origin;
       const shareUrl = `${baseUrl}/video-feedback/${video.id}?invite=true`;
       setShareLink(shareUrl);
     } catch (err) {
-      error('공유 링크 생성에 실패했습니다.');
+      error('   .');
     }
   };
 
-  // 링크 복사
+  //  
   const copyShareLink = async () => {
     if (!shareLink) {
       await generateShareLink();
@@ -216,14 +216,14 @@ export default function TeamInvitation({
     try {
       await navigator.clipboard.writeText(shareLink);
       setLinkCopied(true);
-      success('링크가 클립보드에 복사되었습니다.');
+      success('  .');
       setTimeout(() => setLinkCopied(false), 2000);
     } catch (err) {
-      error('링크 복사에 실패했습니다.');
+      error('  .');
     }
   };
 
-  // Enter 키로 이메일 추가
+  // Enter   
   const handleEmailKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -235,20 +235,20 @@ export default function TeamInvitation({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="팀원 초대"
+      title=" "
       className="max-w-2xl"
     >
       <div className="space-y-6">
-        {/* 영상 정보 */}
+        {/*   */}
         <div className="p-4 bg-gray-50 rounded-lg">
           <h4 className="font-medium text-gray-800 mb-1">{video.title}</h4>
-          <p className="text-sm text-gray-600">이 영상에 대한 협업 초대를 보냅니다.</p>
+          <p className="text-sm text-gray-600">     .</p>
         </div>
 
-        {/* 이메일 입력 */}
+        {/*   */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            초대할 이메일 주소
+              
           </label>
           
           <div className="flex gap-2">
@@ -264,11 +264,11 @@ export default function TeamInvitation({
               />
             </div>
             <Button onClick={addEmail} disabled={!emailInput.trim()}>
-              추가
+              
             </Button>
           </div>
           
-          {/* 추가된 이메일 목록 */}
+          {/*    */}
           {form.emails.length > 0 && (
             <div className="mt-3 space-y-2">
               {form.emails.map((email) => (
@@ -287,17 +287,17 @@ export default function TeamInvitation({
           )}
         </div>
 
-        {/* 역할 선택 */}
+        {/*   */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            역할 및 권한
+              
           </label>
           
           <div className="grid grid-cols-3 gap-3">
             {[
-              { value: 'viewer', label: '뷰어', desc: '영상 시청 및 채팅' },
-              { value: 'reviewer', label: '리뷰어', desc: '피드백 작성 및 리뷰' },
-              { value: 'editor', label: '에디터', desc: '모든 편집 권한' }
+              { value: 'viewer', label: '', desc: '   ' },
+              { value: 'reviewer', label: '', desc: '   ' },
+              { value: 'editor', label: '', desc: '  ' }
             ].map((role) => (
               <button
                 key={role.value}
@@ -315,15 +315,15 @@ export default function TeamInvitation({
           </div>
         </div>
 
-        {/* 권한 세부 설정 */}
+        {/*    */}
         <div className="bg-gray-50 p-4 rounded-lg">
-          <h5 className="font-medium text-gray-800 mb-3">권한 설정</h5>
+          <h5 className="font-medium text-gray-800 mb-3"> </h5>
           <div className="space-y-2">
             {[
-              { key: 'canComment', label: '실시간 채팅 참여' },
-              { key: 'canCreateFeedback', label: '피드백 작성' },
-              { key: 'canResolveFeedback', label: '피드백 해결/관리' },
-              { key: 'canExport', label: '리포트 내보내기' }
+              { key: 'canComment', label: '  ' },
+              { key: 'canCreateFeedback', label: ' ' },
+              { key: 'canResolveFeedback', label: ' /' },
+              { key: 'canExport', label: ' ' }
             ].map((permission) => (
               <label key={permission.key} className="flex items-center gap-2">
                 <input
@@ -344,10 +344,10 @@ export default function TeamInvitation({
           </div>
         </div>
 
-        {/* 초대 메시지 */}
+        {/*   */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            초대 메시지
+             
           </label>
           <div className="relative">
             <MessageSquare className="absolute left-3 top-3 text-gray-400" size={16} />
@@ -356,16 +356,16 @@ export default function TeamInvitation({
               onChange={(e) => setForm(prev => ({ ...prev, message: e.target.value }))}
               rows={4}
               className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-              placeholder="초대 메시지를 입력하세요..."
+              placeholder="  ..."
             />
           </div>
         </div>
 
-        {/* 공유 링크 */}
+        {/*   */}
         <div className="border-t pt-4">
           <div className="flex items-center justify-between mb-3">
             <label className="text-sm font-medium text-gray-700">
-              또는 공유 링크 사용
+                 
             </label>
             <Button 
               variant="ghost" 
@@ -374,7 +374,7 @@ export default function TeamInvitation({
               className="flex items-center gap-1"
             >
               {linkCopied ? <Check size={16} /> : <Copy size={16} />}
-              {linkCopied ? '복사됨' : '링크 복사'}
+              {linkCopied ? '' : ' '}
             </Button>
           </div>
           
@@ -385,12 +385,12 @@ export default function TeamInvitation({
           )}
         </div>
 
-        {/* 기존 팀원 표시 */}
+        {/*    */}
         {existingMembers.length > 0 && (
           <div className="border-t pt-4">
             <h5 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
               <Users size={16} />
-              현재 팀원 ({existingMembers.length}명)
+                ({existingMembers.length})
             </h5>
             <div className="space-y-2">
               {existingMembers.map((member) => (
@@ -410,7 +410,7 @@ export default function TeamInvitation({
           </div>
         )}
 
-        {/* 액션 버튼 */}
+        {/*   */}
         <div className="flex gap-3 pt-4 border-t">
           <Button
             onClick={handleSendInvitations}
@@ -422,7 +422,7 @@ export default function TeamInvitation({
             ) : (
               <Send size={16} />
             )}
-            {form.emails.length > 0 ? `${form.emails.length}명에게 초대 전송` : '초대 전송'}
+            {form.emails.length > 0 ? `${form.emails.length}  ` : ' '}
           </Button>
           
           <Button
@@ -430,7 +430,7 @@ export default function TeamInvitation({
             onClick={onClose}
             className="px-6"
           >
-            취소
+            
           </Button>
         </div>
       </div>

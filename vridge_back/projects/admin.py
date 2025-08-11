@@ -7,14 +7,14 @@ from . import models
 
 class MembersInline(admin.TabularInline):
     model = models.Members
-    verbose_name = "멤버"
-    verbose_name_plural = "멤버"
+    verbose_name = ""
+    verbose_name_plural = ""
 
 
 class FileInline(admin.TabularInline):
     model = models.File
-    verbose_name = "프로젝트 파일"
-    verbose_name_plural = "프로젝트 파일"
+    verbose_name = " "
+    verbose_name_plural = " "
 
 
 @admin.register(models.Memo)
@@ -49,7 +49,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display_links = ("id", "get_colored_name")
 
     search_fields = ("name",)
-    search_help_text = "프로젝트 이름"
+    search_help_text = " "
 
     list_select_related = [
         "user",
@@ -72,7 +72,7 @@ class ProjectAdmin(admin.ModelAdmin):
             obj.color or '#0059db',
             obj.name
         )
-    get_colored_name.short_description = '프로젝트명'
+    get_colored_name.short_description = ''
     get_colored_name.admin_order_field = 'name'
     
     def get_progress(self, obj):
@@ -93,15 +93,15 @@ class ProjectAdmin(admin.ModelAdmin):
             '{}%</div></div>',
             percentage, color, int(percentage)
         )
-    get_progress.short_description = '진행률'
+    get_progress.short_description = ''
     
     def get_members_count(self, obj):
         count = obj.members.count() + 1  # +1 for owner
-        return format_html('<span style="font-weight: bold;">{}명</span>', count)
-    get_members_count.short_description = '참여자'
+        return format_html('<span style="font-weight: bold;">{}</span>', count)
+    get_members_count.short_description = ''
     
     def get_status(self, obj):
-        # 비디오 배송이 완료된 경우
+        #    
         if obj.video_delivery and hasattr(obj.video_delivery, 'end_date'):
             if obj.video_delivery.end_date:
                 today = datetime.date.today()
@@ -109,9 +109,9 @@ class ProjectAdmin(admin.ModelAdmin):
                 if hasattr(end_date, 'date'):
                     end_date = end_date.date()
                 if end_date < today:
-                    return format_html('<span style="color: #27ae60; font-weight: bold;">완료</span>')
+                    return format_html('<span style="color: #27ae60; font-weight: bold;"></span>')
         
-        # 진행 상태 확인
+        #   
         phases = [
             obj.basic_plan, obj.story_board, obj.filming, obj.video_edit,
             obj.post_work, obj.video_preview, obj.confirmation, obj.video_delivery
@@ -119,12 +119,12 @@ class ProjectAdmin(admin.ModelAdmin):
         active_phases = [p for p in phases if p is not None]
         
         if len(active_phases) == 0:
-            return format_html('<span style="color: #95a5a6; font-weight: bold;">대기</span>')
+            return format_html('<span style="color: #95a5a6; font-weight: bold;"></span>')
         elif len(active_phases) == len(phases):
-            return format_html('<span style="color: #27ae60; font-weight: bold;">완료</span>')
+            return format_html('<span style="color: #27ae60; font-weight: bold;"></span>')
         else:
-            return format_html('<span style="color: #3498db; font-weight: bold;">진행중</span>')
-    get_status.short_description = '상태'
+            return format_html('<span style="color: #3498db; font-weight: bold;"></span>')
+    get_status.short_description = ''
 
 
 # @admin.register(
@@ -182,14 +182,14 @@ class DevelopmentFrameworkAdmin(admin.ModelAdmin):
     autocomplete_fields = ("user",)
     
     fieldsets = (
-        ("기본 정보", {
+        (" ", {
             "fields": ("name", "user", "is_default")
         }),
-        ("프레임워크 내용", {
+        (" ", {
             "fields": ("intro_hook", "immersion", "twist", "hook_next"),
             "classes": ("wide",)
         }),
-        ("생성/수정 정보", {
+        ("/ ", {
             "fields": ("created", "updated"),
             "classes": ("collapse",)
         }),
@@ -197,7 +197,7 @@ class DevelopmentFrameworkAdmin(admin.ModelAdmin):
     
     def get_is_default(self, obj):
         if obj.is_default:
-            return format_html('<span style="color: #27ae60; font-weight: bold;">✓ 기본값</span>')
+            return format_html('<span style="color: #27ae60; font-weight: bold;"> </span>')
         return format_html('<span style="color: #95a5a6;">-</span>')
-    get_is_default.short_description = '기본값'
+    get_is_default.short_description = ''
     get_is_default.admin_order_field = 'is_default'

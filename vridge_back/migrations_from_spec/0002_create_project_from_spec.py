@@ -23,8 +23,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'project_from_spec',
-                'verbose_name': 'Project (API 스펙)',
-                'verbose_name_plural': 'Projects (API 스펙)',
+                'verbose_name': 'Project (API )',
+                'verbose_name_plural': 'Projects (API )',
                 'ordering': ['-id'],
             },
         ),

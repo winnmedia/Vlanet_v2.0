@@ -10,14 +10,14 @@ import { useProjectModals } from '@/store/project.store';
 import { syncUIPreferences } from '@/store/project.store';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
-// QueryClient 인스턴스 생성
+// QueryClient  
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5분
-      gcTime: 1000 * 60 * 30, // 30분
+      staleTime: 1000 * 60 * 5, // 5
+      gcTime: 1000 * 60 * 30, // 30
       retry: (failureCount, error) => {
-        // 401, 403 에러는 재시도하지 않음
+        // 401, 403   
         if (error && typeof error === 'object' && 'status' in error) {
           const status = (error as any).status;
           if (status === 401 || status === 403) {
@@ -34,7 +34,7 @@ const queryClient = new QueryClient({
 });
 
 // ========================================
-// 메인 프로젝트 페이지 컴포넌트
+//    
 // ========================================
 
 const ProjectsPageContent: React.FC = () => {
@@ -47,45 +47,45 @@ const ProjectsPageContent: React.FC = () => {
     closeAllModals,
   } = useProjectModals();
 
-  // UI 환경설정 동기화 초기화
+  // UI   
   React.useEffect(() => {
     syncUIPreferences();
   }, []);
 
-  // 프로젝트 생성 성공 핸들러
+  //    
   const handleCreateSuccess = (projectId: number) => {
-    console.log('프로젝트가 성공적으로 생성되었습니다:', projectId);
-    // 필요시 프로젝트 상세 페이지로 리다이렉트
+    console.log('  :', projectId);
+    //     
     // router.push(`/projects/${projectId}`);
   };
 
-  // 프로젝트 수정 성공 핸들러
+  //    
   const handleEditSuccess = (project: any) => {
-    console.log('프로젝트가 성공적으로 수정되었습니다:', project);
+    console.log('  :', project);
   };
 
-  // 프로젝트 편집 핸들러
+  //   
   const handleProjectEdit = (project: any) => {
     openEditModal(project.id);
   };
 
-  // 프로젝트 삭제 핸들러
+  //   
   const handleProjectDelete = (project: any) => {
-    console.log('프로젝트 삭제:', project);
-    // 실제로는 확인 모달을 표시하고 삭제 API 호출
+    console.log(' :', project);
+    //      API 
   };
 
-  // 프로젝트 복제 핸들러
+  //   
   const handleProjectDuplicate = (project: any) => {
-    console.log('프로젝트 복제:', project);
-    // 복제 로직 구현
+    console.log(' :', project);
+    //   
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 메인 컨테이너 */}
+      {/*   */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 프로젝트 목록 */}
+        {/*   */}
         <ProjectList
           onProjectCreate={openCreateModal}
           onProjectEdit={handleProjectEdit}
@@ -93,25 +93,25 @@ const ProjectsPageContent: React.FC = () => {
           onProjectDuplicate={handleProjectDuplicate}
         />
 
-        {/* 프로젝트 생성 모달 */}
+        {/*    */}
         <CreateProjectModal
           isOpen={createModalOpen}
           onClose={closeAllModals}
           onSuccess={handleCreateSuccess}
         />
 
-        {/* 프로젝트 수정 모달 */}
+        {/*    */}
         <EditProjectModal
           isOpen={editModalOpen}
           projectId={editingProjectId}
           onClose={closeAllModals}
           onSuccess={handleEditSuccess}
-          onArchive={(id) => console.log('프로젝트 보관:', id)}
-          onDelete={(id) => console.log('프로젝트 삭제:', id)}
+          onArchive={(id) => console.log(' :', id)}
+          onDelete={(id) => console.log(' :', id)}
         />
       </div>
 
-      {/* 토스트 알림 */}
+      {/*   */}
       <Toaster
         position="top-right"
         toastOptions={{
@@ -128,7 +128,7 @@ const ProjectsPageContent: React.FC = () => {
 };
 
 // ========================================
-// 메인 페이지 컴포넌트 (QueryClient Provider 포함)
+//    (QueryClient Provider )
 // ========================================
 
 export default function ProjectsPage() {
@@ -138,7 +138,7 @@ export default function ProjectsPage() {
         <ProjectsPageContent />
       </DashboardLayout>
       
-      {/* 개발 환경에서만 React Query Devtools 표시 */}
+      {/*   React Query Devtools  */}
       {process.env.NODE_ENV === 'development' && (
         <ReactQueryDevtools initialIsOpen={false} />
       )}

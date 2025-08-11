@@ -33,34 +33,34 @@ interface DashboardLayoutProps {
 
 const navigationGroups = [
   {
-    name: '대시보드',
+    name: '',
     items: [
-      { name: '홈', href: '/cmshome', icon: Home },
-      { name: '통계', href: '/analytics', icon: BarChart3 },
+      { name: '', href: '/cmshome', icon: Home },
+      { name: '', href: '/analytics', icon: BarChart3 },
     ]
   },
   {
-    name: '프로젝트 관리',
+    name: ' ',
     items: [
-      { name: '모든 프로젝트', href: '/projects', icon: FolderOpen },
-      { name: '진행중인 프로젝트', href: '/projects/active', icon: Video },
-      { name: '영상 기획', href: '/video-planning', icon: FileText },
+      { name: ' ', href: '/projects', icon: FolderOpen },
+      { name: ' ', href: '/projects/active', icon: Video },
+      { name: ' ', href: '/video-planning', icon: FileText },
     ]
   },
   {
-    name: '협업',
+    name: '',
     items: [
-      { name: '영상 피드백', href: '/video-feedback', icon: Video },
-      { name: '피드백', href: '/feedbacks', icon: MessageSquare },
-      { name: '팀 관리', href: '/teams', icon: Users },
-      { name: '일정관리', href: '/calendar', icon: Calendar },
+      { name: ' ', href: '/video-feedback', icon: Video },
+      { name: '', href: '/feedbacks', icon: MessageSquare },
+      { name: ' ', href: '/teams', icon: Users },
+      { name: '', href: '/calendar', icon: Calendar },
     ]
   }
 ];
 
 const userNavigation = [
-  { name: '마이페이지', href: '/mypage', icon: User },
-  { name: '설정', href: '/settings', icon: Settings },
+  { name: '', href: '/mypage', icon: User },
+  { name: '', href: '/settings', icon: Settings },
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -68,7 +68,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['대시보드', '프로젝트 관리', '협업']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['', ' ', '']);
 
   const handleLogout = async () => {
     await logout();
@@ -85,7 +85,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* 모바일 사이드바 백드롭 */}
+      {/*    */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -93,13 +93,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         />
       )}
 
-      {/* 사이드바 */}
+      {/*  */}
       <aside className={cn(
         "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform lg:translate-x-0 lg:static lg:z-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex h-full flex-col">
-          {/* 로고 영역 */}
+          {/*   */}
           <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
             <Logo size="md" variant="default" />
             <button
@@ -110,7 +110,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </button>
           </div>
 
-          {/* 네비게이션 */}
+          {/*  */}
           <nav className="flex-1 overflow-y-auto p-4">
             <div className="space-y-2">
               {navigationGroups.map((group) => {
@@ -181,7 +181,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
           </nav>
 
-          {/* 사용자 정보 */}
+          {/*   */}
           <div className="border-t border-gray-200 p-4">
             <div className="relative">
               <button
@@ -193,7 +193,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
                 <div className="flex-1 text-left">
                   <p className="text-sm font-medium text-gray-900">
-                    {user?.name || user?.email || '사용자'}
+                    {user?.name || user?.email || ''}
                   </p>
                   <p className="text-xs text-gray-500">
                     {user?.email || ''}
@@ -212,7 +212,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     <LogOut className="h-4 w-4" />
-                    로그아웃
+                    
                   </button>
                 </div>
               )}
@@ -221,9 +221,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </aside>
 
-      {/* 메인 컨텐츠 영역 */}
+      {/*    */}
       <div className="flex-1 flex flex-col">
-        {/* 모바일 헤더 */}
+        {/*   */}
         <header className="lg:hidden flex h-16 items-center justify-between bg-white border-b border-gray-200 px-4">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -232,10 +232,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <Menu className="h-5 w-5" />
           </button>
           <Logo size="sm" variant="default" showText={false} />
-          <div className="w-9" /> {/* 균형을 위한 빈 공간 */}
+          <div className="w-9" /> {/*     */}
         </header>
 
-        {/* 페이지 컨텐츠 */}
+        {/*   */}
         <main className="flex-1 overflow-y-auto">
           {children}
         </main>

@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255, null=True, blank=True)),
                 ('description', models.TextField(null=True, blank=True)),
-                ('status', models.CharField(max_length=50, null=True, blank=True, help_text='status 상태')),
+                ('status', models.CharField(max_length=50, null=True, blank=True, help_text='status ')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={

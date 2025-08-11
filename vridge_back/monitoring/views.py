@@ -1,6 +1,6 @@
 """
-실시간 모니터링 API 뷰
-시스템 메트릭, 성능 데이터, 알림 제공
+  API 
+ ,  ,  
 """
 from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
@@ -20,11 +20,11 @@ from asgiref.sync import async_to_sync
 logger = logging.getLogger(__name__)
 
 class MetricsCollector:
-    """시스템 메트릭 수집 클래스"""
+    """   """
     
     @staticmethod
     def get_system_metrics():
-        """시스템 리소스 메트릭 수집"""
+        """   """
         try:
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
@@ -57,15 +57,15 @@ class MetricsCollector:
                 }
             }
         except Exception as e:
-            logger.error(f"시스템 메트릭 수집 실패: {e}")
+            logger.error(f"   : {e}")
             return {}
     
     @staticmethod
     def get_database_metrics():
-        """데이터베이스 메트릭 수집"""
+        """  """
         try:
             with connection.cursor() as cursor:
-                # PostgreSQL 연결 수
+                # PostgreSQL  
                 cursor.execute("""
                     SELECT count(*) as connections,
                            sum(case when state = 'active' then 1 else 0 end) as active,
@@ -74,13 +74,13 @@ class MetricsCollector:
                 """)
                 conn_stats = cursor.fetchone()
                 
-                # 데이터베이스 크기
+                #  
                 cursor.execute("""
                     SELECT pg_database_size(current_database()) as size
                 """)
                 db_size = cursor.fetchone()
                 
-                # 느린 쿼리
+                #  
                 cursor.execute("""
                     SELECT count(*) as slow_queries
                     FROM pg_stat_statements
@@ -98,12 +98,12 @@ class MetricsCollector:
                     'slow_queries': slow_queries[0] if slow_queries else 0
                 }
         except Exception as e:
-            logger.error(f"데이터베이스 메트릭 수집 실패: {e}")
+            logger.error(f"   : {e}")
             return {}
     
     @staticmethod
     def get_redis_metrics():
-        """Redis 메트릭 수집"""
+        """Redis  """
         try:
             r = redis.from_url(cache._cache.connection_pool.connection_kwargs['url'])
             info = r.info()
@@ -124,12 +124,12 @@ class MetricsCollector:
                 )
             }
         except Exception as e:
-            logger.error(f"Redis 메트릭 수집 실패: {e}")
+            logger.error(f"Redis   : {e}")
             return {}
     
     @staticmethod
     def get_application_metrics():
-        """애플리케이션 메트릭 수집"""
+        """  """
         try:
             from django.contrib.sessions.models import Session
             from users.models import User
@@ -140,12 +140,12 @@ class MetricsCollector:
             hour_ago = now - timedelta(hours=1)
             day_ago = now - timedelta(days=1)
             
-            # 활성 세션 수
+            #   
             active_sessions = Session.objects.filter(
                 expire_date__gte=now
             ).count()
             
-            # 사용자 통계
+            #  
             total_users = User.objects.count()
             active_users_hour = User.objects.filter(
                 last_login__gte=hour_ago
@@ -157,13 +157,13 @@ class MetricsCollector:
                 date_joined__gte=day_ago
             ).count()
             
-            # 프로젝트 통계
+            #  
             total_projects = Project.objects.count()
             active_projects = Project.objects.filter(
                 updated_at__gte=day_ago
             ).count()
             
-            # 피드백 통계
+            #  
             total_feedbacks = Feedback.objects.count()
             feedbacks_today = Feedback.objects.filter(
                 created_at__gte=day_ago
@@ -189,17 +189,17 @@ class MetricsCollector:
                 }
             }
         except Exception as e:
-            logger.error(f"애플리케이션 메트릭 수집 실패: {e}")
+            logger.error(f"   : {e}")
             return {}
     
     @staticmethod
     def get_api_performance_metrics():
-        """API 성능 메트릭 수집"""
+        """API   """
         try:
-            # 캐시에서 API 성능 데이터 가져오기
+            #  API   
             api_metrics = cache.get('api_performance_metrics', {})
             
-            # 기본값 설정
+            #  
             default_metrics = {
                 'login': {'avg_time': 0, 'count': 0, 'errors': 0},
                 'projects': {'avg_time': 0, 'count': 0, 'errors': 0},
@@ -208,28 +208,28 @@ class MetricsCollector:
                 'export': {'avg_time': 0, 'count': 0, 'errors': 0}
             }
             
-            # 메트릭 병합
+            #  
             for endpoint, data in default_metrics.items():
                 if endpoint not in api_metrics:
                     api_metrics[endpoint] = data
             
             return api_metrics
         except Exception as e:
-            logger.error(f"API 성능 메트릭 수집 실패: {e}")
+            logger.error(f"API    : {e}")
             return {}
 
 @require_http_methods(["GET"])
 def health_check(request):
-    """헬스체크 엔드포인트"""
+    """ """
     try:
-        # 데이터베이스 체크
+        #  
         connection.ensure_connection()
         db_status = 'ok'
     except:
         db_status = 'error'
     
     try:
-        # Redis 체크
+        # Redis 
         cache.get('health_check')
         cache_status = 'ok'
     except:
@@ -248,7 +248,7 @@ def health_check(request):
 @staff_member_required
 @require_http_methods(["GET"])
 def metrics(request):
-    """전체 메트릭 조회"""
+    """  """
     collector = MetricsCollector()
     
     metrics_data = {
@@ -260,7 +260,7 @@ def metrics(request):
         'api_performance': collector.get_api_performance_metrics()
     }
     
-    # WebSocket으로 실시간 전송
+    # WebSocket  
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         'monitoring',
@@ -274,13 +274,13 @@ def metrics(request):
 
 @staff_member_required
 @require_http_methods(["GET"])
-@cache_page(60)  # 1분 캐시
+@cache_page(60)  # 1 
 def system_status(request):
-    """시스템 상태 조회"""
+    """  """
     collector = MetricsCollector()
     system_metrics = collector.get_system_metrics()
     
-    # 임계값 체크
+    #  
     warnings = []
     if system_metrics.get('cpu', {}).get('usage', 0) > 80:
         warnings.append('CPU usage high')
@@ -299,12 +299,12 @@ def system_status(request):
 @staff_member_required
 @require_http_methods(["GET"])
 def error_logs(request):
-    """최근 에러 로그 조회"""
-    # 최근 100개 에러 로그 (캐시에서)
+    """   """
+    #  100   ()
     error_logs = cache.get('recent_error_logs', [])
     
     return JsonResponse({
-        'logs': error_logs[-100:],  # 최근 100개만
+        'logs': error_logs[-100:],  #  100
         'total': len(error_logs),
         'timestamp': timezone.now().isoformat()
     })
@@ -312,13 +312,13 @@ def error_logs(request):
 @staff_member_required
 @require_http_methods(["POST"])
 def trigger_alert(request):
-    """수동 알림 트리거"""
+    """  """
     try:
         data = json.loads(request.body)
         message = data.get('message', 'Manual alert triggered')
         severity = data.get('severity', 'info')
         
-        # WebSocket으로 알림 전송
+        # WebSocket  
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             'monitoring',
@@ -332,7 +332,7 @@ def trigger_alert(request):
             }
         )
         
-        # Slack 알림 (중요한 경우)
+        # Slack  ( )
         if severity in ['error', 'critical']:
             send_slack_alert(message, severity)
         
@@ -341,7 +341,7 @@ def trigger_alert(request):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 def send_slack_alert(message, severity='info'):
-    """Slack으로 알림 전송"""
+    """Slack  """
     import requests
     from django.conf import settings
     
@@ -357,7 +357,7 @@ def send_slack_alert(message, severity='info'):
     }
     
     payload = {
-        'text': f'VideoPlanet 모니터링 알림',
+        'text': f'VideoPlanet  ',
         'attachments': [{
             'color': color_map.get(severity, '#36a64f'),
             'fields': [
@@ -383,4 +383,4 @@ def send_slack_alert(message, severity='info'):
     try:
         requests.post(webhook_url, json=payload)
     except Exception as e:
-        logger.error(f"Slack 알림 전송 실패: {e}")
+        logger.error(f"Slack   : {e}")

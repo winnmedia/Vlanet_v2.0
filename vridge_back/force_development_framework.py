@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-development_framework 컬럼 강제 생성 스크립트
+development_framework    
 """
 import os
 import sys
@@ -13,10 +13,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 django.setup()
 
 def add_development_framework_column():
-    """development_framework_id 컬럼 추가"""
+    """development_framework_id  """
     with connection.cursor() as cursor:
         try:
-            # 컬럼 존재 여부 확인
+            #    
             cursor.execute("""
                 SELECT column_name 
                 FROM information_schema.columns 
@@ -25,11 +25,11 @@ def add_development_framework_column():
             """)
             
             if cursor.fetchone():
-                print("✓ development_framework_id 컬럼이 이미 존재합니다.")
+                print(" development_framework_id   .")
                 return
             
-            # 컬럼 추가
-            print("🔧 development_framework_id 컬럼을 추가합니다...")
+            #  
+            print(" development_framework_id  ...")
             with transaction.atomic():
                 cursor.execute("""
                     ALTER TABLE projects_project 
@@ -39,19 +39,19 @@ def add_development_framework_column():
                     DEFERRABLE INITIALLY DEFERRED
                 """)
                 
-                # 인덱스 추가
+                #  
                 cursor.execute("""
                     CREATE INDEX IF NOT EXISTS projects_project_development_framework_id_idx 
                     ON projects_project(development_framework_id)
                 """)
                 
-            print("✅ development_framework_id 컬럼이 성공적으로 추가되었습니다.")
+            print(" development_framework_id   .")
             
         except Exception as e:
-            print(f"❌ 컬럼 추가 중 오류 발생: {str(e)}")
+            print(f"     : {str(e)}")
             raise
 
 if __name__ == "__main__":
-    print("=== Development Framework 컬럼 추가 스크립트 ===")
+    print("=== Development Framework    ===")
     add_development_framework_column()
-    print("=== 완료 ===")
+    print("===  ===")

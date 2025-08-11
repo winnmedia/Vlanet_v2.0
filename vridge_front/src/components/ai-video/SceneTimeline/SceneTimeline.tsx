@@ -105,7 +105,7 @@ const SceneCard: React.FC<SceneCardProps> = ({
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
             className="w-full px-2 py-1 text-sm font-medium border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="씬 제목"
+            placeholder=" "
             autoFocus
           />
           <textarea
@@ -113,7 +113,7 @@ const SceneCard: React.FC<SceneCardProps> = ({
             onChange={(e) => setEditedDescription(e.target.value)}
             className="w-full px-2 py-1 text-sm text-gray-600 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             rows={2}
-            placeholder="씬 설명"
+            placeholder=" "
           />
           <div className="flex items-center space-x-2">
             <button
@@ -123,7 +123,7 @@ const SceneCard: React.FC<SceneCardProps> = ({
               }}
               className="px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
             >
-              저장
+              
             </button>
             <button
               onClick={(e) => {
@@ -132,22 +132,22 @@ const SceneCard: React.FC<SceneCardProps> = ({
               }}
               className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
             >
-              취소
+              
             </button>
           </div>
         </div>
       ) : (
         <div className="space-y-2">
           <h3 className="font-medium text-gray-900 line-clamp-2">
-            {scene.title || `씬 ${index + 1}`}
+            {scene.title || ` ${index + 1}`}
           </h3>
           <p className="text-sm text-gray-600 line-clamp-3">
-            {scene.description || '설명이 없습니다.'}
+            {scene.description || ' .'}
           </p>
           
           {/* Duration */}
           <div className="flex items-center justify-between text-xs text-gray-500 mt-3">
-            <span>{scene.duration}초</span>
+            <span>{scene.duration}</span>
             {scene.generatedAt && (
               <span>
                 {scene.generatedAt.toLocaleDateString('ko-KR', {
@@ -165,7 +165,7 @@ const SceneCard: React.FC<SceneCardProps> = ({
             <div className="mt-3">
               <img
                 src={scene.thumbnailUrl}
-                alt={`씬 ${index + 1} 썸네일`}
+                alt={` ${index + 1} `}
                 className="w-full h-20 object-cover rounded"
               />
             </div>
@@ -182,7 +182,7 @@ const SceneCard: React.FC<SceneCardProps> = ({
               setIsEditing(true);
             }}
             className="p-1 text-gray-400 hover:text-gray-600 rounded"
-            title="편집"
+            title=""
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -191,12 +191,12 @@ const SceneCard: React.FC<SceneCardProps> = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              if (window.confirm('이 씬을 삭제하시겠습니까?')) {
+              if (window.confirm('  ?')) {
                 onDelete();
               }
             }}
             className="p-1 text-gray-400 hover:text-red-500 rounded"
-            title="삭제"
+            title=""
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -235,8 +235,8 @@ export const SceneTimeline: React.FC<SceneTimelineProps> = ({
 
   const handleAddScene = () => {
     const newScene = {
-      title: `새 씬 ${scenes.length + 1}`,
-      description: '씬 설명을 입력하세요',
+      title: `  ${scenes.length + 1}`,
+      description: '  ',
       prompt: '',
       duration: 5,
       position: scenes.length,
@@ -251,9 +251,9 @@ export const SceneTimeline: React.FC<SceneTimelineProps> = ({
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">씬 타임라인</h2>
+          <h2 className="text-2xl font-bold text-gray-900"> </h2>
           <p className="text-sm text-gray-600 mt-1">
-            총 {scenes.length}개 씬 · {Math.round(totalDuration / 60 * 10) / 10}분
+             {scenes.length}  · {Math.round(totalDuration / 60 * 10) / 10}
           </p>
         </div>
         
@@ -264,7 +264,7 @@ export const SceneTimeline: React.FC<SceneTimelineProps> = ({
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          씬 추가
+           
         </button>
       </div>
 
@@ -272,8 +272,8 @@ export const SceneTimeline: React.FC<SceneTimelineProps> = ({
       {scenes.length > 0 && (
         <div className="mb-6">
           <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-            <span>0초</span>
-            <span>{totalDuration}초</span>
+            <span>0</span>
+            <span>{totalDuration}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             {scenes.map((scene, index) => {
@@ -309,10 +309,10 @@ export const SceneTimeline: React.FC<SceneTimelineProps> = ({
             </svg>
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            아직 씬이 없습니다
+              
           </h3>
           <p className="text-gray-600 mb-6">
-            첫 번째 씬을 추가해서 스토리를 시작해보세요
+                 
           </p>
           <button
             onClick={handleAddScene}
@@ -321,7 +321,7 @@ export const SceneTimeline: React.FC<SceneTimelineProps> = ({
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            첫 씬 추가하기
+              
           </button>
         </div>
       ) : (

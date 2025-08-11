@@ -10,7 +10,7 @@ import sys
 def apply_security_fixes():
     """Apply critical security fixes to Django settings"""
     
-    print("🔒 Applying Critical Security Fixes...")
+    print(" Applying Critical Security Fixes...")
     print("="*50)
     
     # Fix 1: Update railway.py settings
@@ -90,7 +90,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 """
     
-    print("📝 Security fixes prepared. To apply:")
+    print(" Security fixes prepared. To apply:")
     print("1. Update config/settings/railway.py with the fixes above")
     print("2. Set DJANGO_SECRET_KEY environment variable in Railway")
     print("3. Restart the application")
@@ -472,8 +472,8 @@ if __name__ == '__main__':
     main()
 '''
     
-    print("🚀 Improved proxy server created")
-    print("📝 To apply:")
+    print(" Improved proxy server created")
+    print(" To apply:")
     print("1. Save as 'server_django_proxy_improved.py'")
     print("2. Update Procfile to use the improved version")
     print("3. Deploy to Railway")
@@ -519,14 +519,14 @@ SENTRY_DSN=<sentry-dsn-if-using>
 NEW_RELIC_LICENSE_KEY=<new-relic-key-if-using>
 """
     
-    print("📋 Environment Variables Template:")
+    print(" Environment Variables Template:")
     print(env_template)
     
     return env_template
 
 
 def main():
-    print("🔧 QA Team - Immediate Fixes and Improvements")
+    print(" QA Team - Immediate Fixes and Improvements")
     print("="*60)
     print()
     
@@ -536,7 +536,7 @@ def main():
     # Save security fixes
     with open('qa_security_fixes.py', 'w') as f:
         f.write(security_fixes)
-    print("✅ Security fixes saved to: qa_security_fixes.py")
+    print(" Security fixes saved to: qa_security_fixes.py")
     print()
     
     # 2. Improved Proxy Server
@@ -545,7 +545,7 @@ def main():
     # Save improved proxy
     with open('server_django_proxy_improved.py', 'w') as f:
         f.write(improved_proxy)
-    print("✅ Improved proxy saved to: server_django_proxy_improved.py")
+    print(" Improved proxy saved to: server_django_proxy_improved.py")
     print()
     
     # 3. Environment Template
@@ -554,34 +554,34 @@ def main():
     # Save environment template
     with open('railway_env_template.txt', 'w') as f:
         f.write(env_template)
-    print("✅ Environment template saved to: railway_env_template.txt")
+    print(" Environment template saved to: railway_env_template.txt")
     print()
     
     print("="*60)
-    print("📌 IMMEDIATE ACTION ITEMS:")
+    print(" IMMEDIATE ACTION ITEMS:")
     print("="*60)
     print()
-    print("1. 🔴 CRITICAL - Security:")
+    print("1.  CRITICAL - Security:")
     print("   - Apply security fixes to config/settings/railway.py")
     print("   - Set DJANGO_SECRET_KEY in Railway environment")
     print("   - Deploy immediately")
     print()
-    print("2. ⚠️  HIGH - Reliability:")
+    print("2.   HIGH - Reliability:")
     print("   - Replace proxy server with improved version")
     print("   - Update Procfile to use new server")
     print("   - Test in staging first if possible")
     print()
-    print("3. 📊 MEDIUM - Monitoring:")
+    print("3.  MEDIUM - Monitoring:")
     print("   - Set up basic monitoring (uptime, response time)")
     print("   - Configure alerts for failures")
     print("   - Review logs daily")
     print()
-    print("4. 📝 ONGOING - Documentation:")
+    print("4.  ONGOING - Documentation:")
     print("   - Document all configuration changes")
     print("   - Create runbook for common issues")
     print("   - Train team on new procedures")
     print()
-    print("✅ All fixes and templates have been generated!")
+    print(" All fixes and templates have been generated!")
     print("Please review and apply according to priority.")
 
 

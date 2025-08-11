@@ -25,7 +25,7 @@ if environ:
     except Exception as e:
         environ = None
 
-# environ이 없거나 실패한 경우 환경변수 직접 사용
+# environ      
 if not environ:
     class MockEnv:
         def __init__(self):
@@ -45,13 +45,13 @@ DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY', default=os.environ.get('SECRET_KEY'))
 
-# 프로덕션 환경에서 SECRET_KEY 검증
+#   SECRET_KEY 
 if not DEBUG and SECRET_KEY:
     from .security_settings import validate_secret_key
     try:
         validate_secret_key(SECRET_KEY)
     except ValueError:
-        # Railway 배포 시에만 임시 키 허용
+        # Railway     
         if 'RAILWAY_ENVIRONMENT' in os.environ:
             pass
         else:
@@ -75,16 +75,16 @@ HUGGINGFACE_API_KEY = os.environ.get('HUGGINGFACE_API_KEY', '')
 # Twelve Labs API Key (for video understanding)
 TWELVE_LABS_API_KEY = os.environ.get('TWELVE_LABS_API_KEY', '')
 
-# EXAONE API Key 제거 - Gemini만 사용
+# EXAONE API Key  - Gemini 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-# ALLOWED_HOSTS 환경변수 처리
+# ALLOWED_HOSTS  
 from .security_settings import get_allowed_hosts
 ALLOWED_HOSTS = get_allowed_hosts()
 
-# 보안 설정 추가
+#   
 from .security_settings import get_secure_settings
 secure_settings = get_secure_settings(DEBUG)
 for key, value in secure_settings.items():
@@ -113,7 +113,7 @@ PROJECT_APPS = [
     "admin_dashboard",
     "documents",
     "calendars",
-    "invitations",
+    "invitations",  # 활성화 - 초대 기능 필수
     "analytics",
 ]
 
@@ -128,8 +128,9 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "config.middleware.RailwayHealthCheckMiddleware",  # 헬스체크 - 가장 먼저
-    "corsheaders.middleware.CorsMiddleware",  # CORS를 두번째로 이동 (중요!)
+    "config.middleware.RailwayHealthCheckMiddleware",  #  -  
+    "config.middleware.GlobalErrorHandlingMiddleware",  # 글로벌 에러 핸들링 (500 에러 방지)
+    "corsheaders.middleware.CorsMiddleware",  # CORS   (!)
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -138,8 +139,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "config.middleware.CORSDebugMiddleware",  # CORS 디버그 재활성화
-    # 일단 아래 미들웨어들은 비활성화 (Railway 502 문제 해결 후 재활성화)
+    "config.middleware.CORSDebugMiddleware",  # CORS  
+    #     (Railway 502    )
     # "config.middleware.SecurityHeadersMiddleware",
     # "config.rate_limit_middleware.RateLimitMiddleware",
     # "config.rate_limit_middleware.SecurityAuditMiddleware",
@@ -187,12 +188,12 @@ import dj_database_url
 DATABASE_URL = env('DATABASE_URL', default=None)
 
 if DATABASE_URL:
-    # Railway나 Heroku 같은 플랫폼에서 DATABASE_URL 사용
+    # Railway Heroku   DATABASE_URL 
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)
     }
 else:
-    # 개발 환경에서 개별 환경변수 사용
+    #     
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -224,10 +225,24 @@ USE_TZ = True
 # Static files
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "../vridge_front/build/static"),
-]
+
+# Static files directories
+STATICFILES_DIRS = []
+
+# Django static directory (if exists)
+django_static_dir = os.path.join(BASE_DIR, "static")
+if os.path.exists(django_static_dir):
+    STATICFILES_DIRS.append(django_static_dir)
+
+# Frontend build static directory (only if exists - for production)
+frontend_static_dir = os.path.join(BASE_DIR, "../vridge_front/build/static")
+if os.path.exists(frontend_static_dir):
+    STATICFILES_DIRS.append(frontend_static_dir)
+    
+# Next.js .next/static directory (for development)
+nextjs_static_dir = os.path.join(BASE_DIR, "../vridge_front/.next/static")
+if os.path.exists(nextjs_static_dir):
+    STATICFILES_DIRS.append(nextjs_static_dir)
 
 # Media files
 MEDIA_URL = "/media/"
@@ -319,7 +334,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Cache Configuration
-# Redis가 없는 경우 데이터베이스 캐시 사용
+# Redis     
 try:
     import django_redis
     CACHES = {
@@ -340,7 +355,7 @@ try:
         }
     }
 except ImportError:
-    # Redis가 없으면 데이터베이스 캐시 사용
+    # Redis    
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
@@ -396,24 +411,24 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Session and CSRF cookie settings
-# 보안 설정은 security_settings.py에서 환경에 따라 자동으로 처리됨
-CSRF_COOKIE_HTTPONLY = False  # JavaScript에서 CSRF 토큰 접근 필요
+#   security_settings.py    
+CSRF_COOKIE_HTTPONLY = False  # JavaScript CSRF   
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_AGE = 86400  # 24시간
-SESSION_SAVE_EVERY_REQUEST = True  # 활동 시 세션 갱신
+SESSION_COOKIE_AGE = 86400  # 24
+SESSION_SAVE_EVERY_REQUEST = True  #    
 
-# Rate Limiting 설정 (기본값 - 운영 환경)
+# Rate Limiting  ( -  )
 RATE_LIMITING_ENABLED = env('RATE_LIMITING_ENABLED', default=not DEBUG)
 
-# IP 화이트리스트 (환경변수로 오버라이드 가능)
+# IP  (  )
 RATE_LIMIT_WHITELIST_IPS = env.list('RATE_LIMIT_WHITELIST_IPS', default=[
     '127.0.0.1',
     '::1',
 ])
 
-# 테스트 계정 화이트리스트
+#   
 RATE_LIMIT_TEST_ACCOUNTS = env.list('RATE_LIMIT_TEST_ACCOUNTS', default=[])
 
 # Logging Configuration

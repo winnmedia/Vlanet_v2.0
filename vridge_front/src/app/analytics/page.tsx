@@ -29,7 +29,7 @@ export default function AnalyticsPage() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // JWT 토큰이 있으면 포함
+            // JWT   
             ...(localStorage.getItem('token') && {
               'Authorization': `Bearer ${localStorage.getItem('token')}`
             })
@@ -44,9 +44,9 @@ export default function AnalyticsPage() {
         setData(result);
       } catch (err) {
         console.error('Analytics fetch error:', err);
-        setError(err instanceof Error ? err.message : '데이터를 불러올 수 없습니다.');
+        setError(err instanceof Error ? err.message : '   .');
         
-        // Fallback 데이터
+        // Fallback 
         setData({
           totalProjects: 0,
           totalFeedbacks: 0,
@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner />
-        <span className="ml-3 text-lg">분석 데이터를 불러오는 중...</span>
+        <span className="ml-3 text-lg">   ...</span>
       </div>
     );
   }
@@ -75,12 +75,12 @@ export default function AnalyticsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics Dashboard</h1>
-        <p className="text-gray-600">프로젝트와 피드백에 대한 상세한 분석 정보를 확인하세요.</p>
+        <p className="text-gray-600">      .</p>
         {error && (
           <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700">
-            <p className="font-medium">알림</p>
+            <p className="font-medium"></p>
             <p>{error}</p>
-            <p className="text-sm mt-1">임시 데이터를 표시합니다.</p>
+            <p className="text-sm mt-1">  .</p>
           </div>
         )}
       </div>
@@ -89,7 +89,7 @@ export default function AnalyticsPage() {
         <Card className="p-6 bg-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">총 프로젝트</p>
+              <p className="text-sm font-medium text-gray-600"> </p>
               <p className="text-2xl font-bold text-gray-900">{data?.totalProjects || 0}</p>
             </div>
             <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -103,7 +103,7 @@ export default function AnalyticsPage() {
         <Card className="p-6 bg-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">총 피드백</p>
+              <p className="text-sm font-medium text-gray-600"> </p>
               <p className="text-2xl font-bold text-gray-900">{data?.totalFeedbacks || 0}</p>
             </div>
             <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -117,7 +117,7 @@ export default function AnalyticsPage() {
         <Card className="p-6 bg-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">총 조회수</p>
+              <p className="text-sm font-medium text-gray-600"> </p>
               <p className="text-2xl font-bold text-gray-900">{data?.totalViews || 0}</p>
             </div>
             <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
         <Card className="p-6 bg-white shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">평균 평점</p>
+              <p className="text-sm font-medium text-gray-600"> </p>
               <p className="text-2xl font-bold text-gray-900">{data?.averageRating?.toFixed(1) || '0.0'}</p>
             </div>
             <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -145,7 +145,7 @@ export default function AnalyticsPage() {
       </div>
 
       <Card className="p-6 bg-white shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">최근 활동</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4"> </h2>
         {data?.recentActivity && data.recentActivity.length > 0 ? (
           <div className="space-y-3">
             {data.recentActivity.map((activity) => (
@@ -162,7 +162,7 @@ export default function AnalyticsPage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-8">최근 활동이 없습니다.</p>
+          <p className="text-gray-500 text-center py-8">  .</p>
         )}
       </Card>
     </div>

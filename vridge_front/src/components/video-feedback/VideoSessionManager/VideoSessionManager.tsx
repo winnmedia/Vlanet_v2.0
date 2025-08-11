@@ -64,14 +64,14 @@ export default function VideoSessionManager({
     requireApproval: false
   });
 
-  // 세션 생성
+  //  
   const createSession = async () => {
     try {
       setConnectionStatus('connecting');
       
       const result = await videoFeedbackService.createVideoSession({
         video_id: video.id,
-        title: `${video.title} - 실시간 협업`,
+        title: `${video.title} -  `,
         settings: {
           allow_comments: sessionSettings.allowComments,
           sync_playback: sessionSettings.syncPlayback,
@@ -83,15 +83,15 @@ export default function VideoSessionManager({
         onSessionChange?.(result.data);
         setConnectionStatus('connected');
         setIsConnected(true);
-        success('협업 세션을 시작했습니다.');
+        success('  .');
       }
     } catch (err) {
       setConnectionStatus('disconnected');
-      error('세션 생성에 실패했습니다.');
+      error('  .');
     }
   };
 
-  // 세션 참여
+  //  
   const joinSession = async () => {
     if (!session) return;
     
@@ -102,15 +102,15 @@ export default function VideoSessionManager({
       if (result.success) {
         setConnectionStatus('connected');
         setIsConnected(true);
-        success('세션에 참여했습니다.');
+        success(' .');
       }
     } catch (err) {
       setConnectionStatus('disconnected');
-      error('세션 참여에 실패했습니다.');
+      error('  .');
     }
   };
 
-  // 세션 떠나기
+  //  
   const leaveSession = async () => {
     if (!session) return;
     
@@ -119,41 +119,41 @@ export default function VideoSessionManager({
       onSessionChange?.(null);
       setConnectionStatus('disconnected');
       setIsConnected(false);
-      success('세션에서 나갔습니다.');
+      success(' .');
     } catch (err) {
-      error('세션 떠나기에 실패했습니다.');
+      error('  .');
     }
   };
 
-  // 연결 상태 표시 컴포넌트
+  //    
   const ConnectionIndicator = () => (
     <div className="flex items-center gap-2">
       {connectionStatus === 'connected' ? (
         <>
           <Wifi size={16} className="text-green-500" />
-          <span className="text-sm text-green-600">연결됨</span>
+          <span className="text-sm text-green-600"></span>
         </>
       ) : connectionStatus === 'connecting' ? (
         <>
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500" />
-          <span className="text-sm text-blue-600">연결중...</span>
+          <span className="text-sm text-blue-600">...</span>
         </>
       ) : (
         <>
           <WifiOff size={16} className="text-gray-400" />
-          <span className="text-sm text-gray-500">연결 안됨</span>
+          <span className="text-sm text-gray-500"> </span>
         </>
       )}
     </div>
   );
 
-  // 참여자 역할 아이콘
+  //   
   const getRoleIcon = (user: User, isHost: boolean) => {
     if (isHost) return <Crown size={14} className="text-yellow-500" />;
     return <Eye size={14} className="text-gray-400" />;
   };
 
-  // 참여자 색상
+  //  
   const getUserColor = (userId: number) => {
     const colors = [
       'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
@@ -162,13 +162,13 @@ export default function VideoSessionManager({
     return colors[userId % colors.length];
   };
 
-  // 실시간 상태 업데이트 (WebSocket 시뮬레이션)
+  //    (WebSocket )
   useEffect(() => {
     if (!session || !isConnected) return;
 
-    // 실제로는 WebSocket을 통해 실시간 업데이트를 받아야 함
+    //  WebSocket     
     const interval = setInterval(() => {
-      // 세션 상태 업데이트 로직
+      //    
     }, 5000);
 
     return () => clearInterval(interval);
@@ -176,13 +176,13 @@ export default function VideoSessionManager({
 
   return (
     <div className={`bg-white border rounded-lg shadow-sm ${className}`}>
-      {/* 헤더 */}
+      {/*  */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Users size={20} className="text-blue-600" />
             <div>
-              <h3 className="font-medium text-gray-800">실시간 협업</h3>
+              <h3 className="font-medium text-gray-800"> </h3>
               <div className="text-sm text-gray-500">
                 <ConnectionIndicator />
               </div>
@@ -213,26 +213,26 @@ export default function VideoSessionManager({
         </div>
       </div>
 
-      {/* 세션 상태 */}
+      {/*   */}
       <div className="p-4">
         {!session ? (
           <div className="text-center py-6">
             <Users size={48} className="mx-auto mb-4 text-gray-300" />
-            <h4 className="text-lg font-medium text-gray-600 mb-2">협업 세션 없음</h4>
+            <h4 className="text-lg font-medium text-gray-600 mb-2">  </h4>
             <p className="text-sm text-gray-500 mb-4">
-              새 협업 세션을 시작하거나 기존 세션에 참여하세요.
+                    .
             </p>
             <Button
               onClick={createSession}
               disabled={connectionStatus === 'connecting'}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {connectionStatus === 'connecting' ? '생성중...' : '새 세션 시작'}
+              {connectionStatus === 'connecting' ? '...' : '  '}
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
-            {/* 세션 정보 */}
+            {/*   */}
             <div className="p-3 bg-blue-50 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <Activity size={16} className="text-blue-600" />
@@ -240,21 +240,21 @@ export default function VideoSessionManager({
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600">호스트:</span>
+                  <span className="text-gray-600">:</span>
                   <span className="ml-2 font-medium">
                     {session.host.first_name} {session.host.last_name}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600">참여자:</span>
-                  <span className="ml-2 font-medium">{session.participants.length}명</span>
+                  <span className="text-gray-600">:</span>
+                  <span className="ml-2 font-medium">{session.participants.length}</span>
                 </div>
               </div>
             </div>
 
-            {/* 참여자 미리보기 */}
+            {/*   */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">참여중:</span>
+              <span className="text-sm text-gray-600">:</span>
               <div className="flex -space-x-2">
                 {session.participants.slice(0, 5).map((participant) => (
                   <div
@@ -273,7 +273,7 @@ export default function VideoSessionManager({
               </div>
             </div>
 
-            {/* 현재 재생 상태 */}
+            {/*    */}
             {session.playback_state && (
               <div className="p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-3 text-sm">
@@ -284,7 +284,7 @@ export default function VideoSessionManager({
                       <Pause size={14} className="text-gray-500" />
                     )}
                     <span className={session.playback_state.is_playing ? 'text-green-600' : 'text-gray-600'}>
-                      {session.playback_state.is_playing ? '재생중' : '일시정지'}
+                      {session.playback_state.is_playing ? '' : ''}
                     </span>
                   </div>
                   
@@ -297,13 +297,13 @@ export default function VideoSessionManager({
                   </div>
                   
                   <span className="text-gray-500 text-xs ml-auto">
-                    {session.playback_state.playback_rate}x 속도
+                    {session.playback_state.playback_rate}x 
                   </span>
                 </div>
               </div>
             )}
 
-            {/* 세션 컨트롤 */}
+            {/*   */}
             <div className="flex gap-2">
               {isConnected ? (
                 <Button
@@ -312,7 +312,7 @@ export default function VideoSessionManager({
                   className="flex-1 text-red-600 hover:bg-red-50"
                 >
                   <UserMinus size={16} className="mr-2" />
-                  세션 떠나기
+                   
                 </Button>
               ) : (
                 <Button
@@ -321,7 +321,7 @@ export default function VideoSessionManager({
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                 >
                   <UserPlus size={16} className="mr-2" />
-                  {connectionStatus === 'connecting' ? '참여중...' : '세션 참여'}
+                  {connectionStatus === 'connecting' ? '...' : ' '}
                 </Button>
               )}
             </div>
@@ -329,11 +329,11 @@ export default function VideoSessionManager({
         )}
       </div>
 
-      {/* 참여자 모달 */}
+      {/*   */}
       <Modal
         isOpen={showParticipants}
         onClose={() => setShowParticipants(false)}
-        title="참여자 목록"
+        title=" "
       >
         {session && (
           <div className="space-y-3">
@@ -351,7 +351,7 @@ export default function VideoSessionManager({
                     {getRoleIcon(participant, session.host.id === participant.id)}
                     {session.host.id === participant.id && (
                       <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
-                        호스트
+                        
                       </span>
                     )}
                   </div>
@@ -359,7 +359,7 @@ export default function VideoSessionManager({
                 </div>
                 
                 <div className="text-xs text-gray-400">
-                  {participant.id === currentUser.id ? '나' : '참여자'}
+                  {participant.id === currentUser.id ? '' : ''}
                 </div>
               </div>
             ))}
@@ -367,11 +367,11 @@ export default function VideoSessionManager({
         )}
       </Modal>
 
-      {/* 설정 모달 */}
+      {/*   */}
       <Modal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
-        title="세션 설정"
+        title=" "
       >
         <div className="space-y-4">
           <div className="space-y-3">
@@ -383,8 +383,8 @@ export default function VideoSessionManager({
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <div>
-                <div className="font-medium text-gray-800">실시간 채팅 허용</div>
-                <div className="text-sm text-gray-500">참여자가 실시간으로 채팅할 수 있습니다.</div>
+                <div className="font-medium text-gray-800">  </div>
+                <div className="text-sm text-gray-500">    .</div>
               </div>
             </label>
 
@@ -396,8 +396,8 @@ export default function VideoSessionManager({
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <div>
-                <div className="font-medium text-gray-800">재생 동기화</div>
-                <div className="text-sm text-gray-500">모든 참여자의 재생 상태를 동기화합니다.</div>
+                <div className="font-medium text-gray-800"> </div>
+                <div className="text-sm text-gray-500">    .</div>
               </div>
             </label>
 
@@ -409,15 +409,15 @@ export default function VideoSessionManager({
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <div>
-                <div className="font-medium text-gray-800">피드백 작성 시 자동 정지</div>
-                <div className="text-sm text-gray-500">누군가 피드백을 작성하면 영상이 자동으로 정지됩니다.</div>
+                <div className="font-medium text-gray-800">    </div>
+                <div className="text-sm text-gray-500">     .</div>
               </div>
             </label>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              최대 참여자 수
+                
             </label>
             <input
               type="number"
@@ -434,14 +434,14 @@ export default function VideoSessionManager({
               onClick={() => setShowSettings(false)}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
-              저장
+              
             </Button>
             <Button
               variant="ghost"
               onClick={() => setShowSettings(false)}
               className="px-6"
             >
-              취소
+              
             </Button>
           </div>
         </div>

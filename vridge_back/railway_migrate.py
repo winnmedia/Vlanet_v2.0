@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Railway에서 마이그레이션 실행 스크립트
+Railway   
 """
 import os
 import sys
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway_safe')
 
 try:
@@ -15,23 +15,23 @@ try:
     from django.core.management import call_command
     from django.db import connection
     
-    print("🚀 Railway 마이그레이션 시작...")
+    print(" Railway  ...")
     
-    # 데이터베이스 연결 테스트
+    #   
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
-        print("✅ 데이터베이스 연결 성공")
+        print("   ")
     except Exception as e:
-        print(f"❌ 데이터베이스 연결 실패: {e}")
+        print(f"   : {e}")
         sys.exit(1)
     
-    # 마이그레이션 실행
-    print("📋 마이그레이션 실행 중...")
+    #  
+    print("   ...")
     call_command('migrate', '--noinput')
-    print("✅ 마이그레이션 완료")
+    print("  ")
     
-    # 테이블 확인
+    #  
     with connection.cursor() as cursor:
         if connection.vendor == 'postgresql':
             cursor.execute("""
@@ -59,14 +59,14 @@ try:
             columns = [row[1] for row in cursor.fetchall()]
             email_verified_exists = 'email_verified' in columns
         
-        print(f"✅ 테이블 검증:")
-        print(f"   users_notification: {'존재' if notification_exists else '없음'}")
-        print(f"   email_verified 컬럼: {'존재' if email_verified_exists else '없음'}")
+        print(f"  :")
+        print(f"   users_notification: {'' if notification_exists else ''}")
+        print(f"   email_verified : {'' if email_verified_exists else ''}")
     
-    print("🎉 Railway 마이그레이션 성공!")
+    print(" Railway  !")
     
 except Exception as e:
-    print(f"❌ 마이그레이션 오류: {str(e)}")
+    print(f"  : {str(e)}")
     import traceback
     traceback.print_exc()
     sys.exit(1)

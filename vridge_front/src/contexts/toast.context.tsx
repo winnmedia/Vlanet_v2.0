@@ -43,7 +43,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
     setToasts(prev => [...prev, newToast]);
 
-    // 자동 제거
+    //  
     if (newToast.duration && newToast.duration > 0) {
       setTimeout(() => {
         removeToast(id);
@@ -182,7 +182,7 @@ function ToastItem({
             onClick={onRemove}
             className="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-md"
           >
-            <span className="sr-only">닫기</span>
+            <span className="sr-only"></span>
             <X className="h-4 w-4" />
           </button>
         </div>

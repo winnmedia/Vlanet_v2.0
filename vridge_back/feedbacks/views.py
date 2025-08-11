@@ -22,7 +22,7 @@ from . import serializers
 from projects import models as project_model
 from users.utils import user_validator
 
-# FeedbackListView 임포트
+# FeedbackListView 
 from .views_list import FeedbackListView
 
 logger = logging.getLogger(__name__)
@@ -38,20 +38,20 @@ class ProjectFeedbackListView(APIView):
                 id=project_id
             )
             
-            # 프로젝트 접근 권한 확인
+            #    
             if not (project.user == request.user or 
                     project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "프로젝트에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
-            # 피드백 목록 조회
+            #   
             feedbacks = models.FeedBack.objects.filter(
                 project=project
             ).select_related('user').prefetch_related('messages', 'comments')
             
-            # 페이지네이션
+            # 
             page = request.GET.get('page', 1)
             per_page = request.GET.get('per_page', 20)
             paginator = Paginator(feedbacks, per_page)
@@ -73,7 +73,7 @@ class ProjectFeedbackListView(APIView):
         except Exception as e:
             logger.error(f"Error in ProjectFeedbackListView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -84,15 +84,15 @@ class ProjectFeedbackListView(APIView):
                 id=project_id
             )
             
-            # 프로젝트 접근 권한 확인
+            #    
             if not (project.user == request.user or 
                     project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "프로젝트에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
-            # 시리얼라이저 데이터 준비
+            #   
             data = request.data.copy()
             data['project'] = project.id
             
@@ -104,13 +104,13 @@ class ProjectFeedbackListView(APIView):
             if serializer.is_valid():
                 feedback = serializer.save()
                 
-                # 파일 처리
+                #  
                 if 'video_file' in request.FILES:
                     video_file = request.FILES['video_file']
                     feedback.files = video_file
                     feedback.file_size = video_file.size
                     
-                    # 비디오 메타데이터 설정
+                    #   
                     if video_file.content_type.startswith('video/'):
                         feedback.encoding_status = 'pending'
                     
@@ -138,7 +138,7 @@ class ProjectFeedbackListView(APIView):
         except Exception as e:
             logger.error(f"Error in ProjectFeedbackListView POST: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -155,12 +155,12 @@ class FeedbackDetailView(APIView):
                 id=feedback_id
             )
             
-            # 접근 권한 확인
+            #   
             project = feedback.project
             if project and not (project.user == request.user or 
                                project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "피드백에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -174,7 +174,7 @@ class FeedbackDetailView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackDetailView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -185,12 +185,12 @@ class FeedbackDetailView(APIView):
                 id=feedback_id
             )
             
-            # 수정 권한 확인 (작성자 또는 프로젝트 소유자)
+            #    (   )
             project = feedback.project
             if not (feedback.user == request.user or 
                    (project and project.user == request.user)):
                 return Response(
-                    {"message": "수정 권한이 없습니다."},
+                    {"message": "  ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -213,7 +213,7 @@ class FeedbackDetailView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackDetailView PUT: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -224,16 +224,16 @@ class FeedbackDetailView(APIView):
                 id=feedback_id
             )
             
-            # 삭제 권한 확인
+            #   
             project = feedback.project
             if not (feedback.user == request.user or 
                    (project and project.user == request.user)):
                 return Response(
-                    {"message": "삭제 권한이 없습니다."},
+                    {"message": "  ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
-            # 관련 파일 삭제
+            #   
             if feedback.files:
                 try:
                     feedback.files.delete()
@@ -247,7 +247,7 @@ class FeedbackDetailView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackDetailView DELETE: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -262,12 +262,12 @@ class FeedbackMessageView(APIView):
                 id=feedback_id
             )
             
-            # 접근 권한 확인
+            #   
             project = feedback.project
             if project and not (project.user == request.user or 
                                project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "피드백에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -294,7 +294,7 @@ class FeedbackMessageView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackMessageView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -310,12 +310,12 @@ class FeedbackCommentView(APIView):
                 project_id=project_id
             )
             
-            # 접근 권한 확인
+            #   
             project = feedback.project
             if not (project.user == request.user or 
                    project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "피드백에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -348,7 +348,7 @@ class FeedbackCommentView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackCommentView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -361,10 +361,10 @@ class FeedbackCommentView(APIView):
                 feedback__project_id=project_id
             )
             
-            # 수정 권한 확인 (작성자만)
+            #    ()
             if comment.user != request.user:
                 return Response(
-                    {"message": "수정 권한이 없습니다."},
+                    {"message": "  ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -387,7 +387,7 @@ class FeedbackCommentView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackCommentView PUT: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -400,10 +400,10 @@ class FeedbackCommentView(APIView):
                 feedback__project_id=project_id
             )
             
-            # 삭제 권한 확인 (작성자만)
+            #    ()
             if comment.user != request.user:
                 return Response(
-                    {"message": "삭제 권한이 없습니다."},
+                    {"message": "  ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -414,12 +414,12 @@ class FeedbackCommentView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackCommentView DELETE: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
-# 비디오 업로드 관련 뷰
+#    
 class VideoUploadInitView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -430,19 +430,19 @@ class VideoUploadInitView(APIView):
                 id=project_id
             )
             
-            # 프로젝트 접근 권한 확인
+            #    
             if not (project.user == request.user or 
                     project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "프로젝트에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
-            # 업로드 세션 생성
+            #   
             import uuid
             upload_id = str(uuid.uuid4())
             
-            # Redis에 업로드 정보 저장 (캐시 사용)
+            # Redis    ( )
             from django.core.cache import cache
             cache.set(f'upload_{upload_id}', {
                 'project_id': project_id,
@@ -451,7 +451,7 @@ class VideoUploadInitView(APIView):
                 'total_size': request.data.get('total_size'),
                 'total_chunks': request.data.get('total_chunks'),
                 'uploaded_chunks': []
-            }, timeout=3600)  # 1시간 타임아웃
+            }, timeout=3600)  # 1 
             
             return Response({
                 'upload_id': upload_id
@@ -460,7 +460,7 @@ class VideoUploadInitView(APIView):
         except Exception as e:
             logger.error(f"Error in VideoUploadInitView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -477,15 +477,15 @@ class VideoUploadChunkView(APIView):
             chunk_index = int(request.data.get('chunk_index'))
             chunk_data = request.FILES.get('chunk_data')
             
-            # 업로드 세션 확인
+            #   
             upload_info = cache.get(f'upload_{upload_id}')
             if not upload_info:
                 return Response(
-                    {"message": "유효하지 않은 업로드 세션입니다."},
+                    {"message": "   ."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # 청크 저장
+            #  
             chunk_path = os.path.join(
                 settings.MEDIA_ROOT, 
                 'temp_uploads', 
@@ -498,7 +498,7 @@ class VideoUploadChunkView(APIView):
                 for chunk in chunk_data.chunks():
                     f.write(chunk)
             
-            # 업로드 정보 업데이트
+            #   
             upload_info['uploaded_chunks'].append(chunk_index)
             cache.set(f'upload_{upload_id}', upload_info, timeout=3600)
             
@@ -510,7 +510,7 @@ class VideoUploadChunkView(APIView):
         except Exception as e:
             logger.error(f"Error in VideoUploadChunkView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -525,22 +525,22 @@ class VideoUploadCompleteView(APIView):
             
             upload_id = request.data.get('upload_id')
             
-            # 업로드 세션 확인
+            #   
             upload_info = cache.get(f'upload_{upload_id}')
             if not upload_info:
                 return Response(
-                    {"message": "유효하지 않은 업로드 세션입니다."},
+                    {"message": "   ."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # 모든 청크가 업로드되었는지 확인
+            #    
             if len(upload_info['uploaded_chunks']) != upload_info['total_chunks']:
                 return Response(
-                    {"message": "모든 청크가 업로드되지 않았습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # 청크 병합
+            #  
             temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp_uploads', upload_id)
             final_path = os.path.join(temp_dir, upload_info['filename'])
             
@@ -549,26 +549,26 @@ class VideoUploadCompleteView(APIView):
                     chunk_path = os.path.join(temp_dir, f'chunk_{i}')
                     with open(chunk_path, 'rb') as chunk_file:
                         final_file.write(chunk_file.read())
-                    os.remove(chunk_path)  # 청크 파일 삭제
+                    os.remove(chunk_path)  #   
             
-            # 피드백 생성
+            #  
             project = get_object_or_404(project_model.Project, id=project_id)
             
             with open(final_path, 'rb') as f:
                 feedback = models.FeedBack.objects.create(
                     project=project,
                     user=request.user,
-                    title=f"업로드: {upload_info['filename']}",
+                    title=f": {upload_info['filename']}",
                     files=File(f, name=upload_info['filename']),
                     file_size=upload_info['total_size'],
                     encoding_status='pending'
                 )
             
-            # 임시 파일 삭제
+            #   
             os.remove(final_path)
             os.rmdir(temp_dir)
             
-            # 캐시 삭제
+            #  
             cache.delete(f'upload_{upload_id}')
             
             return Response({
@@ -578,7 +578,7 @@ class VideoUploadCompleteView(APIView):
         except Exception as e:
             logger.error(f"Error in VideoUploadCompleteView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -594,12 +594,12 @@ class FeedbackEncodingStatusView(APIView):
                 project_id=project_id
             )
             
-            # 접근 권한 확인
+            #   
             project = feedback.project
             if not (project.user == request.user or 
                    project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "피드백에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
@@ -611,7 +611,7 @@ class FeedbackEncodingStatusView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackEncodingStatusView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -619,7 +619,7 @@ class FeedbackEncodingStatusView(APIView):
         if feedback.encoding_status == 'completed':
             return 100
         elif feedback.encoding_status == 'processing':
-            # 인코딩 진행률 계산 로직
+            #    
             progress = 0
             if feedback.video_file_low: progress += 25
             if feedback.video_file_medium: progress += 25
@@ -641,18 +641,18 @@ class FeedbackStreamView(APIView):
                 project_id=project_id
             )
             
-            # 접근 권한 확인
+            #   
             project = feedback.project
             if not (project.user == request.user or 
                    project.members.filter(user=request.user).exists()):
                 return Response(
-                    {"message": "피드백에 접근 권한이 없습니다."},
+                    {"message": "   ."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             
             if not feedback.hls_playlist_url:
                 return Response(
-                    {"message": "스트리밍이 준비되지 않았습니다."},
+                    {"message": "  ."},
                     status=status.HTTP_404_NOT_FOUND
                 )
             
@@ -663,12 +663,12 @@ class FeedbackStreamView(APIView):
         except Exception as e:
             logger.error(f"Error in FeedbackStreamView: {str(e)}")
             return Response(
-                {"message": "서버 오류가 발생했습니다."},
+                {"message": "  ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
-# 하위 호환성을 위한 기존 뷰들
+#     
 @method_decorator(csrf_exempt, name='dispatch')
 class FeedbackDetail(View):
     @user_validator
@@ -676,21 +676,21 @@ class FeedbackDetail(View):
         try:
             feedback = models.FeedBack.objects.get(id=id)
             
-            # Django REST framework View 호출
+            # Django REST framework View 
             api_view = FeedbackDetailView.as_view()
             response = api_view(request._request, feedback_id=id)
             
-            # Response를 JsonResponse로 변환
+            # Response JsonResponse 
             return JsonResponse(response.data, safe=False)
             
         except models.FeedBack.DoesNotExist:
-            return JsonResponse({"message": "피드백을 찾을 수 없습니다."}, status=404)
+            return JsonResponse({"message": "   ."}, status=404)
         except Exception as e:
             logger.error(f"Error in FeedbackDetail: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
 
 
-# 하위 호환성을 위한 추가 클래스들
+#     
 @method_decorator(csrf_exempt, name='dispatch')
 class FeedbackFileDelete(View):
     @user_validator
@@ -698,22 +698,22 @@ class FeedbackFileDelete(View):
         try:
             feedback = models.FeedBack.objects.get(id=id)
             
-            # 권한 확인
+            #  
             if feedback.user != request.user:
-                return JsonResponse({"message": "삭제 권한이 없습니다."}, status=403)
+                return JsonResponse({"message": "  ."}, status=403)
             
             if feedback.files:
                 feedback.files.delete()
                 feedback.files = None
                 feedback.save()
             
-            return JsonResponse({"message": "파일이 삭제되었습니다."}, status=200)
+            return JsonResponse({"message": " ."}, status=200)
             
         except models.FeedBack.DoesNotExist:
-            return JsonResponse({"message": "피드백을 찾을 수 없습니다."}, status=404)
+            return JsonResponse({"message": "   ."}, status=404)
         except Exception as e:
             logger.error(f"Error in FeedbackFileDelete: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -729,10 +729,10 @@ class VideoEncodingStatus(View):
             })
             
         except models.FeedBack.DoesNotExist:
-            return JsonResponse({"message": "피드백을 찾을 수 없습니다."}, status=404)
+            return JsonResponse({"message": "   ."}, status=404)
         except Exception as e:
             logger.error(f"Error in VideoEncodingStatus: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
     
     def _calculate_progress(self, feedback):
         if feedback.encoding_status == 'completed':
@@ -756,43 +756,43 @@ class FeedbackMessageUpdate(View):
             data = json.loads(request.body)
             message = models.FeedBackMessage.objects.get(id=message_id)
             
-            # 권한 확인
+            #  
             if message.user != request.user:
-                return JsonResponse({"message": "수정 권한이 없습니다."}, status=403)
+                return JsonResponse({"message": "  ."}, status=403)
             
             message.text = data.get('text', message.text)
             message.save()
             
             return JsonResponse({
-                "message": "메시지가 수정되었습니다.",
+                "message": " .",
                 "id": message.id,
                 "text": message.text
             })
             
         except models.FeedBackMessage.DoesNotExist:
-            return JsonResponse({"message": "메시지를 찾을 수 없습니다."}, status=404)
+            return JsonResponse({"message": "   ."}, status=404)
         except Exception as e:
             logger.error(f"Error in FeedbackMessageUpdate: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
     
     @user_validator
     def delete(self, request, message_id):
         try:
             message = models.FeedBackMessage.objects.get(id=message_id)
             
-            # 권한 확인
+            #  
             if message.user != request.user:
-                return JsonResponse({"message": "삭제 권한이 없습니다."}, status=403)
+                return JsonResponse({"message": "  ."}, status=403)
             
             message.delete()
             
-            return JsonResponse({"message": "메시지가 삭제되었습니다."}, status=200)
+            return JsonResponse({"message": " ."}, status=200)
             
         except models.FeedBackMessage.DoesNotExist:
-            return JsonResponse({"message": "메시지를 찾을 수 없습니다."}, status=404)
+            return JsonResponse({"message": "   ."}, status=404)
         except Exception as e:
             logger.error(f"Error in FeedbackMessageUpdate: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -803,9 +803,9 @@ class FeedbackMessageStatusUpdate(View):
             data = json.loads(request.body)
             message = models.FeedBackMessage.objects.get(id=message_id)
             
-            # 권한 확인 (프로젝트 소유자만)
+            #   ( )
             if message.feedback.project and message.feedback.project.user != request.user:
-                return JsonResponse({"message": "상태 변경 권한이 없습니다."}, status=403)
+                return JsonResponse({"message": "   ."}, status=403)
             
             new_status = data.get('status')
             if new_status in ['pending', 'completed']:
@@ -813,36 +813,36 @@ class FeedbackMessageStatusUpdate(View):
                 message.save()
                 
                 return JsonResponse({
-                    "message": "상태가 변경되었습니다.",
+                    "message": " .",
                     "id": message.id,
                     "status": message.status
                 })
             else:
-                return JsonResponse({"message": "유효하지 않은 상태값입니다."}, status=400)
+                return JsonResponse({"message": "  ."}, status=400)
             
         except models.FeedBackMessage.DoesNotExist:
-            return JsonResponse({"message": "메시지를 찾을 수 없습니다."}, status=404)
+            return JsonResponse({"message": "   ."}, status=404)
         except Exception as e:
             logger.error(f"Error in FeedbackMessageStatusUpdate: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
 
 
-# 프로젝트별 피드백 하위 호환성 클래스
+#     
 @method_decorator(csrf_exempt, name='dispatch')
 class ProjectFeedbackList(View):
     @user_validator
     def get(self, request, project_id):
         try:
-            # REST API 뷰 호출
+            # REST API  
             api_view = ProjectFeedbackListView.as_view()
             response = api_view(request._request, project_id=project_id)
             
-            # Response를 JsonResponse로 변환
+            # Response JsonResponse 
             return JsonResponse(response.data, safe=False)
             
         except Exception as e:
             logger.error(f"Error in ProjectFeedbackList: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -850,13 +850,13 @@ class ProjectFeedbackCreate(View):
     @user_validator
     def post(self, request, project_id):
         try:
-            # REST API 뷰 호출
+            # REST API  
             api_view = ProjectFeedbackListView.as_view()
             response = api_view(request._request, project_id=project_id)
             
-            # Response를 JsonResponse로 변환
+            # Response JsonResponse 
             return JsonResponse(response.data, safe=False, status=response.status_code)
             
         except Exception as e:
             logger.error(f"Error in ProjectFeedbackCreate: {str(e)}")
-            return JsonResponse({"message": "서버 오류가 발생했습니다."}, status=500)
+            return JsonResponse({"message": "  ."}, status=500)

@@ -18,13 +18,13 @@ export default function VideoFeedbackContent() {
   const [selectedVideo, setSelectedVideo] = useState<VideoFile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // URL 파라미터에서 비디오 ID 추출
+  // URL   ID 
   const videoIdFromUrl = searchParams.get('video');
   const projectIdFromUrl = searchParams.get('project');
 
   useEffect(() => {
     if (!isAuthenticated) {
-      // 로그인 페이지로 리다이렉트
+      //   
       window.location.href = '/login';
       return;
     }
@@ -32,7 +32,7 @@ export default function VideoFeedbackContent() {
     loadVideos();
   }, [isAuthenticated]);
 
-  // 특정 비디오 ID가 URL에 있으면 해당 비디오 선택
+  //   ID URL    
   useEffect(() => {
     if (videoIdFromUrl && videos.length > 0) {
       const video = videos.find(v => v.id === videoIdFromUrl);
@@ -52,20 +52,20 @@ export default function VideoFeedbackContent() {
       if (result.success && result.data) {
         setVideos(result.data);
         
-        // 첫 번째 비디오를 기본 선택 (URL 파라미터가 없는 경우)
+        //      (URL   )
         if (!videoIdFromUrl && result.data.length > 0) {
           setSelectedVideo(result.data[0]);
         }
       } else {
-        // 샘플 데이터 (API 없는 경우 대비)
+        //   (API   )
         const sampleVideos: VideoFile[] = [
           {
             id: 'sample-1',
-            title: '제품 소개 영상 v1.2',
-            description: '새로운 제품 기능을 소개하는 마케팅 영상',
-            file_url: '/sample-video.mp4', // 실제 환경에서는 유효한 비디오 URL
+            title: '   v1.2',
+            description: '     ',
+            file_url: '/sample-video.mp4', //     URL
             thumbnail_url: '/sample-thumbnail.jpg',
-            duration: 180, // 3분
+            duration: 180, // 3
             resolution: '1920x1080',
             file_size: 85000000, // 85MB
             format: 'mp4',
@@ -75,11 +75,11 @@ export default function VideoFeedbackContent() {
           },
           {
             id: 'sample-2',
-            title: '사용자 가이드 영상',
-            description: '앱 사용법을 설명하는 튜토리얼 영상',
+            title: '  ',
+            description: '    ',
             file_url: '/sample-video-2.mp4',
             thumbnail_url: '/sample-thumbnail-2.jpg',
-            duration: 240, // 4분
+            duration: 240, // 4
             resolution: '1920x1080',
             file_size: 120000000, // 120MB
             format: 'mp4',
@@ -95,8 +95,8 @@ export default function VideoFeedbackContent() {
         }
       }
     } catch (err) {
-      console.error('비디오 목록 로딩 실패:', err);
-      error('비디오 목록을 불러오는데 실패했습니다.');
+      console.error('   :', err);
+      error('   .');
     } finally {
       setIsLoading(false);
     }
@@ -130,13 +130,13 @@ export default function VideoFeedbackContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">영상이 없습니다</h3>
-            <p className="text-gray-500 mb-4">피드백을 받을 영상을 먼저 업로드해주세요.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2"> </h3>
+            <p className="text-gray-500 mb-4">    .</p>
             <button 
               onClick={() => window.location.href = '/video-planning'}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
             >
-              영상 기획 페이지로 이동
+                 
             </button>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function VideoFeedbackContent() {
     return (
       <DashboardLayout>
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">영상 피드백 시스템</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">  </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video) => (
@@ -191,7 +191,7 @@ export default function VideoFeedbackContent() {
     );
   }
 
-  // user 객체가 없는 경우 기본값 제공
+  // user     
   const currentUserData: User = user || {
     id: 'guest',
     username: 'Guest User',

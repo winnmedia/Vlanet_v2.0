@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-모든 Django 앱의 import 문제를 확인하는 스크립트
+ Django  import   
 """
 import os
 import sys
 
-# Django 설정
+# Django 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.railway")
 
-print("=== Django Import 체크 ===\n")
+print("=== Django Import  ===\n")
 
-# 필수 패키지 확인
+#   
 packages = [
     'django',
     'rest_framework',
@@ -24,39 +24,39 @@ packages = [
 for package in packages:
     try:
         __import__(package)
-        print(f"✓ {package}")
+        print(f" {package}")
     except ImportError as e:
-        print(f"✗ {package}: {e}")
+        print(f" {package}: {e}")
 
-print("\n=== Django 앱 import 체크 ===\n")
+print("\n=== Django  import  ===\n")
 
-# Django 설정 로드
+# Django  
 try:
     import django
     django.setup()
-    print("✓ Django 설정 로드 성공")
+    print(" Django   ")
 except Exception as e:
-    print(f"✗ Django 설정 로드 실패: {e}")
+    print(f" Django   : {e}")
     sys.exit(1)
 
-# 앱 import 확인
+#  import 
 from django.conf import settings
 
 for app in settings.INSTALLED_APPS:
     try:
         __import__(app)
-        print(f"✓ {app}")
+        print(f" {app}")
     except ImportError as e:
-        print(f"✗ {app}: {e}")
+        print(f" {app}: {e}")
 
-print("\n=== URL 설정 체크 ===\n")
+print("\n=== URL   ===\n")
 
-# URL 패턴 로드
+# URL  
 try:
     from django.urls import include, path
     from config.urls import urlpatterns
-    print(f"✓ URL 패턴 로드 성공 ({len(urlpatterns)}개)")
+    print(f" URL    ({len(urlpatterns)})")
 except Exception as e:
-    print(f"✗ URL 패턴 로드 실패: {e}")
+    print(f" URL   : {e}")
 
-print("\n모든 체크 완료!")
+print("\n  !")

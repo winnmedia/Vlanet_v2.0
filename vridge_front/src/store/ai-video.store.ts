@@ -13,21 +13,21 @@ import {
 const mockPromptTemplates: PromptTemplate[] = [
   {
     id: '1',
-    name: '자연 풍경',
+    name: ' ',
     category: 'nature',
     template: 'Beautiful {location} landscape at {time_of_day}, {weather} weather, cinematic lighting',
     variables: ['location', 'time_of_day', 'weather']
   },
   {
     id: '2',
-    name: '도시 장면',
+    name: ' ',
     category: 'urban',
     template: 'Modern city {scene_type} with {mood} atmosphere, {lighting} lighting',
     variables: ['scene_type', 'mood', 'lighting']
   },
   {
     id: '3',
-    name: '인물 초상',
+    name: ' ',
     category: 'portrait',
     template: 'Professional portrait of {subject}, {expression} expression, {background} background',
     variables: ['subject', 'expression', 'background']

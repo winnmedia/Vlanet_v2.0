@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Railway 테스트용 최소 서버
+Railway   
 """
 import os
 import sys
@@ -12,7 +12,7 @@ print(f"PORT: {os.environ.get('PORT', 'NOT SET')}")
 print(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE', 'NOT SET')}")
 print("=" * 50)
 
-# 최소한의 Django 설정
+#  Django 
 try:
     from django.conf import settings
     from django.http import JsonResponse

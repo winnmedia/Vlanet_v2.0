@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.db import transaction
 import requests
 
-# Redis를 선택적으로 임포트
+# Redis  
 try:
     import redis
     HAS_REDIS = True
@@ -36,7 +36,7 @@ class StoryDevelopmentService:
     Implements AI-powered story evolution based on user settings
     """
     
-    # 장르별 스토리 발전 템플릿
+    #    
     GENRE_TEMPLATES = {
         'action': {
             'opening': 'High-energy opening with dynamic movement',
@@ -76,7 +76,7 @@ class StoryDevelopmentService:
         }
     }
     
-    # 톤별 시각적 스타일
+    #   
     TONE_STYLES = {
         'professional': {
             'visual_style': 'clean, minimalist, corporate aesthetic',
@@ -116,7 +116,7 @@ class StoryDevelopmentService:
         }
     }
     
-    # 강도별 비주얼 인텐시티
+    #   
     INTENSITY_LEVELS = {
         1: {'motion': 'minimal', 'effects': 'subtle', 'pace': 'slow'},
         2: {'motion': 'gentle', 'effects': 'soft', 'pace': 'relaxed'},
@@ -133,10 +133,10 @@ class StoryDevelopmentService:
     @staticmethod
     def develop_story_from_project(project: Project) -> Dict[str, Any]:
         """
-        프로젝트 설정에 기반하여 스토리를 발전시킵니다
+            
         """
         try:
-            # 프로젝트 메타데이터에서 설정값 추출
+            #    
             project_data = project.project_data or {}
             
             genre = project_data.get('genre', 'commercial')
@@ -146,17 +146,17 @@ class StoryDevelopmentService:
             key_message = project_data.get('key_message', '')
             brand_values = project_data.get('brand_values', [])
             
-            # 스토리 구조 생성
+            #   
             story_structure = StoryDevelopmentService._create_story_structure(
                 genre, tone, intensity, target_audience, key_message, brand_values
             )
             
-            # 씬별 프롬프트 생성
+            #   
             scene_prompts = StoryDevelopmentService._generate_scene_prompts(
                 story_structure, genre, tone, intensity
             )
             
-            # 인서트 샷 추천
+            #   
             insert_shots = StoryDevelopmentService._suggest_insert_shots(
                 genre, tone, brand_values
             )
@@ -185,7 +185,7 @@ class StoryDevelopmentService:
     @staticmethod
     def _create_story_structure(genre: str, tone: str, intensity: int, 
                               target_audience: str, key_message: str, brand_values: List[str]) -> Dict:
-        """장르와 톤에 맞는 스토리 구조 생성"""
+        """     """
         
         template = StoryDevelopmentService.GENRE_TEMPLATES.get(genre, 
                    StoryDevelopmentService.GENRE_TEMPLATES['commercial'])
@@ -196,7 +196,7 @@ class StoryDevelopmentService:
         intensity_guide = StoryDevelopmentService.INTENSITY_LEVELS.get(intensity, 
                          StoryDevelopmentService.INTENSITY_LEVELS[5])
         
-        # 타겟 오디언스별 어조 조정
+        #    
         audience_adjustments = {
             'teenagers': 'energetic and trendy language with modern references',
             'young_adults': 'authentic and relatable with aspirational elements',
@@ -223,14 +223,14 @@ class StoryDevelopmentService:
     
     @staticmethod
     def _generate_scene_prompts(story_structure: Dict, genre: str, tone: str, intensity: int) -> List[Dict]:
-        """스토리 구조를 바탕으로 씬별 프롬프트 생성"""
+        """     """
         
         tone_style = StoryDevelopmentService.TONE_STYLES.get(tone, 
                      StoryDevelopmentService.TONE_STYLES['professional'])
         intensity_guide = StoryDevelopmentService.INTENSITY_LEVELS.get(intensity, 
                          StoryDevelopmentService.INTENSITY_LEVELS[5])
         
-        # 12개 씬을 4개 액트에 배분 (3-3-3-3)
+        # 12  4   (3-3-3-3)
         scenes = [
             # Act 1: Opening (Scenes 1-3)
             {
@@ -364,7 +364,7 @@ class StoryDevelopmentService:
     
     @staticmethod
     def _suggest_insert_shots(genre: str, tone: str, brand_values: List[str]) -> List[Dict]:
-        """장르와 톤에 맞는 인서트 샷 추천"""
+        """     """
         
         base_inserts = {
             'action': [
@@ -639,22 +639,22 @@ class AIVideoService:
     
     @staticmethod
     def _create_enhanced_prompt(scene: Scene, genre: str, tone: str, intensity: int) -> Dict:
-        """장르, 톤, 강도를 반영한 향상된 프롬프트 생성"""
+        """, ,     """
         tone_style = StoryDevelopmentService.TONE_STYLES.get(tone, 
                      StoryDevelopmentService.TONE_STYLES['professional'])
         intensity_guide = StoryDevelopmentService.INTENSITY_LEVELS.get(intensity, 
                          StoryDevelopmentService.INTENSITY_LEVELS[5])
         
-        # 기본 프롬프트 생성
+        #   
         base_prompt = f"A cinematic shot for {scene.title}. {scene.description}"
         
-        # 톤과 스타일을 반영한 시각적 요소
+        #     
         visual_elements = f", {tone_style['visual_style']}, {tone_style['lighting']}, {tone_style['composition']}"
         
-        # 강도에 따른 모션과 효과
+        #    
         motion_effects = f", {intensity_guide['motion']} motion, {intensity_guide['effects']} effects"
         
-        # 장르별 특화 요소
+        #   
         genre_elements = {
             'action': ', dynamic action, high energy',
             'drama': ', emotional depth, character focus',
@@ -666,13 +666,13 @@ class AIVideoService:
         
         genre_addon = genre_elements.get(genre, ', professional quality')
         
-        # 최종 프롬프트 조합
+        #   
         enhanced_image_prompt = base_prompt + visual_elements + genre_addon + ', high quality, professional cinematography'
         enhanced_video_prompt = base_prompt + visual_elements + motion_effects + genre_addon + ', smooth camera movement'
         
-        # Motion intensity 매핑 (1-10을 BullMQ motion_bucket_id로 변환)
+        # Motion intensity  (1-10 BullMQ motion_bucket_id )
         motion_mapping = {
-            1: 40, 2: 60, 3: 80, 4: 100, 5: 127,  # 기본값 127
+            1: 40, 2: 60, 3: 80, 4: 100, 5: 127,  #  127
             6: 150, 7: 175, 8: 200, 9: 220, 10: 255
         }
         
@@ -943,7 +943,7 @@ class StorageService:
     def download_and_upload_image(source_url: str, filename: str) -> str:
         """Download image from URL and upload to storage"""
         try:
-            # 이미지 다운로드
+            #  
             response = requests.get(source_url, timeout=30)
             if response.status_code == 200:
                 return StorageService.upload_image_from_bytes(response.content, filename)
@@ -992,13 +992,13 @@ class StorageService:
 
 class StoryboardGenerationService:
     """
-    콘티(스토리보드) 생성을 위한 전용 서비스
-    이미지 생성 API와 연동하여 각 씬별 비주얼 콘티 생성
+    ()    
+      API      
     """
     
     @staticmethod
     def generate_storyboard_for_story(story: Story) -> Dict[str, Any]:
-        """스토리 전체에 대한 콘티 생성"""
+        """    """
         try:
             results = []
             total_scenes = story.scenes.count()
@@ -1028,9 +1028,9 @@ class StoryboardGenerationService:
     
     @staticmethod
     def generate_scene_storyboard(scene: Scene) -> Dict[str, Any]:
-        """개별 씬에 대한 콘티 이미지 생성"""
+        """     """
         try:
-            # 선택된 이미지 프롬프트 가져오기
+            #    
             selected_prompt = scene.prompts.filter(
                 prompt_type='image',
                 is_selected=True,
@@ -1043,7 +1043,7 @@ class StoryboardGenerationService:
                     'error': 'No active image prompt found for scene'
                 }
             
-            # AI 프로바이더 설정 가져오기
+            # AI   
             try:
                 provider_config = AIProviderConfig.objects.get(
                     provider=scene.story.ai_provider,
@@ -1055,21 +1055,21 @@ class StoryboardGenerationService:
                     'error': f'No active provider config for {scene.story.ai_provider}'
                 }
             
-            # 콘티 전용 파라미터 설정
+            #    
             storyboard_params = {
                 **selected_prompt.parameters,
-                'aspect_ratio': '16:9',  # 스토리보드는 16:9 비율 고정
-                'style_preset': 'storyboard',  # 스토리보드 스타일
-                'cfg_scale': 6.0,  # 안정적인 생성을 위해 낮은 CFG
-                'steps': 25  # 빠른 생성을 위해 단계 수 감소
+                'aspect_ratio': '16:9',  #  16:9  
+                'style_preset': 'storyboard',  #  
+                'cfg_scale': 6.0,  #     CFG
+                'steps': 25  #      
             }
             
-            # 콘티 전용 프롬프트 생성
+            #    
             storyboard_prompt = StoryboardGenerationService._create_storyboard_prompt(
                 selected_prompt.user_prompt, scene
             )
             
-            # 이미지 생성 실행
+            #   
             generation_result = AIProviderIntegration.generate_image(
                 provider_config,
                 storyboard_prompt,
@@ -1077,7 +1077,7 @@ class StoryboardGenerationService:
             )
             
             if generation_result['success']:
-                # 씬에 스토리보드 URL 저장
+                #   URL 
                 scene.preview_image_url = generation_result['preview_url']
                 scene.generation_metadata = {
                     **scene.generation_metadata,
@@ -1105,17 +1105,17 @@ class StoryboardGenerationService:
     
     @staticmethod
     def _create_storyboard_prompt(base_prompt: str, scene: Scene) -> str:
-        """스토리보드 전용 프롬프트 생성"""
-        # 스토리보드 스타일 접두사
+        """   """
+        #   
         storyboard_style = "Professional storyboard illustration, clean lineart, cinematic framing"
         
-        # 씬 정보 추가
+        #   
         scene_info = f"Scene {scene.order}: {scene.title}"
         
-        # 시간 정보 (타임코드)
+        #   ()
         timecode = f"[{scene.start_time:.1f}s - {scene.end_time:.1f}s]"
         
-        # 최종 프롬프트 구성
+        #   
         storyboard_prompt = f"{storyboard_style}. {scene_info} {timecode}. {base_prompt}. Black and white sketch style with clear composition, professional storyboard format"
         
         return storyboard_prompt
@@ -1123,21 +1123,21 @@ class StoryboardGenerationService:
 
 class PDFGenerationService:
     """
-    PDF 기획안 생성 서비스
-    스토리, 콘티, 설정값을 포함한 완전한 기획안 PDF 생성
+    PDF   
+    , ,     PDF 
     """
     
     @staticmethod
     def generate_project_brief(story: Story) -> Dict[str, Any]:
-        """프로젝트 기획안 PDF 생성"""
+        """  PDF """
         try:
-            # 프로젝트 데이터 수집
+            #   
             project_data = PDFGenerationService._collect_project_data(story)
             
-            # PDF 생성 (실제 구현에서는 ReportLab 등 사용)
+            # PDF  (  ReportLab  )
             pdf_content = PDFGenerationService._create_pdf_content(project_data)
             
-            # 파일 저장 및 URL 생성
+            #    URL 
             pdf_filename = f"project_brief_{story.id}_{timezone.now().strftime('%Y%m%d_%H%M%S')}.pdf"
             pdf_url = StorageService.upload_pdf(pdf_content, pdf_filename)
             
@@ -1161,18 +1161,18 @@ class PDFGenerationService:
     
     @staticmethod
     def _collect_project_data(story: Story) -> Dict:
-        """프로젝트 데이터 수집"""
+        """  """
         project = story.project
         project_data = project.project_data or {} if project else {}
         
-        # 스토리 구조 데이터
+        #   
         story_structure = None
         if project:
             story_dev_result = StoryDevelopmentService.develop_story_from_project(project)
             if story_dev_result['success']:
                 story_structure = story_dev_result['story_structure']
         
-        # 씬 데이터 수집
+        #   
         scenes_data = []
         for scene in story.scenes.all():
             scene_data = {
@@ -1187,7 +1187,7 @@ class PDFGenerationService:
                 'prompts': []
             }
             
-            # 프롬프트 정보
+            #  
             for prompt in scene.prompts.filter(is_active=True):
                 scene_data['prompts'].append({
                     'type': prompt.prompt_type,
@@ -1219,14 +1219,14 @@ class PDFGenerationService:
             'scenes': scenes_data,
             'scene_count': len(scenes_data),
             'sections': ['Cover', 'Project Overview', 'Story Structure', 'Scene Breakdown', 'Technical Specifications'],
-            'page_count': 5 + len(scenes_data)  # 기본 5페이지 + 씬별 1페이지
+            'page_count': 5 + len(scenes_data)  #  5 +  1
         }
     
     @staticmethod
     def _create_pdf_content(project_data: Dict) -> bytes:
-        """PDF 내용 생성 (placeholder - 실제로는 ReportLab 사용)"""
-        # 실제 구현에서는 ReportLab을 사용하여 PDF 생성
-        # 여기서는 간단한 텍스트 기반 내용 생성
+        """PDF   (placeholder -  ReportLab )"""
+        #   ReportLab  PDF 
+        #      
         
         pdf_text_content = f"""
         VideoPlanet Project Brief
@@ -1255,7 +1255,7 @@ class PDFGenerationService:
         
         """
         
-        # 실제로는 이것을 PDF 바이트로 변환
+        #   PDF  
         return pdf_text_content.encode('utf-8')
 
 
@@ -1269,14 +1269,14 @@ class AIProviderIntegration:
     def generate_image(config: AIProviderConfig, prompt: str, parameters: Dict) -> Dict:
         """Generate image using AI provider"""
         try:
-            # Rate limiting 체크
+            # Rate limiting 
             if not config.is_within_rate_limits():
                 return {
                     'success': False, 
                     'error': 'Rate limit exceeded. Please try again later.'
                 }
             
-            # 프로바이더별 분기
+            #  
             if config.provider == AIProvider.STABILITY_AI:
                 return AIProviderIntegration._stability_ai_image(config, prompt, parameters)
             elif config.provider == AIProvider.OPENAI:
@@ -1313,16 +1313,16 @@ class AIProviderIntegration:
         try:
             import openai
             
-            # DALL-E 3 API 호출
+            # DALL-E 3 API 
             client = openai.OpenAI(
                 api_key=getattr(settings, 'OPENAI_API_KEY', '')
             )
             
-            # DALL-E 3 파라미터 설정
+            # DALL-E 3  
             dalle_params = {
                 'model': 'dall-e-3',
                 'prompt': prompt,
-                'size': parameters.get('size', '1792x1024'),  # 16:9 비율
+                'size': parameters.get('size', '1792x1024'),  # 16:9 
                 'quality': parameters.get('quality', 'standard'),  # standard or hd
                 'style': parameters.get('style', 'natural'),  # natural or vivid
                 'n': 1
@@ -1333,7 +1333,7 @@ class AIProviderIntegration:
             if response.data:
                 image_url = response.data[0].url
                 
-                # 이미지 다운로드 후 스토리지에 업로드
+                #     
                 final_url = StorageService.download_and_upload_image(image_url, f"dalle_{uuid.uuid4().hex[:8]}.png")
                 
                 return {
@@ -1362,7 +1362,7 @@ class AIProviderIntegration:
     def _stability_ai_image(config: AIProviderConfig, prompt: str, parameters: Dict) -> Dict:
         """Generate image using Stability AI"""
         try:
-            # Stability AI API endpoint - 최신 SDXL 모델 사용
+            # Stability AI API endpoint -  SDXL  
             endpoint = config.api_endpoint or "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
             
             headers = {
@@ -1371,7 +1371,7 @@ class AIProviderIntegration:
                 "Accept": "application/json"
             }
             
-            # Negative prompt 추가 지원
+            # Negative prompt  
             text_prompts = [{"text": prompt, "weight": 1}]
             if 'negative_prompt' in parameters and parameters['negative_prompt']:
                 text_prompts.append({
@@ -1397,20 +1397,20 @@ class AIProviderIntegration:
                 # Extract image data
                 image_data = result['artifacts'][0]['base64']
                 
-                # Base64 이미지를 저장하고 업로드
+                # Base64   
                 import base64
                 import io
                 from PIL import Image
                 
-                # Base64 디코딩
+                # Base64 
                 image_bytes = base64.b64decode(image_data)
                 image = Image.open(io.BytesIO(image_bytes))
                 
-                # 임시 파일로 저장 후 업로드
+                #     
                 filename = f"stability_{uuid.uuid4().hex[:8]}.png"
                 preview_url = StorageService.upload_image_from_bytes(image_bytes, filename)
                 
-                # 사용량 기록
+                #  
                 config.record_usage(config.cost_per_image)
                 
                 return {

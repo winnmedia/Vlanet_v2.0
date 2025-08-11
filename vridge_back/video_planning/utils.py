@@ -1,5 +1,5 @@
 """
-기획안 내보내기 관련 유틸리티 함수
+    
 """
 
 import re
@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class TextValidator:
-    """텍스트 검증 유틸리티"""
+    """  """
     
-    # 악성 패턴 (간단한 XSS, SQL 인젝션 방지)
+    #   ( XSS, SQL  )
     MALICIOUS_PATTERNS = [
         r'<script[^>]*>.*?</script>',
         r'javascript:',
@@ -31,7 +31,7 @@ class TextValidator:
     @classmethod
     def validate_text_input(cls, text: str) -> Dict[str, Any]:
         """
-        입력 텍스트 검증
+          
         
         Returns:
             {
@@ -43,21 +43,21 @@ class TextValidator:
         issues = []
         sanitized_text = text.strip()
         
-        # 길이 검증
+        #  
         if len(sanitized_text) < 50:
-            issues.append("텍스트가 너무 짧습니다 (최소 50자)")
+            issues.append("   ( 50)")
         elif len(sanitized_text) > 10000:
-            issues.append("텍스트가 너무 깁니다 (최대 10,000자)")
+            issues.append("   ( 10,000)")
         
-        # 악성 패턴 검사
+        #   
         for pattern in cls.MALICIOUS_PATTERNS:
             if re.search(pattern, sanitized_text, re.IGNORECASE):
-                issues.append(f"보안 위험 패턴 감지: {pattern}")
+                issues.append(f"   : {pattern}")
         
-        # HTML 태그 제거 (기본적인 XSS 방지)
+        # HTML   ( XSS )
         sanitized_text = re.sub(r'<[^>]+>', '', sanitized_text)
         
-        # 연속 공백 정리
+        #   
         sanitized_text = re.sub(r'\s+', ' ', sanitized_text)
         
         return {
@@ -68,15 +68,15 @@ class TextValidator:
     
     @classmethod
     def extract_keywords(cls, text: str, max_keywords: int = 10) -> List[str]:
-        """텍스트에서 키워드 추출"""
-        # 간단한 키워드 추출 (실제로는 더 정교한 NLP 라이브러리 사용 권장)
+        """  """
+        #    (   NLP   )
         words = re.findall(r'\b\w{3,}\b', text.lower())
         
-        # 불용어 제거 (한국어 기본 불용어)
-        stop_words = {'그리고', '하지만', '그러나', '따라서', '그래서', '또한', '이것', '그것', '이런', '그런'}
+        #   (  )
+        stop_words = {'', '', '', '', '', '', '', '', '', ''}
         keywords = [word for word in words if word not in stop_words]
         
-        # 빈도수 기반 정렬
+        #   
         word_count = {}
         for word in keywords:
             word_count[word] = word_count.get(word, 0) + 1
@@ -86,18 +86,18 @@ class TextValidator:
 
 
 class APIRateLimiter:
-    """API 호출 제한 관리"""
+    """API   """
     
     @staticmethod
     def check_rate_limit(user_id: str, service: str, limit: int = 10, window: int = 3600) -> Dict[str, Any]:
         """
-        사용자별 API 호출 제한 확인
+         API   
         
         Args:
-            user_id: 사용자 ID
-            service: 서비스명 (gemini, google_slides)
-            limit: 제한 횟수
-            window: 시간 윈도우 (초)
+            user_id:  ID
+            service:  (gemini, google_slides)
+            limit:  
+            window:   ()
         
         Returns:
             {
@@ -110,7 +110,7 @@ class APIRateLimiter:
         current_count = cache.get(cache_key, 0)
         
         if current_count >= limit:
-            # 제한 초과
+            #  
             ttl = cache.ttl(cache_key)
             reset_time = datetime.now() + timedelta(seconds=ttl if ttl > 0 else window)
             return {
@@ -119,7 +119,7 @@ class APIRateLimiter:
                 'reset_time': reset_time
             }
         
-        # 카운트 증가
+        #  
         cache.set(cache_key, current_count + 1, window)
         
         return {
@@ -130,11 +130,11 @@ class APIRateLimiter:
 
 
 class ResponseFormatter:
-    """API 응답 포맷터"""
+    """API  """
     
     @staticmethod
-    def success_response(data: Any, message: str = "성공") -> Dict[str, Any]:
-        """성공 응답 포맷"""
+    def success_response(data: Any, message: str = "") -> Dict[str, Any]:
+        """  """
         return {
             'success': True,
             'message': message,
@@ -144,7 +144,7 @@ class ResponseFormatter:
     
     @staticmethod
     def error_response(error: str, error_code: str = None, details: Any = None) -> Dict[str, Any]:
-        """에러 응답 포맷"""
+        """  """
         response = {
             'success': False,
             'error': error,
@@ -161,7 +161,7 @@ class ResponseFormatter:
     
     @staticmethod
     def partial_success_response(data: Any, error: str, completed_steps: List[str]) -> Dict[str, Any]:
-        """부분 성공 응답 포맷"""
+        """   """
         return {
             'success': False,
             'partial_success': True,
@@ -173,11 +173,11 @@ class ResponseFormatter:
 
 
 class ConfigManager:
-    """설정 관리 유틸리티"""
+    """  """
     
     @staticmethod
     def get_api_key(service: str) -> Optional[str]:
-        """서비스별 API 키 조회"""
+        """ API  """
         key_mapping = {
             'gemini': 'GOOGLE_API_KEY',
             'google_slides': 'GOOGLE_APPLICATION_CREDENTIALS',
@@ -197,7 +197,7 @@ class ConfigManager:
     
     @staticmethod
     def get_service_limits() -> Dict[str, Dict[str, int]]:
-        """서비스별 제한값 조회"""
+        """  """
         return {
             'gemini': {
                 'daily_requests': 1500,
@@ -213,11 +213,11 @@ class ConfigManager:
 
 
 class DebugLogger:
-    """디버깅 로거"""
+    """ """
     
     @staticmethod
     def log_api_call(service: str, user_id: str, request_data: Dict, response_data: Dict, duration: float):
-        """API 호출 로그"""
+        """API  """
         log_data = {
             'service': service,
             'user_id': user_id,
@@ -232,7 +232,7 @@ class DebugLogger:
     
     @staticmethod
     def log_error(service: str, error: Exception, context: Dict = None):
-        """에러 로그"""
+        """ """
         log_data = {
             'service': service,
             'error_type': type(error).__name__,
@@ -245,7 +245,7 @@ class DebugLogger:
 
 
 def retry_with_exponential_backoff(max_retries: int = 3, base_delay: float = 1.0):
-    """지수 백오프를 사용한 재시도 데코레이터"""
+    """    """
     def decorator(func):
         def wrapper(*args, **kwargs):
             for attempt in range(max_retries):

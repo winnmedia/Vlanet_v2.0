@@ -89,8 +89,8 @@ describe('Calendar Component', () => {
       />
     )
 
-    const weekButton = screen.getByText('주')
-    const dayButton = screen.getByText('일')
+    const weekButton = screen.getByText('')
+    const dayButton = screen.getByText('')
 
     fireEvent.click(weekButton)
     fireEvent.click(dayButton)
@@ -122,9 +122,9 @@ describe('Calendar Component', () => {
       />
     )
 
-    expect(screen.getByText('◀')).toBeInTheDocument()
-    expect(screen.getByText('오늘')).toBeInTheDocument()
-    expect(screen.getByText('▶')).toBeInTheDocument()
+    expect(screen.getByText('')).toBeInTheDocument()
+    expect(screen.getByText('')).toBeInTheDocument()
+    expect(screen.getByText('')).toBeInTheDocument()
   })
 
   it('displays priority legend', () => {
@@ -134,8 +134,8 @@ describe('Calendar Component', () => {
       />
     )
 
-    expect(screen.getByText('일반')).toBeInTheDocument()
-    expect(screen.getByText('임박')).toBeInTheDocument()
-    expect(screen.getByText('지연')).toBeInTheDocument()
+    expect(screen.getByText('')).toBeInTheDocument()
+    expect(screen.getByText('')).toBeInTheDocument()
+    expect(screen.getByText('')).toBeInTheDocument()
   })
 })

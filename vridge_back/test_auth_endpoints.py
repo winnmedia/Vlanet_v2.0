@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-인증 엔드포인트 테스트 스크립트
-실제 Django 환경에서 URL이 올바르게 매핑되는지 확인
+   
+ Django  URL   
 """
 import os
 import sys
 import django
 import json
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings_base')
 django.setup()
 
@@ -17,14 +17,14 @@ from django.urls import reverse, resolve
 from django.urls.exceptions import NoReverseMatch
 
 def test_auth_endpoints():
-    """인증 엔드포인트 테스트"""
+    """  """
     client = Client()
     
     print("=" * 60)
     print("Authentication Endpoints Test")
     print("=" * 60)
     
-    # 테스트할 엔드포인트 목록
+    #   
     endpoints = [
         ('/api/auth/login/', 'POST', {'email': 'test@test.com', 'password': 'test123'}),
         ('/api/auth/signup/', 'POST', {'email': 'new@test.com', 'nickname': 'newuser', 'password': 'Test123!@#'}),
@@ -35,20 +35,20 @@ def test_auth_endpoints():
     ]
     
     for url, method, data in endpoints:
-        print(f"\n📍 Testing: {method} {url}")
+        print(f"\n Testing: {method} {url}")
         print("-" * 40)
         
-        # URL 리졸브 테스트
+        # URL  
         try:
             match = resolve(url)
-            print(f"✅ URL resolves to: {match.func.__module__}.{match.func.__name__ if hasattr(match.func, '__name__') else match.func.__class__.__name__}")
+            print(f" URL resolves to: {match.func.__module__}.{match.func.__name__ if hasattr(match.func, '__name__') else match.func.__class__.__name__}")
             print(f"   View class: {match.func.view_class if hasattr(match.func, 'view_class') else 'N/A'}")
             print(f"   URL name: {match.url_name}")
         except Exception as e:
-            print(f"❌ URL resolve failed: {e}")
+            print(f" URL resolve failed: {e}")
             continue
         
-        # 실제 요청 테스트
+        #   
         try:
             if method == 'POST':
                 response = client.post(
@@ -62,14 +62,14 @@ def test_auth_endpoints():
             print(f"   Response status: {response.status_code}")
             
             if response.status_code == 404:
-                print(f"   ⚠️  404 Not Found - URL not registered properly")
+                print(f"     404 Not Found - URL not registered properly")
             elif response.status_code == 500:
-                print(f"   ⚠️  500 Internal Server Error")
+                print(f"     500 Internal Server Error")
                 if hasattr(response, 'content'):
                     content = response.content.decode('utf-8')[:200]
                     print(f"   Error preview: {content}")
             elif response.status_code in [200, 201]:
-                print(f"   ✅ Success")
+                print(f"    Success")
             else:
                 print(f"   Response: {response.status_code}")
                 if hasattr(response, 'content'):
@@ -80,10 +80,10 @@ def test_auth_endpoints():
                         pass
                         
         except Exception as e:
-            print(f"❌ Request failed: {e}")
+            print(f" Request failed: {e}")
 
 def check_url_patterns():
-    """URL 패턴 확인"""
+    """URL  """
     from django.urls import get_resolver
     
     print("\n" + "=" * 60)
@@ -103,44 +103,44 @@ def check_url_patterns():
         if hasattr(pattern, 'callback'):
             if hasattr(pattern.callback, 'view_class'):
                 print(f"  → {pattern.callback.view_class}")
-                # View 클래스의 메서드 확인
+                # View   
                 view_class = pattern.callback.view_class
                 methods = [m for m in dir(view_class) if m in ['get', 'post', 'put', 'patch', 'delete']]
                 print(f"  → Supported methods: {', '.join(methods)}")
 
 def test_view_methods():
-    """View 클래스의 메서드 확인"""
+    """View   """
     print("\n" + "=" * 60)
     print("View Class Methods Check")
     print("=" * 60)
     
     try:
         from users.views_auth_fixed import ImprovedSignIn
-        print("\n✅ ImprovedSignIn class:")
+        print("\n ImprovedSignIn class:")
         print(f"   Module: {ImprovedSignIn.__module__}")
         print(f"   Methods: {[m for m in dir(ImprovedSignIn) if not m.startswith('_')]}")
         
-        # post 메서드가 있는지 확인
+        # post   
         if hasattr(ImprovedSignIn, 'post'):
-            print(f"   ✅ Has 'post' method")
+            print(f"    Has 'post' method")
         else:
-            print(f"   ❌ Missing 'post' method")
+            print(f"    Missing 'post' method")
             
     except ImportError as e:
-        print(f"❌ Cannot import ImprovedSignIn: {e}")
+        print(f" Cannot import ImprovedSignIn: {e}")
     
     try:
         from users.views_signup_safe import SafeSignIn, SafeSignUp
-        print("\n✅ SafeSignIn class:")
+        print("\n SafeSignIn class:")
         if hasattr(SafeSignIn, 'post'):
-            print(f"   ✅ Has 'post' method")
+            print(f"    Has 'post' method")
         
-        print("\n✅ SafeSignUp class:")
+        print("\n SafeSignUp class:")
         if hasattr(SafeSignUp, 'post'):
-            print(f"   ✅ Has 'post' method")
+            print(f"    Has 'post' method")
             
     except ImportError as e:
-        print(f"❌ Cannot import Safe views: {e}")
+        print(f" Cannot import Safe views: {e}")
 
 if __name__ == "__main__":
     test_view_methods()

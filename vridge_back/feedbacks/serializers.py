@@ -42,11 +42,11 @@ class FeedBackCommentSerializer(serializers.ModelSerializer):
     
     def get_display_name(self, obj):
         if obj.display_mode == 'anonymous' or obj.security:
-            return '익명'
+            return ''
         elif obj.display_mode == 'nickname' and obj.nickname:
             return obj.nickname
         else:
-            return obj.user.username if obj.user else '알 수 없음'
+            return obj.user.username if obj.user else '  '
     
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user

@@ -5,7 +5,7 @@ import json
 User = get_user_model()
 
 class UserSession(models.Model):
-    """사용자 세션 정보"""
+    """  """
     session_id = models.CharField(max_length=100, unique=True, db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     start_time = models.DateTimeField(auto_now_add=True)
@@ -15,37 +15,37 @@ class UserSession(models.Model):
     user_agent = models.TextField()
     ip_address = models.GenericIPAddressField()
     completion_rate = models.FloatField(default=0.0)  # 0-100
-    final_step = models.IntegerField(default=1)  # 마지막 도달 단계
+    final_step = models.IntegerField(default=1)  #   
     
     class Meta:
         db_table = 'analytics_user_session'
         ordering = ['-start_time']
 
 class UserEvent(models.Model):
-    """사용자 행동 이벤트"""
+    """  """
     EVENT_TYPES = [
-        ('page_enter', '페이지 진입'),
-        ('page_exit', '페이지 이탈'),
-        ('step_enter', '단계 진입'),
-        ('step_exit', '단계 이탈'),
-        ('form_interaction', '폼 인터랙션'),
-        ('button_click', '버튼 클릭'),
-        ('generation_start', '생성 시작'),
-        ('generation_complete', '생성 완료'),
-        ('content_edit', '콘텐츠 편집'),
-        ('save_action', '저장 액션'),
-        ('error_occurred', '오류 발생'),
-        ('user_satisfaction', '사용자 만족도'),
-        ('tab_hidden', '탭 숨김'),
-        ('tab_visible', '탭 표시'),
-        ('scroll_pause', '스크롤 일시정지'),
+        ('page_enter', ' '),
+        ('page_exit', ' '),
+        ('step_enter', ' '),
+        ('step_exit', ' '),
+        ('form_interaction', ' '),
+        ('button_click', ' '),
+        ('generation_start', ' '),
+        ('generation_complete', ' '),
+        ('content_edit', ' '),
+        ('save_action', ' '),
+        ('error_occurred', ' '),
+        ('user_satisfaction', ' '),
+        ('tab_hidden', ' '),
+        ('tab_visible', ' '),
+        ('scroll_pause', ' '),
     ]
     
     session = models.ForeignKey(UserSession, on_delete=models.CASCADE, related_name='events')
     event_id = models.CharField(max_length=100, unique=True, db_index=True)
     event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
     timestamp = models.DateTimeField(auto_now_add=True)
-    data = models.JSONField(default=dict)  # 이벤트별 상세 데이터
+    data = models.JSONField(default=dict)  #   
     
     class Meta:
         db_table = 'analytics_user_event'
@@ -56,7 +56,7 @@ class UserEvent(models.Model):
         ]
 
 class FormInteraction(models.Model):
-    """폼 인터랙션 상세 분석"""
+    """   """
     session = models.ForeignKey(UserSession, on_delete=models.CASCADE, related_name='form_interactions')
     field_name = models.CharField(max_length=100)
     focus_count = models.IntegerField(default=0)
@@ -73,7 +73,7 @@ class FormInteraction(models.Model):
         unique_together = ['session', 'field_name']
 
 class ClickHeatmap(models.Model):
-    """클릭 히트맵 데이터"""
+    """  """
     session = models.ForeignKey(UserSession, on_delete=models.CASCADE, related_name='clicks')
     step = models.IntegerField()
     button_type = models.CharField(max_length=100)
@@ -84,7 +84,7 @@ class ClickHeatmap(models.Model):
         unique_together = ['session', 'step', 'button_type']
 
 class PerformanceMetric(models.Model):
-    """성능 지표"""
+    """ """
     session = models.ForeignKey(UserSession, on_delete=models.CASCADE, related_name='performance_metrics')
     step = models.IntegerField()
     step_duration = models.IntegerField()  # milliseconds
@@ -97,19 +97,19 @@ class PerformanceMetric(models.Model):
         unique_together = ['session', 'step']
 
 class UserInsight(models.Model):
-    """사용자 인사이트 및 추천"""
+    """   """
     INSIGHT_TYPES = [
-        ('time_warning', '시간 경고'),
-        ('content_struggle', '콘텐츠 작성 어려움'),
-        ('generation_delay', '생성 지연'),
-        ('high_edit_count', '높은 편집 횟수'),
-        ('abandonment_risk', '이탈 위험'),
+        ('time_warning', ' '),
+        ('content_struggle', '  '),
+        ('generation_delay', ' '),
+        ('high_edit_count', '  '),
+        ('abandonment_risk', ' '),
     ]
     
     SEVERITY_LEVELS = [
-        ('low', '낮음'),
-        ('medium', '중간'),
-        ('high', '높음'),
+        ('low', ''),
+        ('medium', ''),
+        ('high', ''),
     ]
     
     session = models.ForeignKey(UserSession, on_delete=models.CASCADE, related_name='insights')
@@ -125,7 +125,7 @@ class UserInsight(models.Model):
         ordering = ['-created_at']
 
 class DailyAnalytics(models.Model):
-    """일일 분석 통계"""
+    """  """
     date = models.DateField(unique=True, db_index=True)
     total_sessions = models.IntegerField(default=0)
     total_users = models.IntegerField(default=0)
@@ -148,7 +148,7 @@ class DailyAnalytics(models.Model):
         ordering = ['-date']
 
 class A_BTestGroup(models.Model):
-    """A/B 테스트 그룹"""
+    """A/B  """
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     is_active = models.BooleanField(default=True)
@@ -161,10 +161,10 @@ class A_BTestGroup(models.Model):
         db_table = 'analytics_ab_test_group'
 
 class A_BTestAssignment(models.Model):
-    """A/B 테스트 할당"""
+    """A/B  """
     GROUP_TYPES = [
-        ('control', '대조군'),
-        ('variant', '실험군'),
+        ('control', ''),
+        ('variant', ''),
     ]
     
     test_group = models.ForeignKey(A_BTestGroup, on_delete=models.CASCADE, related_name='assignments')
@@ -177,12 +177,12 @@ class A_BTestAssignment(models.Model):
         unique_together = ['test_group', 'user']
 
 class UserFeedback(models.Model):
-    """사용자 피드백"""
+    """ """
     FEEDBACK_TYPES = [
-        ('satisfaction', '만족도'),
-        ('bug_report', '버그 신고'),
-        ('feature_request', '기능 요청'),
-        ('general', '일반 피드백'),
+        ('satisfaction', ''),
+        ('bug_report', ' '),
+        ('feature_request', ' '),
+        ('general', ' '),
     ]
     
     session = models.ForeignKey(UserSession, on_delete=models.CASCADE, related_name='feedback')

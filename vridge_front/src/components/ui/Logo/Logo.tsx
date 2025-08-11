@@ -23,7 +23,7 @@ export function Logo({
 }: LogoProps) {
   const { width, height, iconSize } = sizeMap[size];
 
-  // 로고 파일 매핑 - vlanet-logo.svg 사용
+  //    - vlanet-logo.svg 
   const logoMap = {
     default: '/images/logo/vlanet-logo.svg',
     white: '/images/logo/vlanet-logo.svg',

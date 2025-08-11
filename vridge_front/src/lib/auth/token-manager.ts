@@ -1,8 +1,8 @@
 import type { AuthTokens } from '@/types';
 
 /**
- * JWT 토큰 관리 클래스 (싱글톤)
- * 토큰의 저장, 검증, 자동 갱신을 담당합니다.
+ * JWT    ()
+ *  , ,   .
  */
 export class TokenManager {
   private static instance: TokenManager;
@@ -16,7 +16,7 @@ export class TokenManager {
   }
 
   /**
-   * 싱글톤 인스턴스 반환
+   *   
    */
   static getInstance(): TokenManager {
     if (!TokenManager.instance) {
@@ -26,7 +26,7 @@ export class TokenManager {
   }
 
   /**
-   * 로컬 스토리지에서 토큰 로드
+   *    
    */
   private loadTokens(): void {
     if (typeof window !== 'undefined') {
@@ -36,7 +36,7 @@ export class TokenManager {
       const expiryTime = localStorage.getItem('token_expiry');
       this.tokenExpiryTime = expiryTime ? parseInt(expiryTime) : null;
 
-      // 기존 토큰이 있으면 자동 갱신 설정
+      //      
       if (this.tokenExpiryTime) {
         this.setupTokenRefresh();
       }
@@ -44,13 +44,13 @@ export class TokenManager {
   }
 
   /**
-   * 토큰 설정 및 저장
+   *    
    */
   public setTokens(tokens: AuthTokens): void {
     this.accessToken = tokens.access;
     this.refreshToken = tokens.refresh;
     
-    // JWT 액세스 토큰은 일반적으로 15분 유효
+    // JWT    15 
     this.tokenExpiryTime = Date.now() + (15 * 60 * 1000);
 
     if (typeof window !== 'undefined') {
@@ -59,15 +59,15 @@ export class TokenManager {
       localStorage.setItem('token_expiry', this.tokenExpiryTime.toString());
     }
 
-    // 자동 토큰 갱신 설정
+    //    
     this.setupTokenRefresh();
   }
 
   /**
-   * 액세스 토큰 반환 (만료 시 자동 갱신)
+   *    (   )
    */
   public getAccessToken(): string | null {
-    // 토큰 만료 확인 (1분 여유 시간 포함)
+    //    (1   )
     if (this.tokenExpiryTime && Date.now() > this.tokenExpiryTime - 60000) {
       this.refreshAccessToken();
     }
@@ -75,14 +75,14 @@ export class TokenManager {
   }
 
   /**
-   * 리프레시 토큰 반환
+   *   
    */
   public getRefreshToken(): string | null {
     return this.refreshToken;
   }
 
   /**
-   * 모든 토큰 삭제
+   *   
    */
   public clearTokens(): void {
     this.accessToken = null;
@@ -102,14 +102,14 @@ export class TokenManager {
   }
 
   /**
-   * 인증 상태 확인
+   *   
    */
   public isAuthenticated(): boolean {
     return !!this.accessToken && (!this.tokenExpiryTime || Date.now() < this.tokenExpiryTime);
   }
 
   /**
-   * 토큰 만료까지 남은 시간 (밀리초)
+   *     ()
    */
   public getTimeUntilExpiry(): number {
     if (!this.tokenExpiryTime) return 0;
@@ -117,17 +117,17 @@ export class TokenManager {
   }
 
   /**
-   * 자동 토큰 갱신 설정
+   *    
    */
   private setupTokenRefresh(): void {
     if (!this.tokenExpiryTime || !this.refreshToken) return;
 
-    // 기존 타이머 클리어
+    //   
     if (this.refreshTimeout) {
       clearTimeout(this.refreshTimeout);
     }
 
-    // 만료 2분 전에 갱신 (최소 1분 전)
+    //  2   ( 1 )
     const refreshTime = Math.max(
       this.tokenExpiryTime - Date.now() - (2 * 60 * 1000), 
       60 * 1000
@@ -141,7 +141,7 @@ export class TokenManager {
   }
 
   /**
-   * 액세스 토큰 갱신
+   *   
    */
   private async refreshAccessToken(): Promise<void> {
     if (!this.refreshToken) {
@@ -159,7 +159,7 @@ export class TokenManager {
       if (response.ok) {
         const data = await response.json();
         
-        // 새 액세스 토큰만 업데이트 (리프레시 토큰은 그대로)
+        //     (  )
         this.accessToken = data.access;
         this.tokenExpiryTime = Date.now() + (15 * 60 * 1000);
 
@@ -168,7 +168,7 @@ export class TokenManager {
           localStorage.setItem('token_expiry', this.tokenExpiryTime.toString());
         }
 
-        // 다음 갱신 예약
+        //   
         this.setupTokenRefresh();
         
         console.log('Token refreshed successfully');
@@ -182,17 +182,17 @@ export class TokenManager {
   }
 
   /**
-   * 인증 실패 처리
+   *   
    */
   private handleAuthFailure(): void {
     this.clearTokens();
     
-    // 커스텀 이벤트 발생 (인증 실패를 다른 컴포넌트에 알림)
+    //    (    )
     if (typeof window !== 'undefined') {
       const event = new CustomEvent('auth:failure');
       window.dispatchEvent(event);
       
-      // 로그인 페이지로 리다이렉트 (단, 이미 로그인 페이지가 아닌 경우에만)
+      //    (,     )
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
@@ -200,17 +200,17 @@ export class TokenManager {
   }
 
   /**
-   * 토큰 유효성 검증
+   *   
    */
   public validateTokenFormat(token: string): boolean {
     if (!token) return false;
     
-    // JWT 형식 검증 (3개 부분으로 구성, base64 인코딩)
+    // JWT   (3  , base64 )
     const parts = token.split('.');
     if (parts.length !== 3) return false;
 
     try {
-      // Header와 Payload 디코딩 시도
+      // Header Payload  
       JSON.parse(atob(parts[0]));
       JSON.parse(atob(parts[1]));
       return true;
@@ -220,7 +220,7 @@ export class TokenManager {
   }
 
   /**
-   * JWT 토큰 페이로드 디코딩
+   * JWT   
    */
   public decodeToken(token: string): any {
     try {
@@ -232,7 +232,7 @@ export class TokenManager {
   }
 
   /**
-   * 토큰에서 사용자 ID 추출
+   *   ID 
    */
   public getUserIdFromToken(): number | null {
     if (!this.accessToken) return null;
@@ -242,7 +242,7 @@ export class TokenManager {
   }
 
   /**
-   * 토큰 만료 시간 추출
+   *    
    */
   public getTokenExpiry(): Date | null {
     if (!this.accessToken) return null;
@@ -252,5 +252,5 @@ export class TokenManager {
   }
 }
 
-// 싱글톤 인스턴스 export
+//   export
 export const tokenManager = TokenManager.getInstance();

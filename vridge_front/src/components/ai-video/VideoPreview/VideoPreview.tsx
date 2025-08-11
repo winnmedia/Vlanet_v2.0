@@ -159,7 +159,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
     const handleLoadStart = () => setIsLoading(true);
     const handleCanPlay = () => setIsLoading(false);
     const handleError = () => {
-      setError('비디오를 로드할 수 없습니다.');
+      setError('   .');
       setIsLoading(false);
     };
 
@@ -188,7 +188,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
         await videoRef.current.play();
       } catch (error) {
         console.error('Failed to play video:', error);
-        setError('비디오 재생에 실패했습니다.');
+        setError('  .');
       }
     }
   };
@@ -229,7 +229,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
   if (completedScenes.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">비디오 미리보기</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6"> </h2>
         
         <div className="text-center py-16">
           <div className="text-gray-400 mb-4">
@@ -238,10 +238,10 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
             </svg>
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            미리보기할 비디오가 없습니다
+              
           </h3>
           <p className="text-gray-600">
-            씬을 생성하면 여기서 미리보기할 수 있습니다
+                 
           </p>
         </div>
       </div>
@@ -251,9 +251,9 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900">비디오 미리보기</h2>
+        <h2 className="text-2xl font-bold text-gray-900"> </h2>
         <p className="text-sm text-gray-600 mt-1">
-          {activeScene?.title || '비디오 미리보기'}
+          {activeScene?.title || ' '}
         </p>
       </div>
 
@@ -267,7 +267,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                <span>로딩 중...</span>
+                <span> ...</span>
               </div>
             </div>
           )}
@@ -296,7 +296,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
               }
             }}
           >
-            비디오를 지원하지 않는 브라우저입니다.
+               .
           </video>
 
           {/* Video Controls Overlay */}
@@ -323,10 +323,10 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
                 <h3 className="font-medium text-gray-900">{activeScene.title}</h3>
                 <p className="text-sm text-gray-600 mt-1">{activeScene.description}</p>
                 <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                  <span>길이: {activeScene.duration}초</span>
+                  <span>: {activeScene.duration}</span>
                   {activeScene.generatedAt && (
                     <span>
-                      생성: {activeScene.generatedAt.toLocaleDateString('ko-KR')}
+                      : {activeScene.generatedAt.toLocaleDateString('ko-KR')}
                     </span>
                   )}
                 </div>
@@ -339,7 +339,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
       {/* Scene Selector */}
       {completedScenes.length > 1 && (
         <div className="p-4 border-t border-gray-200">
-          <h3 className="font-medium text-gray-900 mb-3">씬 선택</h3>
+          <h3 className="font-medium text-gray-900 mb-3"> </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {completedScenes.map((scene, index) => (
               <button
@@ -371,7 +371,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
                 
                 <div className="mt-2 text-xs text-gray-700 text-left">
                   <div className="font-medium truncate">{scene.title}</div>
-                  <div className="text-gray-500">{scene.duration}초</div>
+                  <div className="text-gray-500">{scene.duration}</div>
                 </div>
               </button>
             ))}

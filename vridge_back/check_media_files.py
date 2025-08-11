@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Railway에서 미디어 파일 상태 확인 스크립트
+Railway     
 """
 import os
 import sys
@@ -24,7 +24,7 @@ if os.path.exists(settings.MEDIA_ROOT):
         indent = ' ' * 2 * level
         print(f"{indent}{os.path.basename(root)}/")
         subindent = ' ' * 2 * (level + 1)
-        for file in files[:10]:  # 처음 10개 파일만
+        for file in files[:10]:  #  10 
             print(f"{subindent}{file}")
         if len(files) > 10:
             print(f"{subindent}... and {len(files) - 10} more files")
@@ -33,7 +33,7 @@ print(f"\n=== Railway Environment ===")
 print(f"RAILWAY_ENVIRONMENT: {os.environ.get('RAILWAY_ENVIRONMENT', 'Not set')}")
 print(f"RAILWAY_VOLUME_MOUNT_PATH: {os.environ.get('RAILWAY_VOLUME_MOUNT_PATH', 'Not set')}")
 
-# 피드백 파일 디렉토리 체크
+#    
 feedback_dir = os.path.join(settings.MEDIA_ROOT, 'feedback_file')
 print(f"\n=== Feedback Files Directory ===")
 print(f"Path: {feedback_dir}")

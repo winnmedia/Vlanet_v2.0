@@ -27,7 +27,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
   const isUsernameFind = type === 'username';
   const isPasswordReset = type === 'password';
 
-  // 아이디 찾기 또는 비밀번호 재설정 요청
+  //      
   const handleSendRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -51,46 +51,46 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
 
       if (data.success) {
         if (isUsernameFind) {
-          setSuccessMessage('계정 정보가 이메일로 발송되었습니다.');
+          setSuccessMessage('   .');
           onSuccess?.();
         } else {
           setStep('code');
           startResendCooldown();
         }
       } else {
-        setError(data.message || '요청 처리에 실패했습니다.');
+        setError(data.message || '  .');
         onError?.(new Error(data.message));
       }
     } catch (err) {
       const error = err as Error;
-      setError('네트워크 오류가 발생했습니다.');
+      setError('  .');
       onError?.(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 인증 코드 확인 (비밀번호 재설정용)
+  //    ( )
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (verificationCode.length !== 6) {
-      setError('6자리 인증 코드를 입력해주세요.');
+      setError('6   .');
       return;
     }
     setStep('newPassword');
   };
 
-  // 새 비밀번호 설정
+  //   
   const handleSetNewPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.');
+      setError('  .');
       return;
     }
 
     if (newPassword.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.');
+      setError(' 8  .');
       return;
     }
 
@@ -113,22 +113,22 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
       const data = await response.json();
 
       if (data.success) {
-        setSuccessMessage('비밀번호가 성공적으로 변경되었습니다.');
+        setSuccessMessage('  .');
         onSuccess?.();
       } else {
-        setError(data.message || '비밀번호 변경에 실패했습니다.');
+        setError(data.message || '  .');
         onError?.(new Error(data.message));
       }
     } catch (err) {
       const error = err as Error;
-      setError('네트워크 오류가 발생했습니다.');
+      setError('  .');
       onError?.(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 재발송 쿨다운 관리
+  //   
   const startResendCooldown = () => {
     setResendCooldown(60);
     const interval = setInterval(() => {
@@ -142,7 +142,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
     }, 1000);
   };
 
-  // 인증 코드 재발송
+  //   
   const handleResendCode = async () => {
     if (resendCooldown > 0) return;
     
@@ -162,12 +162,12 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
 
       if (data.success) {
         startResendCooldown();
-        alert('인증 코드가 재발송되었습니다.');
+        alert('  .');
       } else {
-        setError(data.message || '재발송에 실패했습니다.');
+        setError(data.message || ' .');
       }
     } catch (err) {
-      setError('네트워크 오류가 발생했습니다.');
+      setError('  .');
     } finally {
       setIsLoading(false);
     }
@@ -175,7 +175,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
 
   return (
     <div className="space-y-6">
-      {/* 성공 메시지 */}
+      {/*   */}
       {successMessage && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -203,21 +203,21 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
           >
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {isUsernameFind ? '계정 찾기' : '비밀번호 재설정'}
+                {isUsernameFind ? ' ' : ' '}
               </label>
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="가입 시 사용한 이메일 주소"
+                placeholder="    "
                 required
                 disabled={isLoading}
                 className="w-full"
               />
               <p className="mt-1 text-xs text-gray-500">
                 {isUsernameFind 
-                  ? '가입 시 사용한 이메일 주소로 아이디 정보를 발송합니다.'
-                  : '가입 시 사용한 이메일 주소로 인증 코드를 발송합니다.'
+                  ? '       .'
+                  : '       .'
                 }
               </p>
             </div>
@@ -245,8 +245,8 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
               disabled={isLoading || !email.trim()}
             >
               {isLoading 
-                ? (isUsernameFind ? '계정 찾는 중...' : '인증 코드 발송 중...') 
-                : (isUsernameFind ? '아이디 찾기' : '인증 코드 발송')
+                ? (isUsernameFind ? '  ...' : '   ...') 
+                : (isUsernameFind ? ' ' : '  ')
               }
             </Button>
           </motion.form>
@@ -264,16 +264,16 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
                 <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
-                <span className="font-medium text-blue-800">인증 코드를 발송했습니다!</span>
+                <span className="font-medium text-blue-800">  !</span>
               </div>
               <p className="text-sm text-blue-700">
-                <span className="font-medium">{email}</span>로 발송된 6자리 인증 코드를 입력해주세요.
+                <span className="font-medium">{email}</span>  6   .
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                인증 코드
+                 
               </label>
               <Input
                 type="text"
@@ -286,7 +286,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
                 maxLength={6}
               />
               <p className="mt-1 text-xs text-gray-500">
-                인증 코드는 10분간 유효합니다.
+                  10 .
               </p>
             </div>
 
@@ -317,7 +317,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
                 disabled={isLoading}
                 className="flex-1"
               >
-                이메일 변경
+                 
               </Button>
               <Button
                 type="submit"
@@ -325,7 +325,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
                 className="flex-1"
                 disabled={isLoading || verificationCode.length !== 6}
               >
-                {isLoading ? '확인 중...' : '다음'}
+                {isLoading ? ' ...' : ''}
               </Button>
             </div>
 
@@ -337,8 +337,8 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors disabled:text-gray-400"
               >
                 {resendCooldown > 0 
-                  ? `재발송까지 ${resendCooldown}초` 
-                  : '인증 코드 재발송'
+                  ? ` ${resendCooldown}` 
+                  : '  '
                 }
               </button>
             </div>
@@ -354,13 +354,13 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
           >
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                새 비밀번호
+                 
               </label>
               <Input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="새 비밀번호 (8자 이상)"
+                placeholder="  (8 )"
                 required
                 disabled={isLoading}
                 className="w-full"
@@ -370,13 +370,13 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                비밀번호 확인
+                 
               </label>
               <Input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="비밀번호를 다시 입력하세요"
+                placeholder="  "
                 required
                 disabled={isLoading}
                 className="w-full"
@@ -405,11 +405,11 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 <div className="text-xs text-yellow-800">
-                  <p className="font-medium mb-1">보안 요구사항</p>
+                  <p className="font-medium mb-1"> </p>
                   <ul className="space-y-0.5">
-                    <li>• 8자 이상 입력</li>
-                    <li>• 영문자와 숫자 조합 권장</li>
-                    <li>• 특수문자 포함 권장</li>
+                    <li>• 8  </li>
+                    <li>•    </li>
+                    <li>•   </li>
                   </ul>
                 </div>
               </div>
@@ -422,7 +422,7 @@ export function FindAccountForm({ type, onSuccess, onError }: FindAccountFormPro
               className="w-full"
               disabled={isLoading || !newPassword || !confirmPassword || newPassword !== confirmPassword}
             >
-              {isLoading ? '비밀번호 변경 중...' : '비밀번호 변경'}
+              {isLoading ? '  ...' : ' '}
             </Button>
           </motion.form>
         )}

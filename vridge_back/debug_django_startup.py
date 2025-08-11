@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Django 시작 문제 디버깅 스크립트
-로컬에서 Django 시작 과정을 단계별로 테스트합니다.
+Django    
+ Django    .
 """
 import os
 import sys
@@ -11,27 +11,27 @@ import socket
 from pathlib import Path
 
 def test_step(name, func):
-    """각 단계 테스트 및 결과 출력"""
+    """     """
     print(f"\n{'='*60}")
     print(f"Testing: {name}")
     print('='*60)
     try:
         result = func()
-        print(f"✓ SUCCESS: {result}")
+        print(f" SUCCESS: {result}")
         return True
     except Exception as e:
-        print(f"✗ FAILED: {e}")
+        print(f" FAILED: {e}")
         return False
 
 def check_python_version():
-    """Python 버전 확인"""
+    """Python  """
     version = sys.version
     if sys.version_info < (3, 8):
         raise Exception(f"Python 3.8+ required, got {version}")
     return f"Python {version}"
 
 def check_django_installed():
-    """Django 설치 확인"""
+    """Django  """
     try:
         import django
         return f"Django {django.get_version()}"
@@ -39,7 +39,7 @@ def check_django_installed():
         raise Exception("Django not installed")
 
 def check_requirements():
-    """필수 패키지 확인"""
+    """  """
     required = ['gunicorn', 'django', 'psycopg2-binary', 'whitenoise', 'django-cors-headers']
     missing = []
     
@@ -54,7 +54,7 @@ def check_requirements():
     return "All required packages installed"
 
 def check_settings():
-    """Django 설정 파일 확인"""
+    """Django   """
     os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings.railway'
     
     try:
@@ -62,11 +62,11 @@ def check_settings():
         settings.configure()
         return f"Settings loaded: DEBUG={settings.DEBUG}"
     except Exception as e:
-        # 이미 설정되어 있을 수 있음
+        #     
         return "Settings already configured or accessible"
 
 def check_database():
-    """데이터베이스 연결 테스트"""
+    """  """
     try:
         result = subprocess.run(
             [sys.executable, 'manage.py', 'dbshell', '--command=SELECT VERSION();'],
@@ -78,7 +78,7 @@ def check_database():
         if result.returncode == 0:
             return f"Database connected: {result.stdout.strip()[:50]}"
         else:
-            # SQLite fallback 확인
+            # SQLite fallback 
             if 'sqlite' in result.stderr.lower() or result.returncode == 1:
                 return "Using SQLite (no PostgreSQL configured)"
             raise Exception(f"Database error: {result.stderr}")
@@ -86,7 +86,7 @@ def check_database():
         raise Exception("Database connection timeout")
 
 def check_migrations():
-    """마이그레이션 상태 확인"""
+    """  """
     result = subprocess.run(
         [sys.executable, 'manage.py', 'showmigrations', '--plan', '--verbosity=0'],
         capture_output=True,
@@ -105,7 +105,7 @@ def check_migrations():
     return f"Migrations: {applied} applied, {pending} pending"
 
 def run_migrations():
-    """마이그레이션 실행"""
+    """ """
     result = subprocess.run(
         [sys.executable, 'manage.py', 'migrate', '--noinput'],
         capture_output=True,
@@ -115,14 +115,14 @@ def run_migrations():
     )
     
     if result.returncode != 0:
-        # 경고는 무시하고 에러만 확인
+        #    
         if 'error' in result.stderr.lower():
             raise Exception(f"Migration failed: {result.stderr[:200]}")
     
     return "Migrations completed"
 
 def check_static_files():
-    """정적 파일 설정 확인"""
+    """   """
     staticfiles_dir = Path('staticfiles')
     if not staticfiles_dir.exists():
         staticfiles_dir.mkdir(exist_ok=True)
@@ -141,7 +141,7 @@ def check_static_files():
     return f"Static files collected to {staticfiles_dir}"
 
 def test_runserver():
-    """Django runserver 테스트"""
+    """Django runserver """
     print("\nTrying to start Django development server...")
     process = subprocess.Popen(
         [sys.executable, 'manage.py', 'runserver', '127.0.0.1:8001', '--noreload'],
@@ -151,21 +151,21 @@ def test_runserver():
         env={**os.environ, 'DJANGO_SETTINGS_MODULE': 'config.settings.railway'}
     )
     
-    # 서버 시작 대기
+    #   
     time.sleep(5)
     
-    # 프로세스 상태 확인
+    #   
     if process.poll() is not None:
         output = process.stdout.read()
         raise Exception(f"Server failed to start: {output[:500]}")
     
-    # 포트 확인
+    #  
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(2)
     result = sock.connect_ex(('127.0.0.1', 8001))
     sock.close()
     
-    # 프로세스 종료
+    #  
     process.terminate()
     process.wait(timeout=5)
     
@@ -175,7 +175,7 @@ def test_runserver():
         raise Exception("Server started but port not accessible")
 
 def test_gunicorn():
-    """Gunicorn 테스트"""
+    """Gunicorn """
     print("\nTrying to start Gunicorn...")
     process = subprocess.Popen(
         [
@@ -192,21 +192,21 @@ def test_gunicorn():
         env={**os.environ, 'DJANGO_SETTINGS_MODULE': 'config.settings.railway'}
     )
     
-    # Gunicorn 시작 대기
+    # Gunicorn  
     time.sleep(5)
     
-    # 프로세스 상태 확인
+    #   
     if process.poll() is not None:
         output = process.stdout.read()
         raise Exception(f"Gunicorn failed to start: {output[:500]}")
     
-    # 포트 확인
+    #  
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(2)
     result = sock.connect_ex(('127.0.0.1', 8002))
     sock.close()
     
-    # 프로세스 종료
+    #  
     process.terminate()
     process.wait(timeout=5)
     
@@ -216,7 +216,7 @@ def test_gunicorn():
         raise Exception("Gunicorn started but port not accessible")
 
 def main():
-    """메인 디버깅 프로세스"""
+    """  """
     print("Django Startup Debugging Script")
     print("="*60)
     
@@ -238,16 +238,16 @@ def main():
         success = test_step(name, test_func)
         results.append((name, success))
         if not success and name in ["Python Version", "Django Installation", "Required Packages"]:
-            print("\n⚠️  Critical failure, stopping tests")
+            print("\n  Critical failure, stopping tests")
             break
     
-    # 결과 요약
+    #  
     print("\n" + "="*60)
     print("SUMMARY")
     print("="*60)
     
     for name, success in results:
-        status = "✓" if success else "✗"
+        status = "" if success else ""
         print(f"{status} {name}")
     
     success_count = sum(1 for _, s in results if s)
@@ -256,9 +256,9 @@ def main():
     print(f"\nResult: {success_count}/{total_count} tests passed")
     
     if success_count == total_count:
-        print("\n✅ All tests passed! Django should start successfully.")
+        print("\n All tests passed! Django should start successfully.")
     else:
-        print("\n❌ Some tests failed. Please check the errors above.")
+        print("\n Some tests failed. Please check the errors above.")
         print("\nCommon solutions:")
         print("1. Install missing packages: pip install -r requirements.txt")
         print("2. Set DATABASE_URL environment variable for PostgreSQL")

@@ -1,5 +1,5 @@
 """
-Railway 배포용 최소 설정
+Railway   
 """
 import os
 import dj_database_url
@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-railway-key')
 DEBUG = False
 ALLOWED_HOSTS = ['*']
 
-# Apps - 최소 구성
+# Apps -  
 INSTALLED_APPS = [
     # Django apps
     'django.contrib.admin',
@@ -97,11 +97,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # CORS
-# 임시로 모든 origin 허용 (프로덕션에서는 보안상 권장하지 않음)
+#   origin  (   )
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# 특정 도메인만 허용하려면 아래 사용
+#     
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3000",
 #     "http://localhost:3001",

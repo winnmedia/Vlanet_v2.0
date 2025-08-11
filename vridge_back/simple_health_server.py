@@ -20,7 +20,7 @@ class HealthHandler(BaseHTTPRequestHandler):
             self.end_headers()
     
     def log_message(self, format, *args):
-        # 로그를 출력하여 Railway에서 확인 가능
+        #   Railway  
         print(f"[{self.log_date_time_string()}] {format % args}")
 
 def run():

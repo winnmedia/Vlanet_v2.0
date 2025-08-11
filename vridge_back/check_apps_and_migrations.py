@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""Railway 배포 환경에서 앱 설정과 마이그레이션 상태를 확인하는 스크립트"""
+"""Railway        """
 import os
 import sys
 import django
 
-# Django 설정 모듈 설정
+# Django   
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
 
-# Django 초기화
+# Django 
 django.setup()
 
 from django.conf import settings
@@ -19,12 +19,12 @@ print(f"DEBUG: {settings.DEBUG}")
 print(f"SECRET_KEY exists: {bool(settings.SECRET_KEY)}")
 print(f"\nINSTALLED_APPS ({len(settings.INSTALLED_APPS)} apps):")
 
-# INSTALLED_APPS 확인
+# INSTALLED_APPS 
 for app in settings.INSTALLED_APPS:
     print(f"  - {app}")
 
 print("\n=== App Registry Check ===")
-# 실제로 로드된 앱 확인
+#    
 loaded_apps = apps.get_app_configs()
 print(f"Loaded apps ({len(loaded_apps)}):")
 for app_config in loaded_apps:
@@ -32,7 +32,7 @@ for app_config in loaded_apps:
     print(f"  - {app_config.label} ({app_config.name}) - has migrations: {has_migrations}")
 
 print("\n=== Migration Status ===")
-# 마이그레이션 상태 확인
+#   
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 
@@ -46,7 +46,7 @@ if plan:
 else:
     print("All migrations are applied!")
 
-# 특정 앱 확인
+#   
 print("\n=== Checking Specific Apps ===")
 for app_name in ['users', 'projects', 'feedbacks', 'video_planning']:
     try:
@@ -58,13 +58,13 @@ for app_name in ['users', 'projects', 'feedbacks', 'video_planning']:
         if os.path.exists(migrations_path):
             migration_files = [f for f in os.listdir(migrations_path) if f.endswith('.py') and f != '__init__.py']
             print(f"  - Migration files: {len(migration_files)}")
-            for mf in sorted(migration_files)[:5]:  # 처음 5개만 표시
+            for mf in sorted(migration_files)[:5]:  #  5 
                 print(f"    - {mf}")
     except Exception as e:
         print(f"\n{app_name}: ERROR - {e}")
 
 print("\n=== Database Tables Check ===")
-# 데이터베이스 테이블 확인
+#   
 with connection.cursor() as cursor:
     cursor.execute("""
         SELECT tablename 

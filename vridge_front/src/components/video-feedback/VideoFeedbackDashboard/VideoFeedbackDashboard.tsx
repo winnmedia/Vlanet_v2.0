@@ -51,10 +51,10 @@ interface DashboardTab {
 }
 
 const TABS: DashboardTab[] = [
-  { id: 'overview', label: '개요', icon: <BarChart3 size={16} /> },
-  { id: 'timeline', label: '타임라인', icon: <Clock size={16} /> },
-  { id: 'chat', label: '실시간 채팅', icon: <MessageSquare size={16} /> },
-  { id: 'analytics', label: '분석', icon: <PieChart size={16} /> }
+  { id: 'overview', label: '', icon: <BarChart3 size={16} /> },
+  { id: 'timeline', label: '', icon: <Clock size={16} /> },
+  { id: 'chat', label: ' ', icon: <MessageSquare size={16} /> },
+  { id: 'analytics', label: '', icon: <PieChart size={16} /> }
 ];
 
 export default function VideoFeedbackDashboard({ 
@@ -65,7 +65,7 @@ export default function VideoFeedbackDashboard({
 }: VideoFeedbackDashboardProps) {
   const { success, error } = useToast();
   
-  // 상태 관리
+  //  
   const [video, setVideo] = useState<VideoFile | null>(null);
   const [feedbacks, setFeedbacks] = useState<TimelineFeedbackType[]>([]);
   const [session, setSession] = useState<VideoSession | null>(null);
@@ -79,7 +79,7 @@ export default function VideoFeedbackDashboard({
   const [isCollaborationMode, setIsCollaborationMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // 데이터 로딩
+  //  
   useEffect(() => {
     loadDashboardData();
   }, [videoId]);
@@ -87,7 +87,7 @@ export default function VideoFeedbackDashboard({
   const loadDashboardData = async () => {
     setIsLoading(true);
     try {
-      // 병렬로 데이터 로드
+      //   
       const [
         videoResult,
         feedbacksResult,
@@ -126,8 +126,8 @@ export default function VideoFeedbackDashboard({
         setMentionableUsers(usersResult.data);
       }
     } catch (err) {
-      console.error('대시보드 데이터 로딩 실패:', err);
-      error('데이터를 불러오는데 실패했습니다.');
+      console.error('   :', err);
+      error('  .');
     } finally {
       setIsLoading(false);
     }
@@ -140,27 +140,27 @@ export default function VideoFeedbackDashboard({
         setComments(result.data);
       }
     } catch (err) {
-      console.error('코멘트 로딩 실패:', err);
+      console.error('  :', err);
     }
   };
 
-  // 협업 세션 시작/종료
+  //   /
   const toggleCollaborationMode = async () => {
     if (!video) return;
 
     try {
       if (isCollaborationMode && session) {
-        // 세션 종료
+        //  
         await videoFeedbackService.leaveSession(session.id);
         setSession(null);
         setComments([]);
         setIsCollaborationMode(false);
-        success('협업 모드를 종료했습니다.');
+        success('  .');
       } else {
-        // 새 세션 생성
+        //   
         const result = await videoFeedbackService.createVideoSession({
           video_id: videoId,
-          title: `${video.title} - 실시간 협업`,
+          title: `${video.title} -  `,
           settings: {
             allow_comments: true,
             sync_playback: true,
@@ -171,24 +171,24 @@ export default function VideoFeedbackDashboard({
         if (result.success && result.data) {
           setSession(result.data);
           setIsCollaborationMode(true);
-          success('협업 모드를 시작했습니다.');
+          success('  .');
         }
       }
     } catch (err) {
-      error('협업 모드 전환에 실패했습니다.');
+      error('   .');
     }
   };
 
-  // 피드백 관련 핸들러
+  //   
   const handleCreateFeedback = async (data: CreateTimelineFeedbackData) => {
     try {
       const result = await videoFeedbackService.createFeedback(data);
       if (result.success && result.data) {
         setFeedbacks(prev => [...prev, result.data]);
-        success('피드백이 추가되었습니다.');
+        success(' .');
       }
     } catch (err) {
-      error('피드백 추가에 실패했습니다.');
+      error('  .');
     }
   };
 
@@ -197,24 +197,24 @@ export default function VideoFeedbackDashboard({
       const result = await videoFeedbackService.updateFeedback(id, data);
       if (result.success && result.data) {
         setFeedbacks(prev => prev.map(f => f.id === id ? result.data : f));
-        success('피드백이 수정되었습니다.');
+        success(' .');
       }
     } catch (err) {
-      error('피드백 수정에 실패했습니다.');
+      error('  .');
     }
   };
 
   const handleDeleteFeedback = async (id: string) => {
-    if (!window.confirm('정말로 이 피드백을 삭제하시겠습니까?')) return;
+    if (!window.confirm('   ?')) return;
 
     try {
       const result = await videoFeedbackService.deleteFeedback(id);
       if (result.success) {
         setFeedbacks(prev => prev.filter(f => f.id !== id));
-        success('피드백이 삭제되었습니다.');
+        success(' .');
       }
     } catch (err) {
-      error('피드백 삭제에 실패했습니다.');
+      error('  .');
     }
   };
 
@@ -228,10 +228,10 @@ export default function VideoFeedbackDashboard({
   const handleAddFeedbackAtTime = (timestamp: number, position?: { x: number; y: number }) => {
     setCurrentTime(timestamp);
     setActiveTab('timeline');
-    // 타임라인 컴포넌트에서 피드백 생성 모달이 열리도록 추가 로직 필요
+    //         
   };
 
-  // 실시간 코멘트 핸들러
+  //   
   const handleSendComment = async (data: CreateRealtimeCommentData) => {
     if (!session) return;
 
@@ -241,16 +241,16 @@ export default function VideoFeedbackDashboard({
         setComments(prev => [...prev, result.data]);
       }
     } catch (err) {
-      error('메시지 전송에 실패했습니다.');
+      error('  .');
     }
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    // API에서 삭제 후 상태 업데이트
+    // API    
     setComments(prev => prev.filter(c => c.id !== commentId));
   };
 
-  // 재생 상태 동기화
+  //   
   const handlePlaybackSync = async (playbackState: {
     currentTime: number;
     isPlaying: boolean;
@@ -260,36 +260,36 @@ export default function VideoFeedbackDashboard({
       try {
         await videoFeedbackService.syncPlayback(session.id, playbackState);
       } catch (err) {
-        console.error('재생 상태 동기화 실패:', err);
+        console.error('   :', err);
       }
     }
   };
 
-  // 통계 카드 렌더링
+  //   
   const renderStatsCards = () => {
     if (!stats) return null;
 
     const cards = [
       {
-        title: '전체 피드백',
+        title: ' ',
         value: stats.total_feedbacks,
         icon: <MessageSquare size={24} />,
         color: 'bg-blue-500'
       },
       {
-        title: '해결률',
+        title: '',
         value: `${Math.round(stats.resolution_rate * 100)}%`,
         icon: <CheckCircle2 size={24} />,
         color: 'bg-green-500'
       },
       {
-        title: '활성 피드백',
+        title: ' ',
         value: stats.by_status.active || 0,
         icon: <AlertCircle size={24} />,
         color: 'bg-orange-500'
       },
       {
-        title: '참여자',
+        title: '',
         value: mentionableUsers.length,
         icon: <Users size={24} />,
         color: 'bg-purple-500'
@@ -315,15 +315,15 @@ export default function VideoFeedbackDashboard({
     );
   };
 
-  // 분석 차트 렌더링
+  //   
   const renderAnalytics = () => {
-    if (!stats) return <div>데이터를 불러오는 중...</div>;
+    if (!stats) return <div>  ...</div>;
 
     return (
       <div className="space-y-6">
-        {/* 카테고리별 분포 */}
+        {/*   */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h4 className="text-lg font-semibold mb-4">카테고리별 피드백 분포</h4>
+          <h4 className="text-lg font-semibold mb-4">  </h4>
           <div className="space-y-3">
             {Object.entries(stats.by_category).map(([category, count]) => (
               <div key={category} className="flex items-center justify-between">
@@ -342,10 +342,10 @@ export default function VideoFeedbackDashboard({
           </div>
         </div>
 
-        {/* 핫스팟 */}
+        {/*  */}
         {stats.most_commented_timestamps.length > 0 && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h4 className="text-lg font-semibold mb-4">가장 많이 코멘트된 구간</h4>
+            <h4 className="text-lg font-semibold mb-4">   </h4>
             <div className="space-y-3">
               {stats.most_commented_timestamps.slice(0, 5).map((hotspot, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -357,7 +357,7 @@ export default function VideoFeedbackDashboard({
                       <div className="font-medium">
                         {Math.floor(hotspot.timestamp / 60)}:{(hotspot.timestamp % 60).toString().padStart(2, '0')}
                       </div>
-                      <div className="text-sm text-gray-500">{hotspot.count}개 피드백</div>
+                      <div className="text-sm text-gray-500">{hotspot.count} </div>
                     </div>
                   </div>
                   <Button 
@@ -365,7 +365,7 @@ export default function VideoFeedbackDashboard({
                     variant="ghost"
                     onClick={() => setCurrentTime(hotspot.timestamp)}
                   >
-                    이동
+                    
                   </Button>
                 </div>
               ))}
@@ -389,8 +389,8 @@ export default function VideoFeedbackDashboard({
       <div className="flex items-center justify-center h-96 text-gray-500">
         <div className="text-center">
           <XCircle size={48} className="mx-auto mb-4 opacity-50" />
-          <h3 className="text-lg font-medium">영상을 찾을 수 없습니다</h3>
-          <p className="text-sm">영상 ID를 확인해주세요.</p>
+          <h3 className="text-lg font-medium">   </h3>
+          <p className="text-sm"> ID .</p>
         </div>
       </div>
     );
@@ -398,7 +398,7 @@ export default function VideoFeedbackDashboard({
 
   return (
     <div className={`flex flex-col h-screen bg-gray-50 ${className}`}>
-      {/* 헤더 */}
+      {/*  */}
       <div className="bg-white border-b px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -406,7 +406,7 @@ export default function VideoFeedbackDashboard({
             {session && (
               <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
                 <Activity size={16} />
-                실시간 협업중 ({session.participants.length}명)
+                  ({session.participants.length})
               </div>
             )}
           </div>
@@ -418,17 +418,17 @@ export default function VideoFeedbackDashboard({
               className={isCollaborationMode ? "bg-green-600 hover:bg-green-700 text-white" : ""}
             >
               <Users size={16} className="mr-2" />
-              {isCollaborationMode ? '협업 종료' : '협업 시작'}
+              {isCollaborationMode ? ' ' : ' '}
             </Button>
             
             <Button variant="ghost">
               <Share2 size={16} className="mr-2" />
-              공유
+              
             </Button>
             
             <Button variant="ghost">
               <Download size={16} className="mr-2" />
-              내보내기
+              
             </Button>
             
             <Button variant="ghost">
@@ -438,11 +438,11 @@ export default function VideoFeedbackDashboard({
         </div>
       </div>
 
-      {/* 메인 콘텐츠 */}
+      {/*   */}
       <div className="flex flex-1 overflow-hidden">
-        {/* 비디오 플레이어 영역 */}
+        {/*    */}
         <div className="flex-1 flex flex-col">
-          {/* 비디오 플레이어 */}
+          {/*   */}
           <div className="bg-black p-6">
             <VideoPlayer
               video={video}
@@ -460,7 +460,7 @@ export default function VideoFeedbackDashboard({
             />
           </div>
 
-          {/* 탭 네비게이션 */}
+          {/*   */}
           <div className="bg-white border-b">
             <div className="flex">
               {TABS.map(tab => (
@@ -480,14 +480,14 @@ export default function VideoFeedbackDashboard({
             </div>
           </div>
 
-          {/* 탭 콘텐츠 */}
+          {/*   */}
           <div className="flex-1 overflow-hidden p-6">
             {activeTab === 'overview' && (
               <div>
                 {renderStatsCards()}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-lg font-semibold mb-4">최근 피드백</h3>
+                    <h3 className="text-lg font-semibold mb-4"> </h3>
                     <div className="space-y-3">
                       {feedbacks.slice(0, 5).map(feedback => (
                         <div key={feedback.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
@@ -499,7 +499,7 @@ export default function VideoFeedbackDashboard({
                             </div>
                           </div>
                           <Button size="sm" variant="ghost" onClick={() => handleFeedbackClick(feedback)}>
-                            이동
+                            
                           </Button>
                         </div>
                       ))}
@@ -507,12 +507,12 @@ export default function VideoFeedbackDashboard({
                   </div>
                   
                   <div className="bg-white p-6 rounded-lg shadow">
-                    <h3 className="text-lg font-semibold mb-4">진행 상황</h3>
+                    <h3 className="text-lg font-semibold mb-4"> </h3>
                     {stats && (
                       <div className="space-y-4">
                         <div>
                           <div className="flex justify-between text-sm mb-2">
-                            <span>해결된 피드백</span>
+                            <span> </span>
                             <span>{stats.by_status.resolved || 0}/{stats.total_feedbacks}</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -526,15 +526,15 @@ export default function VideoFeedbackDashboard({
                         <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-blue-600">{stats.by_status.active || 0}</div>
-                            <div className="text-xs text-gray-500">활성</div>
+                            <div className="text-xs text-gray-500"></div>
                           </div>
                           <div className="text-center">
                             <div className="text-2xl font-bold text-green-600">{stats.by_status.resolved || 0}</div>
-                            <div className="text-xs text-gray-500">해결</div>
+                            <div className="text-xs text-gray-500"></div>
                           </div>
                           <div className="text-center">
                             <div className="text-2xl font-bold text-gray-600">{stats.by_status.declined || 0}</div>
-                            <div className="text-xs text-gray-500">거부</div>
+                            <div className="text-xs text-gray-500"></div>
                           </div>
                         </div>
                       </div>
@@ -548,7 +548,7 @@ export default function VideoFeedbackDashboard({
           </div>
         </div>
 
-        {/* 사이드바 */}
+        {/*  */}
         <div className={`bg-white border-l transition-all duration-300 ${sidebarCollapsed ? 'w-0' : 'w-96'} flex flex-col`}>
           {!sidebarCollapsed && (
             <>
@@ -580,13 +580,13 @@ export default function VideoFeedbackDashboard({
               {(activeTab === 'overview' || activeTab === 'analytics') && (
                 <div className="p-4 text-center text-gray-500">
                   <MessageSquare size={48} className="mx-auto mb-4 opacity-50" />
-                  <p>다른 탭을 선택해서 상호작용하세요</p>
+                  <p>   </p>
                 </div>
               )}
             </>
           )}
 
-          {/* 사이드바 토글 */}
+          {/*   */}
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             className="absolute top-1/2 -left-3 transform -translate-y-1/2 bg-white border rounded-full p-1 shadow-md hover:shadow-lg transition-shadow z-10"

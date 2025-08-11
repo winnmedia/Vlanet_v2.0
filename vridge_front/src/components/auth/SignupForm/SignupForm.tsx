@@ -17,7 +17,7 @@ import {
   CheckCircle,
   X
 } from 'lucide-react';
-// debounce 유틸리티 함수
+// debounce  
 const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -44,8 +44,8 @@ export interface SignupFormProps {
 }
 
 /**
- * 회원가입 폼 컴포넌트
- * 실시간 검증, 중복 확인, 접근성을 고려한 사용자 친화적 UI
+ *   
+ *  ,  ,     UI
  */
 export function SignupForm({
   onSuccess,
@@ -95,7 +95,7 @@ export function SignupForm({
   const watchedNickname = watch('nickname');
   const password = watch('password');
 
-  // 이메일 중복 확인 (디바운스)
+  //    ()
   const debouncedEmailCheck = useCallback(
     debounce(async (email: string) => {
       if (email && !errors.email) {
@@ -105,7 +105,7 @@ export function SignupForm({
     [checkEmailAvailability, errors.email]
   );
 
-  // 닉네임 중복 확인 (디바운스)
+  //    ()
   const debouncedNicknameCheck = useCallback(
     debounce(async (nickname: string) => {
       if (nickname && !errors.nickname) {
@@ -145,7 +145,7 @@ export function SignupForm({
         router.push(redirectTo);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '회원가입에 실패했습니다.';
+      const errorMessage = error instanceof Error ? error.message : ' .';
       
       setError('root', {
         type: 'manual',
@@ -178,7 +178,7 @@ export function SignupForm({
   };
 
   const handleSocialLogin = (provider: 'google' | 'kakao') => {
-    // 소셜 로그인 구현 예정
+    //    
     console.log(`${provider} signup clicked`);
   };
 
@@ -212,11 +212,11 @@ export function SignupForm({
   const getPasswordStrengthText = (strength: number) => {
     switch (strength) {
       case 0:
-      case 1: return '매우 약함';
-      case 2: return '약함';
-      case 3: return '보통';
-      case 4: return '강함';
-      case 5: return '매우 강함';
+      case 1: return ' ';
+      case 2: return '';
+      case 3: return '';
+      case 4: return '';
+      case 5: return ' ';
       default: return '';
     }
   };
@@ -240,7 +240,7 @@ export function SignupForm({
       transition={{ duration: 0.4 }}
       className={cn('w-full max-w-lg mx-auto', className)}
     >
-      {/* 스텝 인디케이터 */}
+      {/*   */}
       <div className="flex items-center justify-center mb-8">
         <div className="flex items-center">
           <div className={cn(
@@ -260,7 +260,7 @@ export function SignupForm({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* 1단계: 기본 정보 */}
+        {/* 1:   */}
         <AnimatePresence mode="wait">
           {currentStep === 1 && (
             <motion.div
@@ -271,14 +271,14 @@ export function SignupForm({
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">계정 정보</h2>
-                <p className="text-gray-600">기본 계정 정보를 입력해주세요</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2"> </h2>
+                <p className="text-gray-600">   </p>
               </div>
 
-              {/* 이메일 */}
+              {/*  */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  이메일 <span className="text-red-500">*</span>
+                   <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -325,10 +325,10 @@ export function SignupForm({
                 </AnimatePresence>
               </div>
 
-              {/* 닉네임 */}
+              {/*  */}
               <div className="space-y-2">
                 <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">
-                  닉네임 <span className="text-red-500">*</span>
+                   <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -347,7 +347,7 @@ export function SignupForm({
                         ? 'border-green-500 focus:ring-green-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="사용하실 닉네임을 입력해주세요"
+                    placeholder="  "
                     autoComplete="username"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -375,10 +375,10 @@ export function SignupForm({
                 </AnimatePresence>
               </div>
 
-              {/* 비밀번호 */}
+              {/*  */}
               <div className="space-y-2">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  비밀번호 <span className="text-red-500">*</span>
+                   <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -395,7 +395,7 @@ export function SignupForm({
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="8자 이상, 대소문자, 숫자, 특수문자 포함"
+                    placeholder="8 , , ,  "
                     autoComplete="new-password"
                   />
                   <button
@@ -407,7 +407,7 @@ export function SignupForm({
                   </button>
                 </div>
                 
-                {/* 비밀번호 강도 표시 */}
+                {/*    */}
                 {password && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -442,10 +442,10 @@ export function SignupForm({
                 </AnimatePresence>
               </div>
 
-              {/* 비밀번호 확인 */}
+              {/*   */}
               <div className="space-y-2">
                 <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">
-                  비밀번호 확인 <span className="text-red-500">*</span>
+                    <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -462,7 +462,7 @@ export function SignupForm({
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="비밀번호를 다시 입력해주세요"
+                    placeholder="  "
                     autoComplete="new-password"
                   />
                   <button
@@ -494,12 +494,12 @@ export function SignupForm({
                 className="w-full"
                 size="lg"
               >
-                다음 단계
+                 
               </Button>
             </motion.div>
           )}
 
-          {/* 2단계: 추가 정보 및 약관 동의 */}
+          {/* 2:      */}
           {currentStep === 2 && (
             <motion.div
               key="step2"
@@ -509,14 +509,14 @@ export function SignupForm({
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">추가 정보</h2>
-                <p className="text-gray-600">선택 정보와 약관 동의를 완료해주세요</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2"> </h2>
+                <p className="text-gray-600">    </p>
               </div>
 
-              {/* 연락처 */}
+              {/*  */}
               <div className="space-y-2">
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  연락처
+                  
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -546,10 +546,10 @@ export function SignupForm({
                 </AnimatePresence>
               </div>
 
-              {/* 회사명 */}
+              {/*  */}
               <div className="space-y-2">
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700">
-                  회사명
+                  
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -560,7 +560,7 @@ export function SignupForm({
                     type="text"
                     id="company"
                     className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
-                    placeholder="회사명을 입력해주세요"
+                    placeholder=" "
                     autoComplete="organization"
                   />
                 </div>
@@ -579,9 +579,9 @@ export function SignupForm({
                 </AnimatePresence>
               </div>
 
-              {/* 약관 동의 */}
+              {/*   */}
               <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900">약관 동의</h3>
+                <h3 className="text-lg font-medium text-gray-900"> </h3>
                 
                 <Controller
                   name="agreedToTerms"
@@ -596,10 +596,10 @@ export function SignupForm({
                       />
                       <div className="flex-1">
                         <span className="text-sm text-gray-900">
-                          <span className="text-red-500">*</span> 이용약관에 동의합니다
+                          <span className="text-red-500">*</span>  
                         </span>
                         <a href="/terms" target="_blank" className="text-brand-primary hover:underline ml-2 text-sm">
-                          보기
+                          
                         </a>
                       </div>
                     </label>
@@ -619,10 +619,10 @@ export function SignupForm({
                       />
                       <div className="flex-1">
                         <span className="text-sm text-gray-900">
-                          <span className="text-red-500">*</span> 개인정보처리방침에 동의합니다
+                          <span className="text-red-500">*</span>  
                         </span>
                         <a href="/privacy" target="_blank" className="text-brand-primary hover:underline ml-2 text-sm">
-                          보기
+                          
                         </a>
                       </div>
                     </label>
@@ -642,7 +642,7 @@ export function SignupForm({
                       />
                       <div className="flex-1">
                         <span className="text-sm text-gray-900">
-                          마케팅 알림 수신에 동의합니다 (선택)
+                              ()
                         </span>
                       </div>
                     </label>
@@ -658,13 +658,13 @@ export function SignupForm({
                       className="text-sm text-red-500 flex items-center gap-1"
                     >
                       <AlertCircle className="w-4 h-4" />
-                      필수 약관에 동의해주세요
+                        
                     </motion.p>
                   )}
                 </AnimatePresence>
               </div>
 
-              {/* 전체 폼 에러 */}
+              {/*    */}
               <AnimatePresence>
                 {(errors.root || signupError) && (
                   <motion.div
@@ -681,7 +681,7 @@ export function SignupForm({
                 )}
               </AnimatePresence>
 
-              {/* 버튼 그룹 */}
+              {/*   */}
               <div className="flex gap-3">
                 <Button
                   type="button"
@@ -690,7 +690,7 @@ export function SignupForm({
                   className="flex-1"
                   size="lg"
                 >
-                  이전
+                  
                 </Button>
                 <Button
                   type="submit"
@@ -701,10 +701,10 @@ export function SignupForm({
                   {isSubmitting || isSignupLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <Spinner size="sm" color="white" />
-                      가입 중...
+                       ...
                     </span>
                   ) : (
-                    '회원가입 완료'
+                    ' '
                   )}
                 </Button>
               </div>
@@ -712,7 +712,7 @@ export function SignupForm({
           )}
         </AnimatePresence>
 
-        {/* 소셜 회원가입 (1단계에서만 표시) */}
+        {/*   (1 ) */}
         {showSocialLogin && currentStep === 1 && (
           <>
             <div className="relative">
@@ -720,7 +720,7 @@ export function SignupForm({
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">또는</span>
+                <span className="px-4 bg-white text-gray-500"></span>
               </div>
             </div>
             
@@ -772,15 +772,15 @@ export function SignupForm({
           </>
         )}
 
-        {/* 로그인 링크 */}
+        {/*   */}
         {currentStep === 1 && (
           <p className="text-center text-sm text-gray-600">
-            이미 계정이 있으신가요?{' '}
+              ?{' '}
             <a 
               href="/login" 
               className="font-medium text-brand-primary hover:text-brand-primary-dark transition-colors"
             >
-              로그인
+              
             </a>
           </p>
         )}

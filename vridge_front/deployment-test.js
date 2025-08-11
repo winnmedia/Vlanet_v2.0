@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * VideoPlanet 배포 상태 테스트 스크립트
- * CI/CD 파이프라인용 자동화된 배포 검증 도구
+ * VideoPlanet    
+ * CI/CD     
  */
 
 import https from 'https';
@@ -15,16 +15,16 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// 테스트 설정
+//  
 const CONFIG = {
   PRODUCTION_URL: 'https://www.vlanet.net',
   STAGING_URL: 'https://videoplanet-seven.vercel.app',
   API_URL: 'https://videoplanet.up.railway.app',
-  TIMEOUT: 10000, // 10초
+  TIMEOUT: 10000, // 10
   RETRY_COUNT: 3
 };
 
-// 테스트 결과 저장용
+//   
 const testResults = {
   timestamp: new Date().toISOString(),
   environment: process.env.NODE_ENV || 'test',
@@ -42,7 +42,7 @@ class DeploymentTester {
     this.startTime = performance.now();
   }
 
-  // HTTP 요청 헬퍼 함수
+  // HTTP   
   async makeRequest(url, options = {}) {
     return new Promise((resolve, reject) => {
       const startTime = performance.now();
@@ -81,7 +81,7 @@ class DeploymentTester {
     });
   }
 
-  // 테스트 결과 기록
+  //   
   logResult(testName, success, details = {}) {
     const result = {
       test: testName,
@@ -95,10 +95,10 @@ class DeploymentTester {
     
     if (success) {
       testResults.summary.passed++;
-      console.log(`✅ ${testName}`);
+      console.log(` ${testName}`);
     } else {
       testResults.summary.failed++;
-      console.log(`❌ ${testName}`);
+      console.log(` ${testName}`);
       if (details.error) {
         console.log(`   Error: ${details.error}`);
       }
@@ -109,11 +109,11 @@ class DeploymentTester {
     }
   }
 
-  // 1. 프론트엔드 배포 테스트
+  // 1.   
   async testFrontendDeployment() {
-    console.log('\n🌐 프론트엔드 배포 테스트 시작...');
+    console.log('\n    ...');
     
-    // 프로덕션 환경 테스트
+    //   
     try {
       const response = await this.makeRequest(CONFIG.PRODUCTION_URL);
       this.logResult('Production Frontend (vlanet.net)', response.success, {
@@ -122,7 +122,7 @@ class DeploymentTester {
         hasContent: response.data.length > 0
       });
       
-      // HTML 내용 기본 검증
+      // HTML   
       const hasTitle = response.data.includes('<title>');
       const hasReact = response.data.includes('react') || response.data.includes('React');
       
@@ -138,7 +138,7 @@ class DeploymentTester {
       });
     }
 
-    // 스테이징 환경 테스트
+    //   
     try {
       const response = await this.makeRequest(CONFIG.STAGING_URL);
       this.logResult('Staging Frontend (videoplanet-seven.vercel.app)', response.success, {
@@ -152,11 +152,11 @@ class DeploymentTester {
     }
   }
 
-  // 2. 백엔드 API 테스트
+  // 2.  API 
   async testBackendAPI() {
-    console.log('\n🔧 백엔드 API 테스트 시작...');
+    console.log('\n  API  ...');
     
-    // 헬스 체크
+    //  
     try {
       const response = await this.makeRequest(`${CONFIG.API_URL}/api/health/`);
       const healthData = JSON.parse(response.data);
@@ -174,7 +174,7 @@ class DeploymentTester {
       });
     }
 
-    // API 문서 엔드포인트
+    // API  
     try {
       const response = await this.makeRequest(`${CONFIG.API_URL}/api/`);
       const apiData = JSON.parse(response.data);
@@ -191,7 +191,7 @@ class DeploymentTester {
       });
     }
 
-    // 주요 엔드포인트 테스트
+    //   
     const endpoints = [
       '/api/auth/login/',
       '/api/users/me/',
@@ -202,7 +202,7 @@ class DeploymentTester {
     for (const endpoint of endpoints) {
       try {
         const response = await this.makeRequest(`${CONFIG.API_URL}${endpoint}`);
-        // 401/403은 인증이 필요한 정상적인 응답
+        // 401/403    
         const isValidResponse = response.statusCode < 500;
         
         this.logResult(`Endpoint ${endpoint}`, isValidResponse, {
@@ -218,9 +218,9 @@ class DeploymentTester {
     }
   }
 
-  // 3. 성능 테스트
+  // 3.  
   async testPerformance() {
-    console.log('\n⚡ 성능 테스트 시작...');
+    console.log('\n   ...');
     
     const urls = [
       { name: 'Production Frontend', url: CONFIG.PRODUCTION_URL },
@@ -230,7 +230,7 @@ class DeploymentTester {
     for (const { name, url } of urls) {
       try {
         const response = await this.makeRequest(url);
-        const isGoodPerformance = response.responseTime < 2000; // 2초 이내
+        const isGoodPerformance = response.responseTime < 2000; // 2 
         
         this.logResult(`Performance - ${name}`, isGoodPerformance, {
           responseTime: response.responseTime,
@@ -246,9 +246,9 @@ class DeploymentTester {
     }
   }
 
-  // 4. SSL 및 보안 테스트
+  // 4. SSL   
   async testSecurity() {
-    console.log('\n🔒 보안 테스트 시작...');
+    console.log('\n   ...');
     
     const urls = [CONFIG.PRODUCTION_URL, CONFIG.API_URL];
     
@@ -273,9 +273,9 @@ class DeploymentTester {
     }
   }
 
-  // 5. CORS 테스트
+  // 5. CORS 
   async testCORS() {
-    console.log('\n🌐 CORS 설정 테스트 시작...');
+    console.log('\n CORS   ...');
     
     try {
       const response = await this.makeRequest(`${CONFIG.API_URL}/api/`, {
@@ -299,9 +299,9 @@ class DeploymentTester {
     }
   }
 
-  // 전체 테스트 실행
+  //   
   async runAllTests() {
-    console.log('🚀 VideoPlanet 배포 테스트 시작\n');
+    console.log(' VideoPlanet   \n');
     console.log('=' * 50);
     
     try {
@@ -311,40 +311,40 @@ class DeploymentTester {
       await this.testSecurity();
       await this.testCORS();
       
-      // 테스트 완료 시간 기록
+      //    
       const endTime = performance.now();
       testResults.summary.duration = Math.round(endTime - this.startTime);
       
-      // 결과 출력
+      //  
       this.printSummary();
       
-      // 결과 파일 저장
+      //   
       await this.saveResults();
       
-      // 실패한 테스트가 있으면 exit code 1
+      //    exit code 1
       if (testResults.summary.failed > 0) {
         process.exit(1);
       }
       
     } catch (error) {
-      console.error('테스트 실행 중 오류 발생:', error);
+      console.error('    :', error);
       process.exit(1);
     }
   }
 
-  // 테스트 결과 요약 출력
+  //    
   printSummary() {
     console.log('\n' + '=' * 50);
-    console.log('📊 테스트 결과 요약');
+    console.log('   ');
     console.log('=' * 50);
-    console.log(`총 테스트: ${testResults.summary.total}`);
-    console.log(`성공: ${testResults.summary.passed} ✅`);
-    console.log(`실패: ${testResults.summary.failed} ❌`);
-    console.log(`성공률: ${((testResults.summary.passed / testResults.summary.total) * 100).toFixed(1)}%`);
-    console.log(`실행 시간: ${testResults.summary.duration}ms`);
+    console.log(` : ${testResults.summary.total}`);
+    console.log(`: ${testResults.summary.passed} `);
+    console.log(`: ${testResults.summary.failed} `);
+    console.log(`: ${((testResults.summary.passed / testResults.summary.total) * 100).toFixed(1)}%`);
+    console.log(` : ${testResults.summary.duration}ms`);
     
     if (testResults.summary.failed > 0) {
-      console.log('\n❌ 실패한 테스트:');
+      console.log('\n  :');
       testResults.results
         .filter(r => !r.success)
         .forEach(r => {
@@ -353,21 +353,21 @@ class DeploymentTester {
     }
   }
 
-  // 결과를 JSON 파일로 저장
+  //  JSON  
   async saveResults() {
     const filename = `deployment-test-results-${Date.now()}.json`;
     const filepath = `/home/winnmedia/VideoPlanet/videoplanet-clean/${filename}`;
     
     try {
       fs.writeFileSync(filepath, JSON.stringify(testResults, null, 2));
-      console.log(`\n📁 결과가 저장되었습니다: ${filepath}`);
+      console.log(`\n  : ${filepath}`);
     } catch (error) {
-      console.error('결과 저장 실패:', error.message);
+      console.error('  :', error.message);
     }
   }
 }
 
-// 스크립트 실행
+//  
 if (import.meta.url === `file://${process.argv[1]}`) {
   const tester = new DeploymentTester();
   tester.runAllTests().catch(console.error);

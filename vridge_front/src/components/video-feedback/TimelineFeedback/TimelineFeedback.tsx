@@ -98,7 +98,7 @@ export default function TimelineFeedback({
 
   const [replyContent, setReplyContent] = useState('');
 
-  // 피드백 필터링 및 정렬
+  //    
   const filteredAndSortedFeedbacks = feedbacks
     .filter(feedback => {
       if (filters.category !== 'all' && feedback.category !== filters.category) return false;
@@ -135,14 +135,14 @@ export default function TimelineFeedback({
       return filters.sortOrder === 'desc' ? -comparison : comparison;
     });
 
-  // 시간 포맷팅
+  //  
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // 카테고리 아이콘
+  //  
   const getCategoryIcon = (category: FeedbackCategory) => {
     const icons = {
       general: MessageSquare,
@@ -157,7 +157,7 @@ export default function TimelineFeedback({
     return <IconComponent size={16} />;
   };
 
-  // 카테고리별 색상
+  //  
   const getCategoryColor = (category: FeedbackCategory): string => {
     const colors = {
       general: 'bg-gray-100 text-gray-700 border-gray-200',
@@ -171,7 +171,7 @@ export default function TimelineFeedback({
     return colors[category] || colors.general;
   };
 
-  // 우선순위 색상
+  //  
   const getPriorityColor = (priority: FeedbackPriority): string => {
     const colors = {
       urgent: 'text-red-600 bg-red-50 border-red-200',
@@ -182,7 +182,7 @@ export default function TimelineFeedback({
     return colors[priority];
   };
 
-  // 상태 색상
+  //  
   const getStatusColor = (status: FeedbackStatus): string => {
     const colors = {
       active: 'text-blue-600 bg-blue-50 border-blue-200',
@@ -192,7 +192,7 @@ export default function TimelineFeedback({
     return colors[status];
   };
 
-  // 폼 제출
+  //  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -207,7 +207,7 @@ export default function TimelineFeedback({
     resetForm();
   };
 
-  // 답글 제출
+  //  
   const handleReplySubmit = (feedbackId: string) => {
     if (replyContent.trim()) {
       onReplyToFeedback?.(feedbackId, replyContent);
@@ -216,7 +216,7 @@ export default function TimelineFeedback({
     }
   };
 
-  // 폼 리셋
+  //  
   const resetForm = () => {
     setFormData({
       timestamp: currentTime,
@@ -229,7 +229,7 @@ export default function TimelineFeedback({
     });
   };
 
-  // 편집 시작
+  //  
   const handleEdit = (feedback: TimelineFeedback) => {
     setEditingFeedback(feedback);
     setFormData({
@@ -244,18 +244,18 @@ export default function TimelineFeedback({
     setShowCreateModal(true);
   };
 
-  // 현재 재생 시간과 가까운 피드백 하이라이트
+  //      
   const isNearCurrentTime = (timestamp: number): boolean => {
-    return Math.abs(timestamp - currentTime) < 2; // 2초 이내
+    return Math.abs(timestamp - currentTime) < 2; // 2 
   };
 
   return (
     <div className={`flex flex-col h-full ${className}`}>
-      {/* 헤더 */}
+      {/*  */}
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
           <MessageSquare size={20} />
-          피드백 ({filteredAndSortedFeedbacks.length})
+           ({filteredAndSortedFeedbacks.length})
         </h3>
         
         <div className="flex items-center gap-2">
@@ -273,41 +273,41 @@ export default function TimelineFeedback({
             onClick={() => setShowCreateModal(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            피드백 추가
+             
           </Button>
         </div>
       </div>
 
-      {/* 필터 패널 */}
+      {/*   */}
       {showFilters && (
         <div className="p-4 bg-gray-50 border-b space-y-3">
-          {/* 검색 */}
+          {/*  */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="피드백 검색..."
+              placeholder=" ..."
               value={filters.search}
               onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
               className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
-          {/* 필터 옵션들 */}
+          {/*   */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <select
               value={filters.category}
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value as any }))}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
             >
-              <option value="all">모든 카테고리</option>
-              <option value="general">일반</option>
-              <option value="correction">수정요청</option>
-              <option value="question">질문</option>
-              <option value="approval">승인</option>
-              <option value="suggestion">제안</option>
-              <option value="technical">기술적</option>
-              <option value="creative">창작</option>
+              <option value="all"> </option>
+              <option value="general"></option>
+              <option value="correction"></option>
+              <option value="question"></option>
+              <option value="approval"></option>
+              <option value="suggestion"></option>
+              <option value="technical"></option>
+              <option value="creative"></option>
             </select>
 
             <select
@@ -315,11 +315,11 @@ export default function TimelineFeedback({
               onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value as any }))}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
             >
-              <option value="all">모든 우선순위</option>
-              <option value="urgent">긴급</option>
-              <option value="high">높음</option>
-              <option value="medium">보통</option>
-              <option value="low">낮음</option>
+              <option value="all"> </option>
+              <option value="urgent"></option>
+              <option value="high"></option>
+              <option value="medium"></option>
+              <option value="low"></option>
             </select>
 
             <select
@@ -327,10 +327,10 @@ export default function TimelineFeedback({
               onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value as any }))}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
             >
-              <option value="all">모든 상태</option>
-              <option value="active">활성</option>
-              <option value="resolved">해결됨</option>
-              <option value="declined">거부됨</option>
+              <option value="all"> </option>
+              <option value="active"></option>
+              <option value="resolved"></option>
+              <option value="declined"></option>
             </select>
 
             <div className="flex">
@@ -339,9 +339,9 @@ export default function TimelineFeedback({
                 onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as any }))}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg text-sm"
               >
-                <option value="timestamp">시간순</option>
-                <option value="created_at">생성순</option>
-                <option value="priority">우선순위</option>
+                <option value="timestamp"></option>
+                <option value="created_at"></option>
+                <option value="priority"></option>
               </select>
               <button
                 onClick={() => setFilters(prev => ({ 
@@ -357,13 +357,13 @@ export default function TimelineFeedback({
         </div>
       )}
 
-      {/* 피드백 목록 */}
+      {/*   */}
       <div className="flex-1 overflow-y-auto">
         {filteredAndSortedFeedbacks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
             <MessageSquare size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium">아직 피드백이 없습니다</p>
-            <p className="text-sm">영상의 특정 구간을 더블클릭하거나 피드백 추가 버튼을 눌러보세요.</p>
+            <p className="text-lg font-medium">  </p>
+            <p className="text-sm">       .</p>
           </div>
         ) : (
           <div className="space-y-1">
@@ -375,7 +375,7 @@ export default function TimelineFeedback({
                 }`}
                 onClick={() => onFeedbackClick?.(feedback)}
               >
-                {/* 피드백 헤더 */}
+                {/*   */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2 flex-1">
                     <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(feedback.category)}`}>
@@ -419,11 +419,11 @@ export default function TimelineFeedback({
                   </div>
                 </div>
 
-                {/* 피드백 내용 */}
+                {/*   */}
                 <h4 className="font-medium text-gray-800 mb-1">{feedback.title}</h4>
                 <p className="text-gray-600 text-sm mb-2">{feedback.content}</p>
 
-                {/* 작성자 및 시간 */}
+                {/*    */}
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <div className="flex items-center gap-2">
                     <User size={12} />
@@ -440,7 +440,7 @@ export default function TimelineFeedback({
                   )}
                 </div>
 
-                {/* 답글들 */}
+                {/*  */}
                 {feedback.replies && feedback.replies.length > 0 && (
                   <div className="mt-3 ml-4 space-y-2 border-l-2 border-gray-200 pl-3">
                     {feedback.replies.map((reply) => (
@@ -459,14 +459,14 @@ export default function TimelineFeedback({
                   </div>
                 )}
 
-                {/* 답글 입력 */}
+                {/*   */}
                 {replyingTo === feedback.id ? (
                   <div className="mt-3 flex gap-2">
                     <input
                       type="text"
                       value={replyContent}
                       onChange={(e) => setReplyContent(e.target.value)}
-                      placeholder="답글을 입력하세요..."
+                      placeholder=" ..."
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -482,7 +482,7 @@ export default function TimelineFeedback({
                       onClick={() => handleReplySubmit(feedback.id)}
                       disabled={!replyContent.trim()}
                     >
-                      답글
+                      
                     </Button>
                     <Button
                       variant="ghost"
@@ -492,7 +492,7 @@ export default function TimelineFeedback({
                         setReplyContent('');
                       }}
                     >
-                      취소
+                      
                     </Button>
                   </div>
                 ) : (
@@ -504,7 +504,7 @@ export default function TimelineFeedback({
                     className="mt-2 text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1"
                   >
                     <Reply size={12} />
-                    답글 달기
+                     
                   </button>
                 )}
               </div>
@@ -513,7 +513,7 @@ export default function TimelineFeedback({
         )}
       </div>
 
-      {/* 피드백 생성/수정 모달 */}
+      {/*  /  */}
       <Modal
         isOpen={showCreateModal}
         onClose={() => {
@@ -521,13 +521,13 @@ export default function TimelineFeedback({
           setEditingFeedback(null);
           resetForm();
         }}
-        title={editingFeedback ? '피드백 수정' : '새 피드백 추가'}
+        title={editingFeedback ? ' ' : '  '}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                타임스탬프
+                
               </label>
               <div className="flex items-center gap-2">
                 <input
@@ -543,50 +543,50 @@ export default function TimelineFeedback({
                   size="sm"
                   onClick={() => setFormData(prev => ({ ...prev, timestamp: currentTime }))}
                 >
-                  현재 시간
+                   
                 </Button>
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                카테고리
+                
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as FeedbackCategory }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="general">일반</option>
-                <option value="correction">수정요청</option>
-                <option value="question">질문</option>
-                <option value="approval">승인</option>
-                <option value="suggestion">제안</option>
-                <option value="technical">기술적</option>
-                <option value="creative">창작</option>
+                <option value="general"></option>
+                <option value="correction"></option>
+                <option value="question"></option>
+                <option value="approval"></option>
+                <option value="suggestion"></option>
+                <option value="technical"></option>
+                <option value="creative"></option>
               </select>
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              우선순위
+              
             </label>
             <select
               value={formData.priority}
               onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as FeedbackPriority }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="low">낮음</option>
-              <option value="medium">보통</option>
-              <option value="high">높음</option>
-              <option value="urgent">긴급</option>
+              <option value="low"></option>
+              <option value="medium"></option>
+              <option value="high"></option>
+              <option value="urgent"></option>
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              제목
+              
             </label>
             <input
               type="text"
@@ -594,13 +594,13 @@ export default function TimelineFeedback({
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="피드백 제목을 입력하세요"
+              placeholder="  "
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              내용
+              
             </label>
             <textarea
               value={formData.content}
@@ -608,7 +608,7 @@ export default function TimelineFeedback({
               required
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="피드백 내용을 입력하세요"
+              placeholder="  "
             />
           </div>
 
@@ -617,7 +617,7 @@ export default function TimelineFeedback({
               type="submit"
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {editingFeedback ? '수정하기' : '추가하기'}
+              {editingFeedback ? '' : ''}
             </Button>
             <Button
               type="button"
@@ -629,7 +629,7 @@ export default function TimelineFeedback({
               }}
               className="flex-1 border border-gray-300 hover:bg-gray-50"
             >
-              취소
+              
             </Button>
           </div>
         </form>

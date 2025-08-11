@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""최소한의 Django 서버 - 헬스체크만 처리"""
+""" Django  -  """
 import os
 import sys
 from wsgiref.simple_server import make_server
 
-# 환경변수 설정
+#  
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
 os.environ.setdefault('SECRET_KEY', 'temporary-secret-key-for-health-check')
 
-# Django 앱 설정
+# Django  
 def application(environ, start_response):
     path = environ.get('PATH_INFO', '/')
     

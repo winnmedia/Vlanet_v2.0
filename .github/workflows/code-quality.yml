@@ -1,0 +1,386 @@
+name: Code Quality & Security
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 매주 월요일 오전 9시 (KST 18시)에 실행
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  # 종합 코드 품질 분석
+  code-analysis:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # SonarQube 분석을 위한 전체 히스토리
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Python dependencies
+      working-directory: ./vridge_back
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 black isort mypy bandit safety
+        
+    - name: Install Node.js dependencies
+      working-directory: ./vridge_front
+      run: npm ci --prefer-offline --no-audit
+      
+    # Python 코드 품질 검사
+    - name: Python - Code formatting (Black)
+      working-directory: ./vridge_back
+      run: |
+        black --check --diff . || (echo "❌ Code formatting issues found. Run 'black .' to fix." && exit 1)
+        
+    - name: Python - Import sorting (isort)
+      working-directory: ./vridge_back
+      run: |
+        isort --check-only --diff . || (echo "❌ Import sorting issues found. Run 'isort .' to fix." && exit 1)
+        
+    - name: Python - Linting (flake8)
+      working-directory: ./vridge_back
+      run: |
+        echo "🔍 Running flake8 analysis..."
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --format=html --htmldir=flake8-report
+        
+    - name: Python - Type checking (mypy)
+      working-directory: ./vridge_back
+      run: |
+        echo "🔍 Running mypy type checking..."
+        mypy . --ignore-missing-imports --html-report mypy-report || true
+        
+    # TypeScript/JavaScript 코드 품질 검사
+    - name: Frontend - Type checking
+      working-directory: ./vridge_front
+      run: |
+        echo "🔍 Running TypeScript type checking..."
+        npm run type-check 2>/dev/null || npx tsc --noEmit
+        
+    - name: Frontend - Linting (ESLint)
+      working-directory: ./vridge_front
+      run: |
+        echo "🔍 Running ESLint analysis..."
+        npm run lint -- --format=html --output-file=eslint-report.html 2>/dev/null || \
+        npx eslint . --ext .ts,.tsx,.js,.jsx --format=html --output-file=eslint-report.html
+        
+    - name: Frontend - Style linting (Stylelint)
+      working-directory: ./vridge_front
+      run: |
+        if find src -name "*.scss" -o -name "*.css" | head -1; then
+          echo "🔍 Running Stylelint analysis..."
+          npx stylelint "src/**/*.{scss,css}" --formatter=json --output-file=stylelint-report.json || true
+        fi
+        
+    - name: Upload code quality reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: code-quality-reports
+        path: |
+          vridge_back/flake8-report/
+          vridge_back/mypy-report/
+          vridge_front/eslint-report.html
+          vridge_front/stylelint-report.json
+        retention-days: 30
+
+  # 보안 취약점 스캔
+  security-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    # Python 보안 스캔
+    - name: Install Python security tools
+      working-directory: ./vridge_back
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety semgrep
+        
+    - name: Python - Security linting (Bandit)
+      working-directory: ./vridge_back
+      run: |
+        echo "🛡️ Running Bandit security analysis..."
+        bandit -r . -x tests/ -f json -o bandit-report.json || true
+        bandit -r . -x tests/ -f html -o bandit-report.html || true
+        
+    - name: Python - Dependency vulnerability check (Safety)
+      working-directory: ./vridge_back
+      run: |
+        echo "🛡️ Checking Python dependencies for vulnerabilities..."
+        safety check --json --output safety-report.json || true
+        safety check --output safety-report.txt || true
+        
+    # JavaScript/Node.js 보안 스캔
+    - name: Install Node.js dependencies
+      working-directory: ./vridge_front
+      run: npm ci --prefer-offline --no-audit
+      
+    - name: Node.js - Security audit
+      working-directory: ./vridge_front
+      run: |
+        echo "🛡️ Running npm security audit..."
+        npm audit --json > npm-audit-report.json 2>/dev/null || true
+        npm audit --audit-level=high --production || true
+        
+    - name: Node.js - Advanced security scan (audit-ci)
+      working-directory: ./vridge_front
+      run: |
+        npx audit-ci --config .audit-ci.json || npx audit-ci --high || true
+        
+    # CodeQL 보안 분석
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: python, javascript
+        queries: security-and-quality
+        
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      
+    # Semgrep 보안 스캔
+    - name: Semgrep Security Scan
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: |
+          p/security-audit
+          p/owasp-top-ten
+          p/django
+          p/react
+        generateSarif: "1"
+        
+    - name: Upload Semgrep results to GitHub Advanced Security Dashboard
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: semgrep.sarif
+        
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          vridge_back/bandit-report.*
+          vridge_back/safety-report.*
+          vridge_front/npm-audit-report.json
+          semgrep.sarif
+        retention-days: 30
+
+  # 의존성 및 라이선스 검사
+  dependency-check:
+    name: Dependency & License Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    # Python 의존성 분석
+    - name: Install Python dependencies
+      working-directory: ./vridge_back
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-licenses pipdeptree
+        
+    - name: Python - Dependency tree analysis
+      working-directory: ./vridge_back
+      run: |
+        echo "📦 Analyzing Python dependency tree..."
+        pipdeptree --json > python-dependencies.json
+        pipdeptree --graph-output png > python-dependency-graph.png || true
+        
+    - name: Python - License check
+      working-directory: ./vridge_back
+      run: |
+        echo "📄 Checking Python package licenses..."
+        pip-licenses --format=json --output-file=python-licenses.json
+        pip-licenses --format=html --output-file=python-licenses.html
+        
+    # Node.js 의존성 분석
+    - name: Install Node.js dependencies
+      working-directory: ./vridge_front
+      run: npm ci --prefer-offline --no-audit
+      
+    - name: Node.js - License check
+      working-directory: ./vridge_front
+      run: |
+        echo "📄 Checking Node.js package licenses..."
+        npx license-checker --json --out npm-licenses.json
+        npx license-checker --csv --out npm-licenses.csv
+        
+    - name: Node.js - Dependency analysis
+      working-directory: ./vridge_front
+      run: |
+        echo "📦 Analyzing Node.js dependencies..."
+        npm list --json > npm-dependencies.json 2>/dev/null || true
+        npx madge --json src > dependency-graph.json || true
+        
+    - name: Upload dependency reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-reports
+        path: |
+          vridge_back/python-dependencies.json
+          vridge_back/python-licenses.*
+          vridge_front/npm-licenses.*
+          vridge_front/npm-dependencies.json
+          vridge_front/dependency-graph.json
+        retention-days: 30
+
+  # 성능 및 복잡도 분석
+  performance-analysis:
+    name: Performance & Complexity Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    # Python 복잡도 분석
+    - name: Python - Complexity analysis
+      working-directory: ./vridge_back
+      run: |
+        pip install radon xenon
+        echo "📊 Running Python complexity analysis..."
+        radon cc . --json > complexity-report.json
+        radon mi . --json > maintainability-report.json
+        radon hal . --json > halstead-report.json
+        xenon --max-absolute B --max-modules B --max-average A . || true
+        
+    # Frontend 번들 분석
+    - name: Install Node.js dependencies
+      working-directory: ./vridge_front
+      run: npm ci --prefer-offline --no-audit
+      
+    - name: Frontend - Bundle analysis
+      working-directory: ./vridge_front
+      run: |
+        echo "📊 Analyzing frontend bundle..."
+        if [ -f "package.json" ] && grep -q "build" package.json; then
+          npm run build
+          if [ -d ".next" ]; then
+            npx @next/bundle-analyzer || true
+            du -sh .next/static/* > bundle-sizes.txt 2>/dev/null || echo "No static files" > bundle-sizes.txt
+          fi
+        fi
+        
+    - name: Upload performance reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-reports
+        path: |
+          vridge_back/complexity-report.json
+          vridge_back/maintainability-report.json
+          vridge_back/halstead-report.json
+          vridge_front/bundle-sizes.txt
+        retention-days: 30
+
+  # 종합 리포트 생성
+  generate-summary:
+    name: Generate Quality Summary Report
+    runs-on: ubuntu-latest
+    needs: [code-analysis, security-scan, dependency-check, performance-analysis]
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      
+    - name: Generate summary report
+      run: |
+        echo "# 📊 Code Quality & Security Summary Report" > QUALITY_SUMMARY.md
+        echo "Generated on: $(date)" >> QUALITY_SUMMARY.md
+        echo "" >> QUALITY_SUMMARY.md
+        
+        echo "## 🎯 Job Status" >> QUALITY_SUMMARY.md
+        echo "- Code Analysis: ${{ needs.code-analysis.result }}" >> QUALITY_SUMMARY.md
+        echo "- Security Scan: ${{ needs.security-scan.result }}" >> QUALITY_SUMMARY.md  
+        echo "- Dependency Check: ${{ needs.dependency-check.result }}" >> QUALITY_SUMMARY.md
+        echo "- Performance Analysis: ${{ needs.performance-analysis.result }}" >> QUALITY_SUMMARY.md
+        echo "" >> QUALITY_SUMMARY.md
+        
+        echo "## 📁 Generated Reports" >> QUALITY_SUMMARY.md
+        find . -name "*.json" -o -name "*.html" -o -name "*.txt" -o -name "*.csv" | sort >> QUALITY_SUMMARY.md
+        
+        echo "" >> QUALITY_SUMMARY.md
+        echo "## 🔍 Next Steps" >> QUALITY_SUMMARY.md
+        echo "1. Review security reports for vulnerabilities" >> QUALITY_SUMMARY.md
+        echo "2. Check code quality reports for improvements" >> QUALITY_SUMMARY.md
+        echo "3. Verify dependency licenses compliance" >> QUALITY_SUMMARY.md
+        echo "4. Monitor performance metrics" >> QUALITY_SUMMARY.md
+        
+    - name: Upload summary report
+      uses: actions/upload-artifact@v3
+      with:
+        name: quality-summary
+        path: QUALITY_SUMMARY.md
+        retention-days: 90
+        
+    - name: Comment PR with summary
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('QUALITY_SUMMARY.md', 'utf8');
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          });

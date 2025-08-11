@@ -9,13 +9,13 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 
 import os
 
-# Railway 환경에서는 railway 설정 사용
+# Railway  railway  
 if os.environ.get('RAILWAY_ENVIRONMENT'):
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.railway")
 else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.railway")
 
-import django  # 환경변수 입력 후 django 모듈 불러오기
+import django  #    django  
 
 django.setup()
 
@@ -31,7 +31,7 @@ application = ProtocolTypeRouter(
     {
         "websocket": OriginValidator(
             AuthMiddlewareStack(
-                # URLRouter 로 연결, 소비자의 라우트 연결 HTTP path를 조사
+                # URLRouter  ,    HTTP path 
                 URLRouter(routing.websocket_urlpatterns)
             ),
             [

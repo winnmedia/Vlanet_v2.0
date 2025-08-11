@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # Railway 환경에서는 railway 설정 사용
+    # Railway  railway  
     if os.environ.get('RAILWAY_ENVIRONMENT'):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.railway")
     else:

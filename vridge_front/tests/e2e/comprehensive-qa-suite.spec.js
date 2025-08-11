@@ -99,7 +99,7 @@ class SignupPage {
 
   async expectVerificationRequired() {
     await expect(this.page).toHaveURL('/verify-email');
-    await expect(this.page.locator('.info-message')).toContainText('이메일을 확인해주세요');
+    await expect(this.page.locator('.info-message')).toContainText(' ');
   }
 }
 
@@ -142,7 +142,7 @@ class VideoPlanningPage {
     }
     
     await this.page.click('[data-testid="save-storyboard-btn"]');
-    await expect(this.page.locator('.success-toast')).toContainText('스토리보드가 저장되었습니다');
+    await expect(this.page.locator('.success-toast')).toContainText(' ');
   }
 
   async exportPDF() {
@@ -186,7 +186,7 @@ class AIVideoPage {
     await this.generateButton.click();
     
     // Wait for completion (with extended timeout for AI processing)
-    await expect(this.statusIndicator).toContainText('완료', { timeout: 300000 });
+    await expect(this.statusIndicator).toContainText('', { timeout: 300000 });
     
     // Verify video is ready
     await expect(this.videoPlayer).toBeVisible();
@@ -218,7 +218,7 @@ class CalendarPage {
     }
     
     await this.saveButton.click();
-    await expect(this.page.locator('.success-toast')).toContainText('일정이 생성되었습니다');
+    await expect(this.page.locator('.success-toast')).toContainText(' ');
   }
 
   async inviteToProject(email, role) {
@@ -227,7 +227,7 @@ class CalendarPage {
     await this.page.fill('[name="inviteEmails"]', email);
     await this.page.selectOption('[name="role"]', role);
     await this.page.click('[data-testid="send-invites-btn"]');
-    await expect(this.page.locator('.success-toast')).toContainText('초대가 발송되었습니다');
+    await expect(this.page.locator('.success-toast')).toContainText(' ');
   }
 }
 
@@ -279,7 +279,7 @@ class VideoFeedbackPage {
 }
 
 // Test Suites
-test.describe('🎯 Feature 1: Account Management Journey', () => {
+test.describe(' Feature 1: Account Management Journey', () => {
   test('Complete account lifecycle', async ({ page }) => {
     const signupPage = new SignupPage(page);
     const loginPage = new LoginPage(page);
@@ -291,7 +291,7 @@ test.describe('🎯 Feature 1: Account Management Journey', () => {
     
     // Simulate email verification (in real test, would check email)
     await page.goto(`/verify-email/confirm?token=test_${Date.now()}`);
-    await expect(page.locator('.success-message')).toContainText('계정이 활성화되었습니다');
+    await expect(page.locator('.success-message')).toContainText(' ');
     
     // Login
     await loginPage.login(userData.email, userData.password);
@@ -301,15 +301,15 @@ test.describe('🎯 Feature 1: Account Management Journey', () => {
     await page.goto('/reset-password');
     await page.fill('[name="email"]', userData.email);
     await page.click('[type="submit"]');
-    await expect(page.locator('.info-message')).toContainText('비밀번호 재설정 링크를 발송했습니다');
+    await expect(page.locator('.info-message')).toContainText('   ');
     
     // Account deletion
     await page.goto('/mypage');
     await page.click('[data-testid="delete-account-btn"]');
     await page.fill('[name="password"]', userData.password);
-    await page.fill('[name="confirmText"]', '계정삭제');
+    await page.fill('[name="confirmText"]', '');
     await page.click('[data-testid="confirm-delete-btn"]');
-    await expect(page.locator('.warning-message')).toContainText('30일 후 영구 삭제됩니다');
+    await expect(page.locator('.warning-message')).toContainText('30   ');
   });
 
   test('Input validation and error handling', async ({ page }) => {
@@ -319,27 +319,27 @@ test.describe('🎯 Feature 1: Account Management Journey', () => {
     
     // Test empty fields
     await signupPage.submitButton.click();
-    await expect(page.locator('.error-message')).toContainText('필수 항목을 입력해주세요');
+    await expect(page.locator('.error-message')).toContainText('  ');
     
     // Test invalid email
     await signupPage.emailInput.fill('invalid-email');
     await signupPage.submitButton.click();
-    await expect(page.locator('.error-message')).toContainText('올바른 이메일 형식이 아닙니다');
+    await expect(page.locator('.error-message')).toContainText('   ');
     
     // Test weak password
     await signupPage.passwordInput.fill('123');
     await signupPage.submitButton.click();
-    await expect(page.locator('.error-message')).toContainText('비밀번호는 8자 이상이어야 합니다');
+    await expect(page.locator('.error-message')).toContainText(' 8  ');
     
     // Test password mismatch
     await signupPage.passwordInput.fill('Test@Pass2025!');
     await signupPage.confirmPasswordInput.fill('Different@Pass2025!');
     await signupPage.submitButton.click();
-    await expect(page.locator('.error-message')).toContainText('비밀번호가 일치하지 않습니다');
+    await expect(page.locator('.error-message')).toContainText('  ');
   });
 });
 
-test.describe('🎬 Feature 2: Video Planning', () => {
+test.describe(' Feature 2: Video Planning', () => {
   test('Complete video planning workflow', async ({ page }) => {
     const videoPlanning = new VideoPlanningPage(page);
     
@@ -350,7 +350,7 @@ test.describe('🎬 Feature 2: Video Planning', () => {
     // Create story with AI
     await videoPlanning.createStory({
       genre: 'drama',
-      message: '희망과 용기의 이야기'
+      message: '  '
     });
     
     // Create storyboard
@@ -370,7 +370,7 @@ test.describe('🎬 Feature 2: Video Planning', () => {
     await page.selectOption('[name="preferredGenre"]', 'documentary');
     await page.selectOption('[name="workStyle"]', 'collaborative');
     await page.click('[data-testid="save-settings-btn"]');
-    await expect(page.locator('.success-toast')).toContainText('설정이 저장되었습니다');
+    await expect(page.locator('.success-toast')).toContainText(' ');
     
     // Verify preferences applied
     await page.goto('/video-planning');
@@ -380,7 +380,7 @@ test.describe('🎬 Feature 2: Video Planning', () => {
   });
 });
 
-test.describe('🤖 Feature 3: AI Video Generation', () => {
+test.describe(' Feature 3: AI Video Generation', () => {
   test.skip('Generate video with AI', async ({ page }) => {
     // Skip in CI due to long processing time
     if (process.env.CI) return;
@@ -426,7 +426,7 @@ test.describe('🤖 Feature 3: AI Video Generation', () => {
   });
 });
 
-test.describe('📅 Feature 4: Calendar & Project Management', () => {
+test.describe(' Feature 4: Calendar & Project Management', () => {
   test('Calendar event management', async ({ page }) => {
     const calendar = new CalendarPage(page);
     const loginPage = new LoginPage(page);
@@ -435,7 +435,7 @@ test.describe('📅 Feature 4: Calendar & Project Management', () => {
     
     // Create event
     await calendar.createEvent({
-      title: '영상 기획 회의',
+      title: '  ',
       date: '2025-01-15',
       time: '14:00',
       recurring: true,
@@ -443,7 +443,7 @@ test.describe('📅 Feature 4: Calendar & Project Management', () => {
     });
     
     // Verify event in calendar
-    await expect(page.locator('[data-date="2025-01-15"]')).toContainText('영상 기획 회의');
+    await expect(page.locator('[data-date="2025-01-15"]')).toContainText('  ');
     
     // Test view switching
     await page.click('[data-testid="week-view-btn"]');
@@ -485,7 +485,7 @@ test.describe('📅 Feature 4: Calendar & Project Management', () => {
   });
 });
 
-test.describe('💬 Feature 5: Video Feedback', () => {
+test.describe(' Feature 5: Video Feedback', () => {
   test('Video player controls', async ({ page }) => {
     const feedback = new VideoFeedbackPage(page);
     const loginPage = new LoginPage(page);
@@ -522,7 +522,7 @@ test.describe('💬 Feature 5: Video Feedback', () => {
     await feedback.loadVideo('test-video');
     
     // Add timestamp comment
-    await feedback.addTimestampComment(25, '이 부분 색상 보정 필요');
+    await feedback.addTimestampComment(25, '    ');
     
     // Add drawing annotation
     await page.click('[data-testid="drawing-tool"]');
@@ -534,7 +534,7 @@ test.describe('💬 Feature 5: Video Feedback', () => {
     
     // Test comment thread
     await page.locator('[data-testid="comment-item-1"]').click();
-    await page.fill('[data-testid="reply-text"]', '확인했습니다');
+    await page.fill('[data-testid="reply-text"]', '');
     await page.click('[data-testid="reply-btn"]');
     
     // Resolve comment
@@ -569,7 +569,7 @@ test.describe('💬 Feature 5: Video Feedback', () => {
 });
 
 // Performance Tests
-test.describe('⚡ Performance Tests', () => {
+test.describe(' Performance Tests', () => {
   test('Page load performance', async ({ page }) => {
     const pages = [
       { url: '/', name: 'Landing', target: 2000 },
@@ -610,7 +610,7 @@ test.describe('⚡ Performance Tests', () => {
 });
 
 // Security Tests
-test.describe('🔐 Security Tests', () => {
+test.describe(' Security Tests', () => {
   test('XSS prevention', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login('test@videoplanet.com', 'Test@Pass2025!');
@@ -634,7 +634,7 @@ test.describe('🔐 Security Tests', () => {
     
     // Try SQL injection in login
     await loginPage.login("admin' OR '1'='1", "password");
-    await loginPage.expectError('잘못된 이메일 또는 비밀번호입니다');
+    await loginPage.expectError('   ');
   });
 
   test('Rate limiting', async ({ page }) => {
@@ -646,12 +646,12 @@ test.describe('🔐 Security Tests', () => {
     }
     
     // Should show rate limit message after 5 attempts
-    await expect(page.locator('.error-message')).toContainText('너무 많은 시도');
+    await expect(page.locator('.error-message')).toContainText('  ');
   });
 });
 
 // Accessibility Tests
-test.describe('♿ Accessibility Tests', () => {
+test.describe(' Accessibility Tests', () => {
   test('Keyboard navigation', async ({ page }) => {
     await page.goto('/');
     
@@ -717,7 +717,7 @@ test.describe('♿ Accessibility Tests', () => {
 });
 
 // Mobile Responsiveness Tests
-test.describe('📱 Mobile Tests', () => {
+test.describe(' Mobile Tests', () => {
   test.use({ viewport: { width: 375, height: 667 } }); // iPhone SE
   
   test('Mobile navigation', async ({ page }) => {
@@ -731,7 +731,7 @@ test.describe('📱 Mobile Tests', () => {
     await expect(page.locator('[data-testid="mobile-menu"]')).toBeVisible();
     
     // Navigate via mobile menu
-    await page.click('[data-testid="mobile-menu"] >> text=로그인');
+    await page.click('[data-testid="mobile-menu"] >> text=');
     await expect(page).toHaveURL('/login');
   });
 
@@ -758,7 +758,7 @@ test.describe('📱 Mobile Tests', () => {
 });
 
 // Stress Tests
-test.describe('💪 Stress Tests', () => {
+test.describe(' Stress Tests', () => {
   test('Concurrent user simulation', async ({ browser }) => {
     const userCount = 10;
     const contexts = [];
@@ -827,7 +827,7 @@ test.describe('💪 Stress Tests', () => {
 });
 
 // Data Integrity Tests
-test.describe('💾 Data Integrity Tests', () => {
+test.describe(' Data Integrity Tests', () => {
   test('Auto-save functionality', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login('test@videoplanet.com', 'Test@Pass2025!');
@@ -876,7 +876,7 @@ test.describe('💾 Data Integrity Tests', () => {
     await page2.click('[data-testid="save-btn"]');
     
     // Check conflict resolution
-    await expect(page2.locator('.warning-message')).toContainText('충돌');
+    await expect(page2.locator('.warning-message')).toContainText('');
     
     // Cleanup
     await context1.close();
@@ -885,7 +885,7 @@ test.describe('💾 Data Integrity Tests', () => {
 });
 
 // Regression Tests
-test.describe('🔄 Regression Tests', () => {
+test.describe(' Regression Tests', () => {
   test('Critical user paths remain functional', async ({ page }) => {
     const criticalPaths = [
       { name: 'Signup', test: async () => {

@@ -3,7 +3,7 @@ import os
 import sys
 import django
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings_base')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 django.setup()
@@ -45,7 +45,7 @@ print('\n=== Railway Specific Settings ===')
 print(f'RAILWAY_ENVIRONMENT: {os.environ.get("RAILWAY_ENVIRONMENT", "Not set")}')
 print(f'Current settings module: {os.environ.get("DJANGO_SETTINGS_MODULE", "Not set")}')
 
-# Railway 환경인지 확인
+# Railway  
 if os.environ.get("RAILWAY_ENVIRONMENT"):
     print('\n=== Railway Email Configuration ===')
     print('Running in Railway environment')

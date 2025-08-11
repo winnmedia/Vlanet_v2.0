@@ -2,20 +2,33 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # 초대 관리
-    path('', views.InvitationListCreateView.as_view(), name='invitation-list-create'),
-    path('<int:pk>/', views.InvitationDetailView.as_view(), name='invitation-detail'),
+    # Standard REST API patterns
+    path('', views.ReceivedInvitations.as_view(), name='invitation-list'),  # GET /api/invitations/
+    path('', views.SendInvitation.as_view(), name='invitation-create'),  # POST /api/invitations/
+    path('<int:pk>/', views.InvitationDetail.as_view(), name='invitation-detail'),  # GET /api/invitations/{id}/
+    path('<int:pk>/', views.RespondToInvitation.as_view(), name='invitation-update'),  # PUT/PATCH /api/invitations/{id}/
+    path('<int:pk>/cancel/', views.CancelInvitation.as_view(), name='invitation-delete'),  # DELETE /api/invitations/{id}/cancel/
     
-    # 받은 초대
-    path('received/', views.ReceivedInvitationsView.as_view(), name='received-invitations'),
+    # Accept/Decline endpoints
+    path('<int:pk>/accept/', views.AcceptInvitation.as_view(), name='invitation-accept'),  # POST /api/invitations/{id}/accept/
+    path('<int:pk>/decline/', views.DeclineInvitation.as_view(), name='invitation-decline'),  # POST /api/invitations/{id}/decline/
     
-    # 초대 응답
-    path('<int:pk>/accept/', views.AcceptInvitationView.as_view(), name='accept-invitation'),
-    path('<int:pk>/reject/', views.RejectInvitationView.as_view(), name='reject-invitation'),
+    # Additional endpoints
+    path('send/', views.SendInvitation.as_view(), name='send-invitation'),  # Legacy support
+    path('received/', views.ReceivedInvitations.as_view(), name='received-invitations'),
+    path('sent/', views.SentInvitations.as_view(), name='sent-invitations'),
+    path('<int:pk>/respond/', views.RespondToInvitation.as_view(), name='respond-invitation'),
+    path('<int:pk>/resend/', views.ResendInvitation.as_view(), name='resend-invitation'),
     
-    # 초대 재발송
-    path('<int:pk>/resend/', views.ResendInvitationView.as_view(), name='resend-invitation'),
+    # Team management
+    path('team-members/', views.TeamMemberList.as_view(), name='team-member-list'),
+    path('team-members/<int:pk>/remove/', views.RemoveTeamMember.as_view(), name='remove-team-member'),
     
-    # 최근 초대한 사용자 목록
-    path('recent-users/', views.RecentInvitedUsersView.as_view(), name='recent-invited-users'),
+    # Friends management
+    path('friends/', views.FriendList.as_view(), name='friend-list'),
+    path('friends/<int:pk>/remove/', views.RemoveFriend.as_view(), name='remove-friend'),
+    
+    # Utility endpoints
+    path('stats/', views.InvitationStats.as_view(), name='invitation-stats'),
+    path('search-user/', views.SearchUserByEmail.as_view(), name='search-user'),
 ]

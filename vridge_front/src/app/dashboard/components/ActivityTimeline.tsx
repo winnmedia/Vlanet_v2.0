@@ -14,10 +14,10 @@ interface ActivityTimelineProps {
 
 const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ activities }) => {
   const defaultActivities = [
-    { time: '10분 전', action: '김영희님이 "브랜드 홍보 영상"에 피드백을 남겼습니다.' },
-    { time: '30분 전', action: '새 프로젝트 "유튜브 썸네일 디자인"이 생성되었습니다.' },
-    { time: '1시간 전', action: '"제품 소개 애니메이션" 프로젝트가 피드백 단계로 이동했습니다.' },
-    { time: '3시간 전', action: '박철수님이 팀에 합류했습니다.' },
+    { time: '10 ', action: ' "  "  .' },
+    { time: '30 ', action: '  "  " .' },
+    { time: '1 ', action: '"  "    .' },
+    { time: '3 ', action: '  .' },
   ];
 
   const activityList = activities || defaultActivities;
@@ -25,7 +25,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ activities }) => {
   return (
     <div className="mt-6 bg-white rounded-lg border border-gray-200">
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">최근 활동</h2>
+        <h2 className="text-lg font-semibold text-gray-900"> </h2>
       </div>
       <div className="p-6">
         <div className="space-y-4">

@@ -1,6 +1,6 @@
 """
-인증 뷰 Fallback 시스템
-Railway와 로컬 환경에서 안정적으로 작동하도록 보장
+  Fallback 
+Railway     
 """
 import os
 import logging
@@ -9,7 +9,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 def _is_railway_env():
-    """Railway 환경 감지"""
+    """Railway  """
     return (
         os.environ.get('RAILWAY_ENVIRONMENT') is not None or
         os.environ.get('RAILWAY_PROJECT_ID') is not None or
@@ -17,9 +17,9 @@ def _is_railway_env():
     )
 
 def get_auth_views():
-    """환경에 따라 적절한 인증 뷰 반환"""
+    """     """
     
-    # 기본 안전한 뷰 임포트
+    #    
     try:
         from users.views_signup_safe import SafeSignUp, SafeSignIn
         from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
@@ -33,7 +33,7 @@ def get_auth_views():
         logger.info("Safe auth views loaded successfully")
     except ImportError as e:
         logger.error(f"Failed to import safe views: {e}")
-        # 최소한의 폴백
+        #  
         from django.views import View
         from django.http import JsonResponse
         
@@ -51,12 +51,12 @@ def get_auth_views():
             'verify': FallbackView
         }
     
-    # Railway 환경에서는 안전한 뷰만 사용
+    # Railway    
     if _is_railway_env():
         logger.info("Railway environment detected - using safe views")
         return safe_views
     
-    # 로컬/개발 환경에서는 개선된 뷰 시도
+    # /    
     try:
         from users.views_auth_fixed import ImprovedSignIn
         from users.views_auth_improved import ImprovedSignUp

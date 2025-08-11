@@ -32,7 +32,7 @@ export default function TeamsPage() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        // 팀 데이터 조회 API 호출
+        //    API 
         const response = await fetch('/api/projects/', {
           method: 'GET',
           headers: {
@@ -47,21 +47,21 @@ export default function TeamsPage() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // 임시로 프로젝트 데이터를 기반으로 팀 정보 생성
+        //       
         const projects = await response.json();
         
-        // Fallback 팀 데이터 생성
+        // Fallback   
         const mockTeam: Team = {
           id: 'team-1',
           name: 'VideoPlanet Team',
-          description: '비디오 제작 및 피드백 협업 팀',
+          description: '     ',
           members: [
             {
               id: 'member-1',
-              name: '관리자',
+              name: '',
               email: 'admin@videoplaetwins.com',
               role: 'owner',
-              lastActive: '방금 전',
+              lastActive: ' ',
               projectsCount: projects?.results?.length || 0
             }
           ],
@@ -71,13 +71,13 @@ export default function TeamsPage() {
         setTeams([mockTeam]);
       } catch (err) {
         console.error('Teams fetch error:', err);
-        setError(err instanceof Error ? err.message : '팀 정보를 불러올 수 없습니다.');
+        setError(err instanceof Error ? err.message : '    .');
         
-        // Fallback 데이터
+        // Fallback 
         setTeams([{
           id: 'team-1',
           name: 'VideoPlanet Team',
-          description: '비디오 제작 및 피드백 협업 팀',
+          description: '     ',
           members: [],
           createdAt: new Date().toISOString()
         }]);
@@ -107,13 +107,13 @@ export default function TeamsPage() {
       if (response.ok) {
         setNewMemberEmail('');
         setShowInviteModal(false);
-        // 성공 알림
-        alert('초대 메일이 발송되었습니다.');
+        //  
+        alert('  .');
       } else {
-        throw new Error('초대 발송에 실패했습니다.');
+        throw new Error('  .');
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : '초대 발송 중 오류가 발생했습니다.');
+      alert(err instanceof Error ? err.message : '    .');
     }
   };
 
@@ -121,7 +121,7 @@ export default function TeamsPage() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner />
-        <span className="ml-3 text-lg">팀 정보를 불러오는 중...</span>
+        <span className="ml-3 text-lg">   ...</span>
       </div>
     );
   }
@@ -132,21 +132,21 @@ export default function TeamsPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Team Management</h1>
-            <p className="text-gray-600">팀원을 초대하고 협업 권한을 관리하세요.</p>
+            <p className="text-gray-600">    .</p>
           </div>
           <button
             onClick={() => setShowInviteModal(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            팀원 초대
+             
           </button>
         </div>
         
         {error && (
           <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700">
-            <p className="font-medium">알림</p>
+            <p className="font-medium"></p>
             <p>{error}</p>
-            <p className="text-sm mt-1">기본 팀 정보를 표시합니다.</p>
+            <p className="text-sm mt-1">   .</p>
           </div>
         )}
       </div>
@@ -161,7 +161,7 @@ export default function TeamsPage() {
 
             <div className="mb-4">
               <h3 className="text-lg font-medium text-gray-900 mb-3">
-                팀원 ({team.members.length}명)
+                 ({team.members.length})
               </h3>
               
               {team.members.length > 0 ? (
@@ -187,9 +187,9 @@ export default function TeamsPage() {
                           member.role === 'member' ? 'bg-green-100 text-green-700' :
                           'bg-gray-100 text-gray-700'
                         }`}>
-                          {member.role === 'owner' ? '팀장' :
-                           member.role === 'admin' ? '관리자' :
-                           member.role === 'member' ? '멤버' : '뷰어'}
+                          {member.role === 'owner' ? '' :
+                           member.role === 'admin' ? '' :
+                           member.role === 'member' ? '' : ''}
                         </span>
                         <span className="text-xs text-gray-500">{member.lastActive}</span>
                       </div>
@@ -197,21 +197,21 @@ export default function TeamsPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 text-center py-8">팀원이 없습니다. 팀원을 초대해보세요.</p>
+                <p className="text-gray-500 text-center py-8"> .  .</p>
               )}
             </div>
           </Card>
         ))}
       </div>
 
-      {/* 초대 모달 */}
+      {/*   */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">팀원 초대</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4"> </h3>
             <input
               type="email"
-              placeholder="초대할 이메일 주소"
+              placeholder="  "
               value={newMemberEmail}
               onChange={(e) => setNewMemberEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
@@ -221,13 +221,13 @@ export default function TeamsPage() {
                 onClick={() => setShowInviteModal(false)}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
               >
-                취소
+                
               </button>
               <button
                 onClick={handleInviteMember}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                초대 발송
+                 
               </button>
             </div>
           </div>

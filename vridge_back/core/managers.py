@@ -9,7 +9,7 @@ class CustomModelManager(models.Manager):
         except self.model.DoesNotExist:
             return None
 
-    # get으로 접근 다른 메소드를 접근하려면 filter사용
+    # get     filter
 
 
 class CustomUserManager(CustomModelManager, UserManager):

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('API Proxy Error:', error);
     return NextResponse.json(
-      { success: false, message: '서버 오류가 발생했습니다.' },
+      { success: false, message: '  .' },
       { status: 500 }
     );
   }

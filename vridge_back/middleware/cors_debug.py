@@ -1,4 +1,4 @@
-"""CORS 디버깅 미들웨어"""
+"""CORS  """
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,23 +9,23 @@ class CorsDebugMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # 요청 정보 로깅
+        #   
         origin = request.headers.get('Origin', 'No origin')
         logger.info(f"[CORS Debug] Request from origin: {origin}")
         logger.info(f"[CORS Debug] Request method: {request.method}")
         logger.info(f"[CORS Debug] Request path: {request.path}")
         
-        # preflight 요청 확인
+        # preflight  
         if request.method == 'OPTIONS':
             logger.info("[CORS Debug] This is a preflight request")
         
         response = self.get_response(request)
         
-        # 응답 헤더 로깅
+        #   
         logger.info(f"[CORS Debug] Response status: {response.status_code}")
         logger.info(f"[CORS Debug] Response headers: {dict(response.headers)}")
         
-        # CORS 헤더 확인
+        # CORS  
         cors_headers = {
             'Access-Control-Allow-Origin': response.get('Access-Control-Allow-Origin', 'Not set'),
             'Access-Control-Allow-Methods': response.get('Access-Control-Allow-Methods', 'Not set'),

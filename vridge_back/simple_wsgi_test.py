@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""WSGI 애플리케이션 단순 테스트"""
+"""WSGI   """
 import os
 import sys
 
@@ -7,19 +7,19 @@ print("=== WSGI Simple Test ===")
 print(f"Working Directory: {os.getcwd()}")
 print(f"Python Path: {sys.path}")
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway')
 os.environ.setdefault('SECRET_KEY', 'test-secret-key')
 os.environ.setdefault('DATABASE_URL', 'postgresql://test')
 
 try:
     from django.core.wsgi import get_wsgi_application
-    print("Django WSGI import: ✓")
+    print("Django WSGI import: ")
     
     application = get_wsgi_application()
-    print("WSGI application created: ✓")
+    print("WSGI application created: ")
     
-    # 간단한 요청 시뮬레이션
+    #   
     environ = {
         'REQUEST_METHOD': 'GET',
         'PATH_INFO': '/api/health/',

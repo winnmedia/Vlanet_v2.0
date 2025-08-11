@@ -6,16 +6,16 @@ User = get_user_model()
 
 
 class CalendarEvent(models.Model):
-    """캘린더 이벤트 모델"""
-    title = models.CharField(max_length=200, verbose_name="제목")
-    description = models.TextField(blank=True, verbose_name="설명")
-    date = models.DateField(verbose_name="날짜")
-    time = models.TimeField(verbose_name="시간")
+    """  """
+    title = models.CharField(max_length=200, verbose_name="")
+    description = models.TextField(blank=True, verbose_name="")
+    date = models.DateField(verbose_name="")
+    time = models.TimeField(verbose_name="")
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='calendar_events',
-        verbose_name="사용자"
+        verbose_name=""
     )
     project = models.ForeignKey(
         Project,
@@ -23,14 +23,14 @@ class CalendarEvent(models.Model):
         related_name='calendar_events',
         null=True,
         blank=True,
-        verbose_name="프로젝트"
+        verbose_name=""
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = "캘린더 이벤트"
-        verbose_name_plural = "캘린더 이벤트"
+        verbose_name = " "
+        verbose_name_plural = " "
         ordering = ['-date', '-time']
         indexes = [
             models.Index(fields=['user', 'date']),

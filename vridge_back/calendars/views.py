@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 class CalendarEventList(generics.ListCreateAPIView):
-    """캘린더 이벤트 목록 조회 및 생성"""
+    """     """
     serializer_class = CalendarEventSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         queryset = CalendarEvent.objects.filter(user=self.request.user)
         
-        # 날짜 필터링
+        #  
         date = self.request.query_params.get('date')
         if date:
             try:
@@ -29,7 +29,7 @@ class CalendarEventList(generics.ListCreateAPIView):
             except ValueError:
                 pass
         
-        # 날짜 범위 필터링
+        #   
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
         if start_date and end_date:
@@ -40,7 +40,7 @@ class CalendarEventList(generics.ListCreateAPIView):
             except ValueError:
                 pass
         
-        # 프로젝트 필터링
+        #  
         project_id = self.request.query_params.get('project_id')
         if project_id:
             queryset = queryset.filter(project_id=project_id)
@@ -55,7 +55,7 @@ class CalendarEventList(generics.ListCreateAPIView):
         except Exception as e:
             logger.error(f"Calendar list error: {str(e)}")
             return Response(
-                {"error": "캘린더 이벤트 조회 중 오류가 발생했습니다."},
+                {"error": "처리 중 오류가 발생했습니다."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -69,13 +69,13 @@ class CalendarEventList(generics.ListCreateAPIView):
         except Exception as e:
             logger.error(f"Calendar create error: {str(e)}")
             return Response(
-                {"error": "캘린더 이벤트 생성 중 오류가 발생했습니다."},
+                {"error": "처리 중 오류가 발생했습니다."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
 class CalendarEventDetail(generics.RetrieveUpdateDestroyAPIView):
-    """캘린더 이벤트 상세 조회, 수정, 삭제"""
+    """   , , """
     serializer_class = CalendarEventSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
@@ -95,7 +95,7 @@ class CalendarEventDetail(generics.RetrieveUpdateDestroyAPIView):
         except Exception as e:
             logger.error(f"Calendar update error: {str(e)}")
             return Response(
-                {"error": "캘린더 이벤트 수정 중 오류가 발생했습니다."},
+                {"error": "처리 중 오류가 발생했습니다."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
@@ -107,25 +107,25 @@ class CalendarEventDetail(generics.RetrieveUpdateDestroyAPIView):
         except Exception as e:
             logger.error(f"Calendar delete error: {str(e)}")
             return Response(
-                {"error": "캘린더 이벤트 삭제 중 오류가 발생했습니다."},
+                {"error": "처리 중 오류가 발생했습니다."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
 class CalendarEventUpdates(APIView):
-    """캘린더 업데이트 확인 (polling용)"""
+    """   (polling)"""
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
         try:
-            # since 파라미터로 마지막 동기화 시간 받기
+            # since     
             since = request.query_params.get('since')
             updates = []
             
             if since:
                 try:
                     since_datetime = datetime.fromisoformat(since.replace('Z', '+00:00'))
-                    # 마지막 동기화 이후 변경된 이벤트 조회
+                    #      
                     events = CalendarEvent.objects.filter(
                         user=request.user,
                         updated_at__gt=since_datetime
@@ -141,7 +141,7 @@ class CalendarEventUpdates(APIView):
                 except (ValueError, TypeError) as e:
                     logger.warning(f"Invalid since parameter: {since}, error: {e}")
             
-            # 최신 타임스탬프 계산
+            #   
             latest_timestamp = timezone.now().isoformat()
             
             return Response({
@@ -152,13 +152,13 @@ class CalendarEventUpdates(APIView):
         except Exception as e:
             logger.error(f"Calendar updates error: {str(e)}")
             return Response(
-                {"error": "캘린더 업데이트 확인 중 오류가 발생했습니다."},
+                {"error": "처리 중 오류가 발생했습니다."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
 class CalendarEventBatchUpdate(APIView):
-    """캘린더 이벤트 일괄 업데이트"""
+    """일괄 업데이트"""
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
@@ -185,6 +185,64 @@ class CalendarEventBatchUpdate(APIView):
         except Exception as e:
             logger.error(f"Calendar batch update error: {str(e)}")
             return Response(
-                {"error": "캘린더 일괄 업데이트 중 오류가 발생했습니다."},
+                {"error": "일괄 업데이트 중 오류가 발생했습니다."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class CalendarMonthView(APIView):
+    """월별 일정 조회 - GET /api/calendar/month/{year}/{month}/"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, year, month):
+        try:
+            # 년월 유효성 검증
+            if not (1 <= month <= 12):
+                return Response(
+                    {"error": "유효하지 않은 월입니다. (1-12)"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            if not (1900 <= year <= 2100):
+                return Response(
+                    {"error": "유효하지 않은 년도입니다."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # 해당 월의 시작일과 끝일 계산
+            import calendar
+            _, last_day = calendar.monthrange(year, month)
+            start_date = datetime(year, month, 1).date()
+            end_date = datetime(year, month, last_day).date()
+            
+            # 해당 월의 일정 조회
+            events = CalendarEvent.objects.filter(
+                user=request.user,
+                date__range=[start_date, end_date]
+            ).select_related('project').order_by('date', 'time')
+            
+            # 일자별로 그룹화
+            events_by_date = {}
+            for event in events:
+                date_key = event.date.strftime('%Y-%m-%d')
+                if date_key not in events_by_date:
+                    events_by_date[date_key] = []
+                events_by_date[date_key].append(CalendarEventSerializer(event).data)
+            
+            return Response({
+                'year': year,
+                'month': month,
+                'events_by_date': events_by_date,
+                'total_events': events.count(),
+                'date_range': {
+                    'start': start_date.strftime('%Y-%m-%d'),
+                    'end': end_date.strftime('%Y-%m-%d')
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Calendar month view error: {str(e)}")
+            return Response(
+                {"error": "월별 일정 조회 중 오류가 발생했습니다."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

@@ -8,7 +8,7 @@ import { cn } from '@/lib/cn';
 import type { ModalProps } from '@/types';
 
 // ========================================
-// 모달 오버레이 컴포넌트
+//   
 // ========================================
 
 interface ModalOverlayProps {
@@ -53,7 +53,7 @@ const ModalOverlay: React.FC<ModalOverlayProps> = ({
 };
 
 // ========================================
-// 메인 모달 컴포넌트
+//   
 // ========================================
 
 export const Modal: React.FC<ModalProps> = ({
@@ -65,7 +65,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnOverlayClick = true,
   showCloseButton = true,
 }) => {
-  // Escape 키로 모달 닫기
+  // Escape   
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -77,7 +77,7 @@ export const Modal: React.FC<ModalProps> = ({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  // 모달이 열려있을 때 body 스크롤 방지
+  //    body  
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -114,7 +114,7 @@ export const Modal: React.FC<ModalProps> = ({
           sizeClasses[size]
         )}
       >
-        {/* 모달 헤더 */}
+        {/*   */}
         {(title || showCloseButton) && (
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             {title && (
@@ -136,7 +136,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         )}
 
-        {/* 모달 컨텐츠 */}
+        {/*   */}
         <div className="flex-1 overflow-y-auto">
           {children}
         </div>
@@ -146,7 +146,7 @@ export const Modal: React.FC<ModalProps> = ({
 };
 
 // ========================================
-// 모달 컨텐츠 컴포넌트들
+//   
 // ========================================
 
 interface ModalBodyProps {
@@ -185,7 +185,7 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
 };
 
 // ========================================
-// 확인 모달 컴포넌트
+//   
 // ========================================
 
 interface ConfirmModalProps {
@@ -204,10 +204,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = '확인',
-  message = '이 작업을 계속하시겠습니까?',
-  confirmText = '확인',
-  cancelText = '취소',
+  title = '',
+  message = '  ?',
+  confirmText = '',
+  cancelText = '',
   variant = 'default',
   isLoading = false,
 }) => {
@@ -238,7 +238,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           onClick={onConfirm}
           disabled={isLoading}
         >
-          {isLoading ? '처리 중...' : confirmText}
+          {isLoading ? ' ...' : confirmText}
         </Button>
       </ModalFooter>
     </Modal>

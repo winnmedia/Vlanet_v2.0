@@ -85,10 +85,10 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
             <div className={`flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(progress.status)}`}>
               {getStatusIcon(progress.status)}
               <span className="ml-1 capitalize">
-                {progress.status === 'queued' ? '대기중' :
-                 progress.status === 'processing' ? '생성중' :
-                 progress.status === 'completed' ? '완료' :
-                 progress.status === 'error' ? '오류' : progress.status}
+                {progress.status === 'queued' ? '' :
+                 progress.status === 'processing' ? '' :
+                 progress.status === 'completed' ? '' :
+                 progress.status === 'error' ? '' : progress.status}
               </span>
             </div>
             <h3 className="font-medium text-gray-900">{sceneName}</h3>
@@ -98,8 +98,8 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
           {progress.status === 'processing' && (
             <div className="mb-3">
               <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
-                <span>{progress.progress}% 완료</span>
-                <span>{formatTime(timeElapsed)} 경과</span>
+                <span>{progress.progress}% </span>
+                <span>{formatTime(timeElapsed)} </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
@@ -109,7 +109,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
               </div>
               {getEstimatedRemaining() && (
                 <div className="text-xs text-gray-500 mt-1">
-                  약 {formatTime(getEstimatedRemaining()!)} 남음
+                   {formatTime(getEstimatedRemaining()!)} 
                 </div>
               )}
             </div>
@@ -119,7 +119,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
           {progress.status === 'completed' && progress.completedAt && (
             <div className="text-sm text-gray-600">
               <div className="flex items-center space-x-4">
-                <span>✅ 생성 완료</span>
+                <span>  </span>
                 <span>
                   {progress.completedAt.toLocaleTimeString('ko-KR', {
                     hour: '2-digit',
@@ -133,7 +133,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
           {/* Error Info */}
           {progress.status === 'error' && progress.errorMessage && (
             <div className="text-sm text-red-600 bg-red-50 rounded p-2">
-              <div className="font-medium">오류 발생:</div>
+              <div className="font-medium"> :</div>
               <div>{progress.errorMessage}</div>
             </div>
           )}
@@ -141,7 +141,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
           {/* Queue Info */}
           {progress.status === 'queued' && (
             <div className="text-sm text-gray-600">
-              생성 대기열에 추가되었습니다
+                
             </div>
           )}
         </div>
@@ -151,7 +151,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ progress, sceneName, onCanc
           <button
             onClick={onCancel}
             className="ml-4 p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"
-            title="취소"
+            title=""
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -177,7 +177,7 @@ export const GenerationProgress: React.FC<GenerationProgressProps> = ({
 
   const getSceneName = (sceneId: string) => {
     const scene = scenes.find(s => s.id === sceneId);
-    return scene?.title || `씬 ${sceneId.slice(0, 8)}`;
+    return scene?.title || ` ${sceneId.slice(0, 8)}`;
   };
 
   const completedCount = progressEntries.filter(([_, prog]) => prog.status === 'completed').length;
@@ -197,7 +197,7 @@ export const GenerationProgress: React.FC<GenerationProgressProps> = ({
           onClick={() => setIsMinimized(!isMinimized)}
         >
           <div className="flex items-center space-x-3">
-            <h3 className="font-semibold text-gray-900">영상 생성 진행상황</h3>
+            <h3 className="font-semibold text-gray-900">  </h3>
             {hasActiveProgress && (
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
             )}
@@ -208,14 +208,14 @@ export const GenerationProgress: React.FC<GenerationProgressProps> = ({
             <div className="text-sm text-gray-600">
               {completedCount}/{totalCount}
               {errorCount > 0 && (
-                <span className="text-red-500 ml-1">({errorCount} 오류)</span>
+                <span className="text-red-500 ml-1">({errorCount} )</span>
               )}
             </div>
             
             {/* Minimize Button */}
             <button 
               className="p-1 hover:bg-gray-100 rounded"
-              title={isMinimized ? '확장' : '최소화'}
+              title={isMinimized ? '' : ''}
             >
               <svg 
                 className={`w-4 h-4 text-gray-400 transition-transform ${isMinimized ? 'rotate-180' : ''}`}
@@ -235,7 +235,7 @@ export const GenerationProgress: React.FC<GenerationProgressProps> = ({
             <div className="p-4 space-y-3">
               {progressEntries.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
-                  진행 중인 작업이 없습니다
+                     
                 </div>
               ) : (
                 progressEntries
@@ -265,7 +265,7 @@ export const GenerationProgress: React.FC<GenerationProgressProps> = ({
               <div className="px-4 pb-4 border-t bg-gray-50">
                 <div className="pt-3">
                   <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                    <span>전체 진행률</span>
+                    <span> </span>
                     <span>{Math.round((completedCount / totalCount) * 100)}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5">
@@ -285,10 +285,10 @@ export const GenerationProgress: React.FC<GenerationProgressProps> = ({
           <div className="px-4 pb-3">
             <div className="text-sm text-gray-600">
               {progressEntries.filter(([_, prog]) => prog.status === 'processing').length > 0 && (
-                <span>🎬 영상 생성 중...</span>
+                <span>   ...</span>
               )}
               {progressEntries.filter(([_, prog]) => prog.status === 'queued').length > 0 && (
-                <span>⏳ 대기중인 작업이 있습니다</span>
+                <span>⏳   </span>
               )}
             </div>
           </div>

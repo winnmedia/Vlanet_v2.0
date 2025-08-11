@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
-// 통계 카드 컴포넌트
+//   
 interface StatCardProps {
   title: string;
   value: string | number;
@@ -79,27 +79,27 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <StatCard
-        title="전체 프로젝트"
+        title=" "
         value={stats.totalProjects}
         icon={FolderOpen}
         color="blue"
         change={{ value: 12, trend: 'up' }}
       />
       <StatCard
-        title="진행중 프로젝트"
+        title=" "
         value={stats.activeProjects}
         icon={Film}
         color="green"
       />
       <StatCard
-        title="완료된 작업"
+        title=" "
         value={stats.completedTasks}
         icon={CheckCircle2}
         color="purple"
         change={{ value: 8, trend: 'up' }}
       />
       <StatCard
-        title="대기중 피드백"
+        title=" "
         value={stats.pendingFeedbacks}
         icon={MessageSquare}
         color="orange"

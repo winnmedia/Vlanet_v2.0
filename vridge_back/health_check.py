@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""간단한 헬스체크 서버 - Railway 헬스체크 전용"""
+"""   - Railway  """
 import os
 import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -18,7 +18,7 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
             self.end_headers()
     
     def log_message(self, format, *args):
-        # 로그 스팸 방지
+        #   
         if '/api/health/' in args[0]:
             return
         super().log_message(format, *args)

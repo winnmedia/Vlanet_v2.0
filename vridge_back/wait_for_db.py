@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-데이터베이스 연결을 기다리는 스크립트
-Railway 환경에서 PostgreSQL이 준비될 때까지 대기
+   
+Railway  PostgreSQL   
 """
 import os
 import sys
@@ -10,7 +10,7 @@ import psycopg2
 from urllib.parse import urlparse
 
 def wait_for_database(max_attempts=30, delay=2):
-    """데이터베이스가 준비될 때까지 대기"""
+    """   """
     database_url = os.environ.get('DATABASE_URL') or os.environ.get('RAILWAY_DATABASE_URL')
     
     if not database_url:

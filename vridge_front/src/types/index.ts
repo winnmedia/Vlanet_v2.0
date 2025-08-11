@@ -1,5 +1,5 @@
 // ========================================
-// 기본 타입 정의
+//   
 // ========================================
 
 export interface APIResponse<T = any> {
@@ -23,7 +23,7 @@ export interface PaginatedResponse<T> {
 }
 
 // ========================================
-// 사용자 관련 타입
+//   
 // ========================================
 
 export interface User {
@@ -75,15 +75,15 @@ export interface SignupResponse {
 }
 
 // ========================================
-// 프로젝트 관련 타입
+//   
 // ========================================
 
 export type ProjectStatus = 
-  | 'planning'    // 기획 중
-  | 'production'  // 제작 중
-  | 'review'      // 검토 중
-  | 'completed'   // 완료
-  | 'archived';   // 보관됨
+  | 'planning'    //  
+  | 'production'  //  
+  | 'review'      //  
+  | 'completed'   // 
+  | 'archived';   // 
 
 export interface Project {
   id: number;
@@ -138,7 +138,7 @@ export interface CreateProjectRequest {
 export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {}
 
 // ========================================
-// 피드백 관련 타입
+//   
 // ========================================
 
 export type FeedbackStatus = 
@@ -166,7 +166,7 @@ export interface Feedback {
 }
 
 // ========================================
-// UI 관련 타입
+// UI  
 // ========================================
 
 export interface SelectOption {
@@ -206,7 +206,7 @@ export interface ModalProps {
 }
 
 // ========================================
-// 폼 관련 타입
+//   
 // ========================================
 
 export interface FormFieldProps {
@@ -227,7 +227,7 @@ export interface ValidationRule {
 }
 
 // ========================================
-// 검색 및 필터링 타입
+//    
 // ========================================
 
 export interface ProjectFilters {
@@ -253,7 +253,7 @@ export interface SortConfig {
 }
 
 // ========================================
-// 테마 및 설정 타입
+//    
 // ========================================
 
 export interface ThemeConfig {
@@ -277,7 +277,7 @@ export interface UserPreferences {
 }
 
 // ========================================
-// 네트워크 및 상태 타입
+//    
 // ========================================
 
 export interface LoadingState {
@@ -297,7 +297,7 @@ export interface NetworkState {
 }
 
 // ========================================
-// 이벤트 및 액션 타입
+//    
 // ========================================
 
 export interface BaseAction {
@@ -313,7 +313,7 @@ export interface AsyncAction<T = any> extends BaseAction {
 }
 
 // ========================================
-// 유틸리티 타입
+//  
 // ========================================
 
 export type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
@@ -328,7 +328,7 @@ export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>>;
 export type OptionalBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 // ========================================
-// 컴포넌트 props 타입
+//  props 
 // ========================================
 
 export interface BaseComponentProps {
@@ -352,7 +352,7 @@ export interface FocusableProps {
 }
 
 // ========================================
-// 라우팅 관련 타입
+//   
 // ========================================
 
 export interface RouteParams {
@@ -371,7 +371,7 @@ export interface NavigationItem {
 }
 
 // ========================================
-// 영상 피드백 시스템 타입 Re-export
+//     Re-export
 // ========================================
 
 export * from './video-feedback';

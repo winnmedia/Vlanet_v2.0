@@ -18,10 +18,10 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-12 px-4 py-2 min-w-[48px]', // 48px 최소 높이
-        sm: 'h-10 rounded-md px-3 min-w-[48px]', // 48px 최소 높이 (작은 버튼도)
-        lg: 'h-14 rounded-md px-8 min-w-[48px]', // 더 큰 터치 타겟
-        icon: 'h-12 w-12 min-w-[48px]', // 아이콘 버튼도 48x48px 최소
+        default: 'h-12 px-4 py-2 min-w-[48px]', // 48px  
+        sm: 'h-10 rounded-md px-3 min-w-[48px]', // 48px   ( )
+        lg: 'h-14 rounded-md px-8 min-w-[48px]', //    
+        icon: 'h-12 w-12 min-w-[48px]', //   48x48px 
       },
     },
     defaultVariants: {

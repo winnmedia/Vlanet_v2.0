@@ -9,16 +9,16 @@ class DocumentAdmin(admin.ModelAdmin):
     readonly_fields = ['size', 'mime_type', 'download_count', 'uploaded_at', 'updated_at']
     
     fieldsets = (
-        ('기본 정보', {
+        (' ', {
             'fields': ('project', 'filename', 'file', 'category')
         }),
-        ('상세 정보', {
+        (' ', {
             'fields': ('description', 'uploader', 'size', 'mime_type')
         }),
-        ('통계', {
+        ('', {
             'fields': ('download_count', 'is_active')
         }),
-        ('타임스탬프', {
+        ('', {
             'fields': ('uploaded_at', 'updated_at'),
             'classes': ('collapse',)
         })

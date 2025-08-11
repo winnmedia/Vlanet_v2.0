@@ -82,7 +82,7 @@ class DailyAnalyticsSerializer(serializers.ModelSerializer):
         ]
 
 class SessionDetailSerializer(serializers.ModelSerializer):
-    """세션 상세 정보 (이벤트, 인터랙션 포함)"""
+    """   (,  )"""
     events = UserEventSerializer(many=True, read_only=True)
     form_interactions = FormInteractionSerializer(many=True, read_only=True)
     clicks = ClickHeatmapSerializer(many=True, read_only=True)

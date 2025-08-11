@@ -7,8 +7,8 @@ from .version import VERSION, COMMIT_HASH, FULL_VERSION
 @csrf_exempt
 @require_http_methods(["GET", "POST", "OPTIONS"])
 def health_check(request):
-    """헬스체크 엔드포인트 - Railway 헬스체크 호환"""
-    # Railway 헬스체크는 간단한 응답만 필요
+    """  - Railway  """
+    # Railway    
     return JsonResponse({
         "status": "ok",
         "service": "videoplanet-backend"
@@ -17,7 +17,7 @@ def health_check(request):
 
 @csrf_exempt
 def root_view(request):
-    """루트 경로 핸들러"""
+    """  """
     return JsonResponse({
         "message": "VRidge Backend API",
         "version": "1.0.0",

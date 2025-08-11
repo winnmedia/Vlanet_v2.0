@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 // ========================================
-// 타입 정의
+//  
 // ========================================
 
 export interface ProjectFiltersProps {
@@ -39,43 +39,43 @@ interface FilterOptionProps<T> {
 }
 
 // ========================================
-// 필터 데이터
+//  
 // ========================================
 
 const statusFilters: FilterOptionProps<ProjectStatus>[] = [
   { 
     value: 'planning', 
-    label: '기획 중', 
+    label: ' ', 
     color: 'bg-blue-100 text-blue-800 border-blue-200',
     count: 0 
   },
   { 
     value: 'production', 
-    label: '제작 중', 
+    label: ' ', 
     color: 'bg-orange-100 text-orange-800 border-orange-200',
     count: 0 
   },
   { 
     value: 'review', 
-    label: '검토 중', 
+    label: ' ', 
     color: 'bg-purple-100 text-purple-800 border-purple-200',
     count: 0 
   },
   { 
     value: 'completed', 
-    label: '완료', 
+    label: '', 
     color: 'bg-green-100 text-green-800 border-green-200',
     count: 0 
   },
 ];
 
 const ownerFilters: FilterOptionProps<number>[] = [
-  { value: 1, label: '나의 프로젝트', count: 0 },
-  { value: 2, label: '팀원 프로젝트', count: 0 },
+  { value: 1, label: ' ', count: 0 },
+  { value: 2, label: ' ', count: 0 },
 ];
 
 // ========================================
-// 하위 컴포넌트들
+//  
 // ========================================
 
 interface FilterSectionProps {
@@ -243,7 +243,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="block text-xs text-gray-500 mb-1">시작일</label>
+          <label className="block text-xs text-gray-500 mb-1"></label>
           <Input
             type="date"
             value={localStart}
@@ -252,7 +252,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1">종료일</label>
+          <label className="block text-xs text-gray-500 mb-1"></label>
           <Input
             type="date"
             value={localEnd}
@@ -269,7 +269,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           onClick={handleClear}
           className="flex-1 text-xs"
         >
-          초기화
+          
         </Button>
         <Button
           size="sm"
@@ -277,7 +277,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           className="flex-1 text-xs"
           disabled={!localStart || !localEnd}
         >
-          적용
+          
         </Button>
       </div>
     </div>
@@ -295,8 +295,8 @@ const TagFilter: React.FC<TagFilterProps> = ({
 }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [suggestions] = React.useState([
-    '브랜딩', '홍보', '교육', '이벤트', '제품소개', '인터뷰', 
-    '다큐멘터리', '광고', '뮤직비디오', '애니메이션'
+    '', '', '', '', '', '', 
+    '', '', '', ''
   ]);
 
   const filteredSuggestions = suggestions.filter(tag => 
@@ -329,7 +329,7 @@ const TagFilter: React.FC<TagFilterProps> = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="태그 입력..."
+          placeholder=" ..."
           className="text-sm"
         />
         
@@ -348,7 +348,7 @@ const TagFilter: React.FC<TagFilterProps> = ({
         )}
       </div>
 
-      {/* 선택된 태그들 */}
+      {/*   */}
       {selectedTags.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {selectedTags.map(tag => (
@@ -369,10 +369,10 @@ const TagFilter: React.FC<TagFilterProps> = ({
         </div>
       )}
 
-      {/* 인기 태그들 */}
+      {/*   */}
       {selectedTags.length === 0 && (
         <div>
-          <p className="text-xs text-gray-500 mb-2">인기 태그</p>
+          <p className="text-xs text-gray-500 mb-2"> </p>
           <div className="flex flex-wrap gap-1">
             {suggestions.slice(0, 6).map(tag => (
               <button
@@ -412,7 +412,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
     <div className="p-4 bg-blue-50 border-b border-blue-200">
       <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm font-medium text-blue-900">
-          활성 필터 ({activeFilterCount}개)
+            ({activeFilterCount})
         </h4>
         <Button
           size="sm"
@@ -420,42 +420,42 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
           onClick={onClearAll}
           className="text-blue-600 hover:text-blue-700 hover:bg-blue-100"
         >
-          전체 해제
+           
         </Button>
       </div>
       
       <div className="flex flex-wrap gap-2">
         {filters.search && (
           <FilterChip
-            label={`검색: "${filters.search}"`}
+            label={`: "${filters.search}"`}
             onRemove={() => onRemoveFilter('search')}
           />
         )}
         
         {filters.status && filters.status.length > 0 && (
           <FilterChip
-            label={`상태: ${filters.status.map(s => statusFilters.find(f => f.value === s)?.label).join(', ')}`}
+            label={`: ${filters.status.map(s => statusFilters.find(f => f.value === s)?.label).join(', ')}`}
             onRemove={() => onRemoveFilter('status')}
           />
         )}
         
         {filters.owner && filters.owner.length > 0 && (
           <FilterChip
-            label={`소유자: ${filters.owner.length}개`}
+            label={`: ${filters.owner.length}`}
             onRemove={() => onRemoveFilter('owner')}
           />
         )}
         
         {filters.dateRange && (
           <FilterChip
-            label={`기간: ${format(new Date(filters.dateRange.start), 'yyyy/MM/dd', { locale: ko })} ~ ${format(new Date(filters.dateRange.end), 'yyyy/MM/dd', { locale: ko })}`}
+            label={`: ${format(new Date(filters.dateRange.start), 'yyyy/MM/dd', { locale: ko })} ~ ${format(new Date(filters.dateRange.end), 'yyyy/MM/dd', { locale: ko })}`}
             onRemove={() => onRemoveFilter('dateRange')}
           />
         )}
         
         {filters.tags && filters.tags.length > 0 && (
           <FilterChip
-            label={`태그: ${filters.tags.join(', ')}`}
+            label={`: ${filters.tags.join(', ')}`}
             onRemove={() => onRemoveFilter('tags')}
           />
         )}
@@ -484,7 +484,7 @@ const FilterChip: React.FC<FilterChipProps> = ({ label, onRemove }) => {
 };
 
 // ========================================
-// 메인 컴포넌트
+//  
 // ========================================
 
 export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
@@ -499,13 +499,13 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
     hasActiveFilters,
   } = useProjectFilters();
 
-  // 개별 필터 제거
+  //   
   const handleRemoveFilter = (key: keyof ProjectFiltersType) => {
     const { [key]: removed, ...rest } = activeFilters;
     updateFilters(rest);
   };
 
-  // 상태 필터 변경
+  //   
   const handleStatusChange = (statuses: ProjectStatus[]) => {
     updateFilters({ 
       ...activeFilters,
@@ -513,7 +513,7 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
     });
   };
 
-  // 소유자 필터 변경
+  //   
   const handleOwnerChange = (owners: number[]) => {
     updateFilters({ 
       ...activeFilters,
@@ -521,7 +521,7 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
     });
   };
 
-  // 날짜 범위 필터 변경
+  //    
   const handleDateRangeChange = (dateRange: { start: string; end: string } | undefined) => {
     updateFilters({ 
       ...activeFilters,
@@ -529,7 +529,7 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
     });
   };
 
-  // 태그 필터 변경
+  //   
   const handleTagsChange = (tags: string[]) => {
     updateFilters({ 
       ...activeFilters,
@@ -547,11 +547,11 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
         className
       )}
     >
-      {/* 헤더 */}
+      {/*  */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <FilterIcon className="w-5 h-5 text-gray-500" />
-          <h2 className="text-lg font-semibold text-gray-900">필터</h2>
+          <h2 className="text-lg font-semibold text-gray-900"></h2>
         </div>
         
         <div className="flex items-center gap-2">
@@ -563,7 +563,7 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
               className="text-gray-500 hover:text-gray-700"
             >
               <RotateCcw className="w-4 h-4 mr-1" />
-              초기화
+              
             </Button>
           )}
           
@@ -580,18 +580,18 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
         </div>
       </div>
 
-      {/* 활성 필터 표시 */}
+      {/*    */}
       <ActiveFilters
         filters={activeFilters}
         onRemoveFilter={handleRemoveFilter}
         onClearAll={clearFilters}
       />
 
-      {/* 필터 본문 */}
+      {/*   */}
       <div className="p-4 space-y-6 max-h-96 overflow-y-auto">
-        {/* 상태 필터 */}
+        {/*   */}
         <FilterSection
-          title="프로젝트 상태"
+          title=" "
           icon={FilterIcon}
         >
           <CheckboxFilter
@@ -601,9 +601,9 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
           />
         </FilterSection>
 
-        {/* 소유자 필터 */}
+        {/*   */}
         <FilterSection
-          title="프로젝트 소유자"
+          title=" "
           icon={User}
         >
           <CheckboxFilter
@@ -613,9 +613,9 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
           />
         </FilterSection>
 
-        {/* 날짜 범위 필터 */}
+        {/*    */}
         <FilterSection
-          title="날짜 범위"
+          title=" "
           icon={CalendarIcon}
         >
           <DateRangeFilter
@@ -625,9 +625,9 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
           />
         </FilterSection>
 
-        {/* 태그 필터 */}
+        {/*   */}
         <FilterSection
-          title="태그"
+          title=""
           icon={Tag}
         >
           <TagFilter
@@ -637,7 +637,7 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
         </FilterSection>
       </div>
 
-      {/* 푸터 (모바일에서 적용/취소 버튼) */}
+      {/*  ( / ) */}
       <div className="p-4 border-t border-gray-200 bg-gray-50 md:hidden">
         <div className="flex gap-3">
           <Button
@@ -645,13 +645,13 @@ export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
             className="flex-1"
             onClick={onClose}
           >
-            취소
+            
           </Button>
           <Button
             className="flex-1"
             onClick={onClose}
           >
-            적용
+            
           </Button>
         </div>
       </div>

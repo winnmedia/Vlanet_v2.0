@@ -15,18 +15,18 @@
   },
   "results": [
     {
-      "test": "백엔드 서버 상태",
+      "test": "  ",
       "status": "PASS",
-      "message": "서버 응답 정상 (476ms)",
+      "message": "   (476ms)",
       "timestamp": "2025-08-09T13:34:13.037Z",
       "category": "Infrastructure",
       "httpStatus": 200,
       "responseTime": 476
     },
     {
-      "test": "API 루트",
+      "test": "API ",
       "status": "PASS",
-      "message": "API 엔드포인트 존재하며 정상 응답",
+      "message": "API    ",
       "timestamp": "2025-08-09T13:34:13.151Z",
       "category": "API Endpoints",
       "httpStatus": 200,
@@ -35,12 +35,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "인증 API",
+      "test": " API",
       "status": "FAIL",
-      "message": "API 엔드포인트 존재하지 않음",
+      "message": "API   ",
       "timestamp": "2025-08-09T13:34:13.267Z",
       "category": "API Endpoints",
       "httpStatus": 404,
@@ -49,12 +49,12 @@
       "critical": true,
       "severity": "CRITICAL",
       "priority": "P0",
-      "impact": "핵심 기능 차단"
+      "impact": "  "
     },
     {
-      "test": "로그인 API",
+      "test": " API",
       "status": "PASS",
-      "message": "API 엔드포인트 존재 (Method Not Allowed)",
+      "message": "API   (Method Not Allowed)",
       "timestamp": "2025-08-09T13:34:13.395Z",
       "category": "API Endpoints",
       "httpStatus": 405,
@@ -63,12 +63,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "회원가입 API",
+      "test": " API",
       "status": "FAIL",
-      "message": "API 엔드포인트 존재하지 않음",
+      "message": "API   ",
       "timestamp": "2025-08-09T13:34:13.509Z",
       "category": "API Endpoints",
       "httpStatus": 404,
@@ -77,12 +77,12 @@
       "critical": true,
       "severity": "CRITICAL",
       "priority": "P0",
-      "impact": "핵심 기능 차단"
+      "impact": "  "
     },
     {
-      "test": "프로젝트 API",
+      "test": " API",
       "status": "PASS",
-      "message": "API 엔드포인트 존재 (인증 필요)",
+      "message": "API   ( )",
       "timestamp": "2025-08-09T13:34:13.635Z",
       "category": "API Endpoints",
       "httpStatus": 401,
@@ -91,12 +91,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "영상 기획 API",
+      "test": "  API",
       "status": "PASS",
-      "message": "API 엔드포인트 존재 (인증 필요)",
+      "message": "API   ( )",
       "timestamp": "2025-08-09T13:34:13.747Z",
       "category": "API Endpoints",
       "httpStatus": 401,
@@ -105,12 +105,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "캘린더 API",
+      "test": " API",
       "status": "FAIL",
-      "message": "API 엔드포인트 존재하지 않음",
+      "message": "API   ",
       "timestamp": "2025-08-09T13:34:13.859Z",
       "category": "API Endpoints",
       "httpStatus": 404,
@@ -119,12 +119,12 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "캘린더 이벤트 API",
+      "test": "  API",
       "status": "FAIL",
-      "message": "API 엔드포인트 존재하지 않음",
+      "message": "API   ",
       "timestamp": "2025-08-09T13:34:13.974Z",
       "category": "API Endpoints",
       "httpStatus": 404,
@@ -133,12 +133,12 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "피드백 API",
+      "test": " API",
       "status": "PASS",
-      "message": "API 엔드포인트 존재하며 정상 응답",
+      "message": "API    ",
       "timestamp": "2025-08-09T13:34:14.093Z",
       "category": "API Endpoints",
       "httpStatus": 200,
@@ -147,12 +147,12 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "사용자 프로필 API",
+      "test": "  API",
       "status": "FAIL",
-      "message": "API 엔드포인트 존재하지 않음",
+      "message": "API   ",
       "timestamp": "2025-08-09T13:34:14.206Z",
       "category": "API Endpoints",
       "httpStatus": 404,
@@ -161,12 +161,12 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 제한"
+      "impact": " "
     },
     {
-      "test": "홈페이지",
+      "test": "",
       "status": "PASS",
-      "message": "페이지 정상 로드",
+      "message": "  ",
       "timestamp": "2025-08-09T13:34:17.727Z",
       "category": "Frontend Pages",
       "httpStatus": 200,
@@ -175,12 +175,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한"
+      "impact": "   "
     },
     {
-      "test": "로그인 페이지",
+      "test": " ",
       "status": "PASS",
-      "message": "페이지 정상 로드",
+      "message": "  ",
       "timestamp": "2025-08-09T13:34:17.886Z",
       "category": "Frontend Pages",
       "httpStatus": 200,
@@ -189,12 +189,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한"
+      "impact": "   "
     },
     {
-      "test": "회원가입 페이지",
+      "test": " ",
       "status": "PASS",
-      "message": "페이지 정상 로드",
+      "message": "  ",
       "timestamp": "2025-08-09T13:34:18.144Z",
       "category": "Frontend Pages",
       "httpStatus": 200,
@@ -203,12 +203,12 @@
       "critical": true,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한"
+      "impact": "   "
     },
     {
-      "test": "대시보드",
+      "test": "",
       "status": "FAIL",
-      "message": "페이지 존재하지 않음 (404 에러)",
+      "message": "   (404 )",
       "timestamp": "2025-08-09T13:34:18.406Z",
       "category": "Frontend Pages",
       "httpStatus": 404,
@@ -217,12 +217,12 @@
       "critical": true,
       "severity": "CRITICAL",
       "priority": "P0",
-      "impact": "핵심 페이지 접근 불가"
+      "impact": "   "
     },
     {
-      "test": "프로젝트 목록",
+      "test": " ",
       "status": "FAIL",
-      "message": "페이지 존재하지 않음 (404 에러)",
+      "message": "   (404 )",
       "timestamp": "2025-08-09T13:34:18.479Z",
       "category": "Frontend Pages",
       "httpStatus": 404,
@@ -231,12 +231,12 @@
       "critical": true,
       "severity": "CRITICAL",
       "priority": "P0",
-      "impact": "핵심 페이지 접근 불가"
+      "impact": "   "
     },
     {
-      "test": "영상 기획 페이지",
+      "test": "  ",
       "status": "FAIL",
-      "message": "페이지 존재하지 않음 (404 에러)",
+      "message": "   (404 )",
       "timestamp": "2025-08-09T13:34:18.543Z",
       "category": "Frontend Pages",
       "httpStatus": 404,
@@ -245,12 +245,12 @@
       "critical": true,
       "severity": "CRITICAL",
       "priority": "P0",
-      "impact": "핵심 페이지 접근 불가"
+      "impact": "   "
     },
     {
-      "test": "일정관리 페이지",
+      "test": " ",
       "status": "PASS",
-      "message": "페이지 정상 로드",
+      "message": "  ",
       "timestamp": "2025-08-09T13:34:19.941Z",
       "category": "Frontend Pages",
       "httpStatus": 200,
@@ -259,12 +259,12 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한"
+      "impact": "   "
     },
     {
-      "test": "피드백 페이지",
+      "test": " ",
       "status": "FAIL",
-      "message": "페이지 존재하지 않음 (404 에러)",
+      "message": "   (404 )",
       "timestamp": "2025-08-09T13:34:20.008Z",
       "category": "Frontend Pages",
       "httpStatus": 404,
@@ -273,12 +273,12 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한"
+      "impact": "   "
     },
     {
-      "test": "마이페이지",
+      "test": "",
       "status": "PASS",
-      "message": "페이지 정상 로드",
+      "message": "  ",
       "timestamp": "2025-08-09T13:34:20.404Z",
       "category": "Frontend Pages",
       "httpStatus": 200,
@@ -287,7 +287,7 @@
       "critical": false,
       "severity": "MEDIUM",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한"
+      "impact": "   "
     }
   ],
   "bugList": [
@@ -295,11 +295,11 @@
       "id": "BUG_1",
       "category": "API Endpoints",
       "severity": "CRITICAL",
-      "title": "인증 API",
-      "description": "API 엔드포인트 존재하지 않음",
+      "title": " API",
+      "description": "API   ",
       "status": "OPEN",
       "priority": "P0",
-      "impact": "핵심 기능 차단",
+      "impact": "  ",
       "endpoint": "/api/auth/",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:13.267Z"
@@ -308,11 +308,11 @@
       "id": "BUG_2",
       "category": "API Endpoints",
       "severity": "CRITICAL",
-      "title": "회원가입 API",
-      "description": "API 엔드포인트 존재하지 않음",
+      "title": " API",
+      "description": "API   ",
       "status": "OPEN",
       "priority": "P0",
-      "impact": "핵심 기능 차단",
+      "impact": "  ",
       "endpoint": "/api/auth/register/",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:13.509Z"
@@ -321,11 +321,11 @@
       "id": "BUG_3",
       "category": "API Endpoints",
       "severity": "MEDIUM",
-      "title": "캘린더 API",
-      "description": "API 엔드포인트 존재하지 않음",
+      "title": " API",
+      "description": "API   ",
       "status": "OPEN",
       "priority": "P1",
-      "impact": "기능 제한",
+      "impact": " ",
       "endpoint": "/api/calendar/",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:13.859Z"
@@ -334,11 +334,11 @@
       "id": "BUG_4",
       "category": "API Endpoints",
       "severity": "MEDIUM",
-      "title": "캘린더 이벤트 API",
-      "description": "API 엔드포인트 존재하지 않음",
+      "title": "  API",
+      "description": "API   ",
       "status": "OPEN",
       "priority": "P1",
-      "impact": "기능 제한",
+      "impact": " ",
       "endpoint": "/api/calendar/events/",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:13.974Z"
@@ -347,11 +347,11 @@
       "id": "BUG_5",
       "category": "API Endpoints",
       "severity": "MEDIUM",
-      "title": "사용자 프로필 API",
-      "description": "API 엔드포인트 존재하지 않음",
+      "title": "  API",
+      "description": "API   ",
       "status": "OPEN",
       "priority": "P1",
-      "impact": "기능 제한",
+      "impact": " ",
       "endpoint": "/api/users/profile/",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:14.206Z"
@@ -360,11 +360,11 @@
       "id": "BUG_6",
       "category": "Frontend Pages",
       "severity": "CRITICAL",
-      "title": "대시보드",
-      "description": "페이지 존재하지 않음 (404 에러)",
+      "title": "",
+      "description": "   (404 )",
       "status": "OPEN",
       "priority": "P0",
-      "impact": "핵심 페이지 접근 불가",
+      "impact": "   ",
       "endpoint": "/dashboard",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:18.406Z"
@@ -373,11 +373,11 @@
       "id": "BUG_7",
       "category": "Frontend Pages",
       "severity": "CRITICAL",
-      "title": "프로젝트 목록",
-      "description": "페이지 존재하지 않음 (404 에러)",
+      "title": " ",
+      "description": "   (404 )",
       "status": "OPEN",
       "priority": "P0",
-      "impact": "핵심 페이지 접근 불가",
+      "impact": "   ",
       "endpoint": "/projects",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:18.479Z"
@@ -386,11 +386,11 @@
       "id": "BUG_8",
       "category": "Frontend Pages",
       "severity": "CRITICAL",
-      "title": "영상 기획 페이지",
-      "description": "페이지 존재하지 않음 (404 에러)",
+      "title": "  ",
+      "description": "   (404 )",
       "status": "OPEN",
       "priority": "P0",
-      "impact": "핵심 페이지 접근 불가",
+      "impact": "   ",
       "endpoint": "/video-planning",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:18.543Z"
@@ -399,11 +399,11 @@
       "id": "BUG_9",
       "category": "Frontend Pages",
       "severity": "MEDIUM",
-      "title": "피드백 페이지",
-      "description": "페이지 존재하지 않음 (404 에러)",
+      "title": " ",
+      "description": "   (404 )",
       "status": "OPEN",
       "priority": "P1",
-      "impact": "기능 페이지 접근 제한",
+      "impact": "   ",
       "endpoint": "/feedbacks",
       "httpStatus": 404,
       "timestamp": "2025-08-09T13:34:20.008Z"
@@ -413,7 +413,7 @@
     {
       "category": "Backend Development",
       "priority": "CRITICAL",
-      "action": "누락된 API 엔드포인트 구현",
+      "action": " API  ",
       "details": [
         "/api/auth/",
         "/api/auth/register/",
@@ -421,21 +421,21 @@
         "/api/calendar/events/",
         "/api/users/profile/"
       ],
-      "estimatedEffort": "10시간",
-      "impact": "핵심 기능 복원"
+      "estimatedEffort": "10",
+      "impact": "  "
     },
     {
       "category": "Frontend Development",
       "priority": "HIGH",
-      "action": "누락된 페이지 라우팅 구현",
+      "action": "   ",
       "details": [
         "/dashboard",
         "/projects",
         "/video-planning",
         "/feedbacks"
       ],
-      "estimatedEffort": "4시간",
-      "impact": "사용자 경험 개선"
+      "estimatedEffort": "4",
+      "impact": "  "
     }
   ]
 }

@@ -1,5 +1,5 @@
 """
-Railway 배포용 수정된 설정 - Django 503 오류 해결
+Railway    - Django 503  
 """
 import os
 import sys
@@ -9,29 +9,29 @@ from pathlib import Path
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Python 경로에 프로젝트 루트 추가
+# Python    
 sys.path.insert(0, str(BASE_DIR))
 
-# Railway 환경 확인
+# Railway  
 IS_RAILWAY = os.environ.get('RAILWAY_ENVIRONMENT') is not None
 
-# 보안 설정
+#  
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-railway-temp-key')
 
-# 기본 Django 설정
+#  Django 
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
 USE_TZ = True
 
-# 사용자 정의 User 모델
+#   User 
 AUTH_USER_MODEL = 'users.User'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 앱 목록 - 의존성 순서대로 정리
+#   -   
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,9 +41,9 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-# 코어 앱이 먼저 와야 함
+#     
 PROJECT_APPS = [
-    'core',  # 다른 앱들이 의존하는 핵심 앱
+    'core',  #     
     'users',
     'projects',
     'feedbacks',
@@ -62,7 +62,7 @@ THIRD_PARTY_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
-# 미들웨어
+# 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -77,7 +77,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# 템플릿
+# 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -96,7 +96,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# 비밀번호 검증
+#  
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -112,14 +112,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# REST Framework 설정
+# REST Framework 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
-# JWT 설정
+# JWT 
 from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
@@ -130,7 +130,7 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
 }
 
-# 허용된 호스트 - Railway 도메인 추가
+#   - Railway  
 ALLOWED_HOSTS = [
     '.railway.app',
     'vlanet.net',
@@ -140,15 +140,15 @@ ALLOWED_HOSTS = [
     'videoplanet.up.railway.app'
 ]
 
-# 데이터베이스 설정
+#  
 DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('RAILWAY_DATABASE_URL')
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-    print("✅ Using PostgreSQL database")
+    print(" Using PostgreSQL database")
 else:
-    print("⚠️ No database URL found, using SQLite")
+    print(" No database URL found, using SQLite")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -156,7 +156,7 @@ else:
         }
     }
 
-# Redis 캐시 설정
+# Redis  
 REDIS_URL = os.environ.get('REDIS_URL')
 if REDIS_URL:
     try:
@@ -170,7 +170,7 @@ if REDIS_URL:
                 }
             }
         }
-        print("✅ Redis cache configured")
+        print(" Redis cache configured")
     except ImportError:
         CACHES = {
             'default': {
@@ -178,7 +178,7 @@ if REDIS_URL:
                 'LOCATION': 'django_cache_table',
             }
         }
-        print("⚠️ Using database cache (django_redis not installed)")
+        print(" Using database cache (django_redis not installed)")
 else:
     CACHES = {
         'default': {
@@ -186,18 +186,18 @@ else:
             'LOCATION': 'django_cache_table',
         }
     }
-    print("⚠️ Using database cache (no Redis URL)")
+    print(" Using database cache (no Redis URL)")
 
-# 정적 파일 설정 (WhiteNoise)
+#    (WhiteNoise)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-# 미디어 파일 설정
+#   
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('RAILWAY_VOLUME_MOUNT_PATH', BASE_DIR / 'media')
 
-# CORS 설정
+# CORS 
 CORS_ALLOWED_ORIGINS = [
     'https://vlanet.net',
     'https://www.vlanet.net',
@@ -229,23 +229,23 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# CSRF 신뢰할 수 있는 도메인
+# CSRF    
 CSRF_TRUSTED_ORIGINS = [
     'https://vlanet.net',
     'https://www.vlanet.net',
     'https://*.railway.app',
 ]
 
-# 이메일 설정
+#  
 if os.environ.get('SENDGRID_API_KEY'):
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = 'apikey'
     EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
-    print("✅ Email configured with SendGrid")
+    print(" Email configured with SendGrid")
 
-# 로깅 설정
+#  
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -267,4 +267,4 @@ LOGGING = {
     },
 }
 
-print("✅ Fixed settings loaded successfully!")
+print(" Fixed settings loaded successfully!")

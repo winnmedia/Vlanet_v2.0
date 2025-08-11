@@ -1,0 +1,316 @@
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'vridge_back/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'vridge_back/**'
+      - '.github/workflows/backend-ci.yml'
+
+env:
+  PYTHON_VERSION: '3.11'
+  WORKING_DIR: './vridge_back'
+
+jobs:
+  # 코드 품질 검사
+  code-quality:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        
+    - name: Install dependencies
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 black isort bandit safety
+        
+    - name: Code formatting check (Black)
+      working-directory: ${{ env.WORKING_DIR }}
+      run: black --check --diff .
+      
+    - name: Import sorting check (isort)
+      working-directory: ${{ env.WORKING_DIR }}
+      run: isort --check-only --diff .
+      
+    - name: Lint with flake8
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        
+    - name: Security check with Bandit
+      working-directory: ${{ env.WORKING_DIR }}
+      run: bandit -r . -x tests/ -f json -o bandit-report.json || true
+      
+    - name: Dependency vulnerability check
+      working-directory: ${{ env.WORKING_DIR }}
+      run: safety check --json --output safety-report.json || true
+      
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          ${{ env.WORKING_DIR }}/bandit-report.json
+          ${{ env.WORKING_DIR }}/safety-report.json
+
+  # 단위 테스트 및 커버리지
+  tests:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+    needs: code-quality
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+          
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+        
+    - name: Install dependencies
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install coverage pytest-django pytest-cov
+        
+    - name: Set up test environment
+      working-directory: ${{ env.WORKING_DIR }}
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        REDIS_URL: redis://localhost:6379/0
+        DJANGO_SETTINGS_MODULE: config.settings_base
+        SECRET_KEY: test-secret-key-for-ci-only
+        DEBUG: 'False'
+        ALLOWED_HOSTS: localhost,127.0.0.1
+      run: |
+        python manage.py collectstatic --noinput
+        python manage.py migrate --run-syncdb
+        
+    - name: Run Django system checks
+      working-directory: ${{ env.WORKING_DIR }}
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        REDIS_URL: redis://localhost:6379/0
+        DJANGO_SETTINGS_MODULE: config.settings_base
+        SECRET_KEY: test-secret-key-for-ci-only
+        DEBUG: 'False'
+        ALLOWED_HOSTS: localhost,127.0.0.1
+      run: python manage.py check --deploy
+      
+    - name: Run tests with coverage
+      working-directory: ${{ env.WORKING_DIR }}
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        REDIS_URL: redis://localhost:6379/0
+        DJANGO_SETTINGS_MODULE: config.settings_base
+        SECRET_KEY: test-secret-key-for-ci-only
+        DEBUG: 'False'
+        ALLOWED_HOSTS: localhost,127.0.0.1
+      run: |
+        coverage run --source='.' manage.py test
+        coverage xml
+        coverage report --show-missing
+        
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ${{ env.WORKING_DIR }}/coverage.xml
+        flags: backend
+        name: backend-coverage
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: ${{ env.WORKING_DIR }}/coverage.xml
+
+  # Railway 배포 (main 브랜치에서만)
+  deploy:
+    name: Deploy to Railway
+    runs-on: ubuntu-latest
+    needs: [code-quality, tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Railway CLI
+      run: npm install -g @railway/cli
+      
+    - name: Verify Railway configuration
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        if [ ! -f railway.json ]; then
+          echo "❌ railway.json not found"
+          exit 1
+        fi
+        if [ ! -f start.sh ]; then
+          echo "❌ start.sh not found"
+          exit 1
+        fi
+        echo "✅ Railway configuration verified"
+        
+    - name: Deploy to Railway
+      working-directory: ${{ env.WORKING_DIR }}
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        echo "🚀 Starting Railway deployment..."
+        railway login --token $RAILWAY_TOKEN
+        
+        # Railway 프로젝트 연결 확인
+        railway status
+        
+        # 환경 변수 동기화 (필요한 경우)
+        echo "📝 Checking environment variables..."
+        
+        # 배포 실행
+        echo "🔄 Deploying to Railway..."
+        railway up --detach
+        
+        # 배포 상태 모니터링
+        echo "⏳ Monitoring deployment status..."
+        sleep 30
+        
+    - name: Verify deployment health
+      working-directory: ${{ env.WORKING_DIR }}
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        echo "🏥 Running post-deployment health checks..."
+        
+        # Railway 서비스 URL 가져오기
+        RAILWAY_URL=$(railway status --json | jq -r '.deployments[0].url' 2>/dev/null || echo "")
+        
+        if [ -z "$RAILWAY_URL" ] || [ "$RAILWAY_URL" = "null" ]; then
+          echo "❌ Could not get Railway deployment URL"
+          exit 1
+        fi
+        
+        echo "🌐 Deployment URL: $RAILWAY_URL"
+        
+        # 기본 헬스체크
+        for i in {1..10}; do
+          echo "Attempt $i/10: Testing $RAILWAY_URL/health/"
+          if curl -f -s "$RAILWAY_URL/health/" > /dev/null; then
+            echo "✅ Health check passed"
+            break
+          elif [ $i -eq 10 ]; then
+            echo "❌ Health check failed after 10 attempts"
+            exit 1
+          else
+            echo "⏳ Waiting 30 seconds before retry..."
+            sleep 30
+          fi
+        done
+        
+    - name: Run post-deployment verification
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        if [ -f "./deployment_health_check.sh" ]; then
+          echo "🔍 Running comprehensive health check..."
+          chmod +x ./deployment_health_check.sh
+          ./deployment_health_check.sh
+        else
+          echo "⚠️  Comprehensive health check script not found, skipping..."
+        fi
+        
+    - name: Notify deployment status
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#deployments'
+        text: |
+          Backend deployment to Railway: ${{ job.status }}
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  # 성능 테스트 (선택적)
+  performance-test:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install performance testing tools
+      run: |
+        pip install locust requests
+        
+    - name: Run performance tests
+      working-directory: ${{ env.WORKING_DIR }}
+      run: |
+        if [ -f "tests/performance/locustfile.py" ]; then
+          echo "🚀 Running performance tests..."
+          locust -f tests/performance/locustfile.py --headless -u 10 -r 2 -t 60s --host=https://your-railway-domain.railway.app
+        else
+          echo "⚠️  Performance test file not found, skipping..."
+        fi
+        
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-results
+        path: performance-*.html

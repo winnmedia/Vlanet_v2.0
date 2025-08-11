@@ -1,6 +1,6 @@
 """
-API 디버깅 미들웨어
-프로덕션 환경에서 API 통신 문제를 진단하기 위한 미들웨어
+API  
+  API     
 """
 import json
 import logging
@@ -11,26 +11,26 @@ logger = logging.getLogger('api.debug')
 
 
 class APIDebugMiddleware(MiddlewareMixin):
-    """API 요청/응답 디버깅 미들웨어"""
+    """API /  """
     
     def process_request(self, request):
-        """요청 정보 로깅"""
+        """  """
         if request.path.startswith('/api/') or request.path.startswith('/users/') or request.path.startswith('/projects/'):
             logger.info(f"API Request: {request.method} {request.path}")
             logger.info(f"Origin: {request.META.get('HTTP_ORIGIN', 'No origin')}")
             logger.info(f"Authorization: {'Present' if request.META.get('HTTP_AUTHORIZATION') else 'Missing'}")
             logger.info(f"Content-Type: {request.META.get('CONTENT_TYPE', 'Not set')}")
             
-            # CORS preflight 요청 확인
+            # CORS preflight  
             if request.method == 'OPTIONS':
                 logger.info("CORS Preflight request detected")
     
     def process_response(self, request, response):
-        """응답 정보 로깅 및 CORS 헤더 확인"""
+        """    CORS  """
         if request.path.startswith('/api/') or request.path.startswith('/users/') or request.path.startswith('/projects/'):
             logger.info(f"API Response: {response.status_code}")
             
-            # CORS 헤더 확인
+            # CORS  
             cors_headers = {
                 'Access-Control-Allow-Origin': response.get('Access-Control-Allow-Origin', 'Not set'),
                 'Access-Control-Allow-Credentials': response.get('Access-Control-Allow-Credentials', 'Not set'),
@@ -43,7 +43,7 @@ class APIDebugMiddleware(MiddlewareMixin):
 
 
 class HealthCheckMiddleware(MiddlewareMixin):
-    """헬스체크 엔드포인트 미들웨어"""
+    """  """
     
     def process_request(self, request):
         if request.path == '/api/health/':

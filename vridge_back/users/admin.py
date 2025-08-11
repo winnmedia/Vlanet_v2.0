@@ -39,7 +39,7 @@ class UserAdmin(UserAdmin):
 
     fieldsets = (
         (
-            "인증정보",
+            "",
             {
                 "fields": UserAdmin.fieldsets[0][1]["fields"]
                 + (
@@ -49,13 +49,13 @@ class UserAdmin(UserAdmin):
             },
         ),
         (
-            "프로필",
+            "",
             {
                 "fields": ("nickname",),
             },
         ),
         (
-            "활동정보",
+            "",
             {
                 "fields": (
                     "date_joined",
@@ -64,7 +64,7 @@ class UserAdmin(UserAdmin):
             },
         ),
         (
-            "권한",
+            "",
             {
                 "classes": ("collapse",),
                 "fields": (
@@ -86,26 +86,26 @@ class UserAdmin(UserAdmin):
     
     def get_status(self, obj):
         if obj.is_superuser:
-            return format_html('<span style="color: #ff4545; font-weight: bold;">시스템 관리자</span>')
+            return format_html('<span style="color: #ff4545; font-weight: bold;"> </span>')
         elif obj.is_staff:
-            return format_html('<span style="color: #0059db; font-weight: bold;">스태프</span>')
+            return format_html('<span style="color: #0059db; font-weight: bold;"></span>')
         elif obj.is_active:
-            return format_html('<span style="color: #27ae60;">활성</span>')
+            return format_html('<span style="color: #27ae60;"></span>')
         else:
-            return format_html('<span style="color: #e74c3c;">비활성</span>')
-    get_status.short_description = '상태'
+            return format_html('<span style="color: #e74c3c;"></span>')
+    get_status.short_description = ''
     
     def get_project_count(self, obj):
         owned = obj.projects.count()
-        # Members 모델을 통해 참여 중인 프로젝트 수 확인
+        # Members       
         from projects.models import Members
         member = Members.objects.filter(user=obj).count()
         total = owned + member
         return format_html(
-            '<span style="color: #0059db; font-weight: bold;">{}</span> <small>(소유: {}, 참여: {})</small>',
+            '<span style="color: #0059db; font-weight: bold;">{}</span> <small>(: {}, : {})</small>',
             total, owned, member
         )
-    get_project_count.short_description = '프로젝트'
+    get_project_count.short_description = ''
 
 
 @admin.register(models.EmailVerify)
@@ -154,18 +154,18 @@ class UserProfileAdmin(admin.ModelAdmin):
         return format_html(
             '<span style="color: {};">{}</span>',
             "#27ae60" if obj.profile_image else "#e74c3c",
-            "✓" if obj.profile_image else "✗"
+            "" if obj.profile_image else ""
         )
-    has_profile_image.short_description = "프로필 이미지"
+    has_profile_image.short_description = " "
     
     fieldsets = (
-        ("사용자", {
+        ("", {
             "fields": ("user",)
         }),
-        ("프로필 정보", {
+        (" ", {
             "fields": ("profile_image", "bio", "phone", "company", "position")
         }),
-        ("시간 정보", {
+        (" ", {
             "fields": ("created", "updated"),
             "classes": ("collapse",)
         }),

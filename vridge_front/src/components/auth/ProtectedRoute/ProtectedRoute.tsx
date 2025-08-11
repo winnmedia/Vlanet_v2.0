@@ -16,8 +16,8 @@ export interface ProtectedRouteProps {
 }
 
 /**
- * Protected Route 래퍼 컴포넌트
- * 인증된 사용자만 접근 가능한 페이지를 보호하고 권한을 확인합니다.
+ * Protected Route  
+ *        .
  */
 export function ProtectedRoute({
   children,
@@ -41,54 +41,54 @@ export function ProtectedRoute({
   const [hasAccess, setHasAccess] = useState(false);
   const [accessDeniedReason, setAccessDeniedReason] = useState<string | null>(null);
 
-  // 인증 상태 확인
+  //   
   useEffect(() => {
     const checkAccess = async () => {
       setIsChecking(true);
       setAccessDeniedReason(null);
 
       try {
-        // 인증 상태 재확인
+        //   
         await checkAuthStatus();
 
-        // 게스트 접근 허용 체크
+        //    
         if (allowGuestAccess) {
           setHasAccess(true);
           setIsChecking(false);
           return;
         }
 
-        // 인증되지 않은 경우
+        //   
         if (!isAuthenticated || !user) {
-          setAccessDeniedReason('로그인이 필요합니다');
+          setAccessDeniedReason(' ');
           setHasAccess(false);
           setIsChecking(false);
           
-          // 로그인 페이지로 리다이렉트 (현재 페이지 정보 포함)
+          //    (   )
           const returnUrl = encodeURIComponent(pathname);
           router.replace(`${redirectTo}?returnUrl=${returnUrl}`);
           return;
         }
 
-        // 권한 확인
+        //  
         if (requiredPermissions.length > 0) {
           const hasRequiredPermissions = requiredPermissions.every(permission => 
             hasPermission(permission)
           );
 
           if (!hasRequiredPermissions) {
-            setAccessDeniedReason('접근 권한이 없습니다');
+            setAccessDeniedReason('  ');
             setHasAccess(false);
             setIsChecking(false);
             return;
           }
         }
 
-        // 모든 검증 통과
+        //   
         setHasAccess(true);
       } catch (error) {
-        console.error('접근 권한 확인 중 오류:', error);
-        setAccessDeniedReason('권한 확인 중 오류가 발생했습니다');
+        console.error('    :', error);
+        setAccessDeniedReason('    ');
         setHasAccess(false);
       } finally {
         setIsChecking(false);
@@ -108,7 +108,7 @@ export function ProtectedRoute({
     checkAuthStatus
   ]);
 
-  // 로딩 중인 경우
+  //   
   if (authLoading || isChecking) {
     if (fallback) {
       return <>{fallback}</>;
@@ -125,13 +125,13 @@ export function ProtectedRoute({
           <div className="mb-4">
             <Spinner size="lg" />
           </div>
-          <p className="text-gray-600">인증 확인 중...</p>
+          <p className="text-gray-600">  ...</p>
         </motion.div>
       </div>
     );
   }
 
-  // 접근 권한이 없는 경우
+  //    
   if (!hasAccess && accessDeniedReason) {
     if (fallback) {
       return <>{fallback}</>;
@@ -152,7 +152,7 @@ export function ProtectedRoute({
               </svg>
             </div>
             
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">접근 제한</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2"> </h2>
             <p className="text-gray-600 mb-6">{accessDeniedReason}</p>
             
             <div className="space-y-3">
@@ -160,14 +160,14 @@ export function ProtectedRoute({
                 onClick={() => router.push(redirectTo)}
                 className="w-full bg-brand-primary text-white py-2 px-4 rounded-lg hover:bg-brand-primary-dark transition-colors"
               >
-                로그인하기
+                
               </button>
               
               <button
                 onClick={() => router.back()}
                 className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors"
               >
-                이전 페이지로
+                 
               </button>
             </div>
           </div>
@@ -176,7 +176,7 @@ export function ProtectedRoute({
     );
   }
 
-  // 접근 권한이 있는 경우 children 렌더링
+  //     children 
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -194,7 +194,7 @@ export function ProtectedRoute({
 }
 
 /**
- * HOC 패턴으로 사용할 수 있는 withAuth 함수
+ * HOC     withAuth 
  */
 export function withAuth<T extends object>(
   Component: React.ComponentType<T>,
@@ -210,7 +210,7 @@ export function withAuth<T extends object>(
 }
 
 /**
- * 관리자 전용 라우트 보호
+ *    
  */
 export function AdminRoute({ children, ...props }: Omit<ProtectedRouteProps, 'requiredPermissions'>) {
   return (
@@ -224,7 +224,7 @@ export function AdminRoute({ children, ...props }: Omit<ProtectedRouteProps, 're
 }
 
 /**
- * 사용자 역할별 라우트 보호
+ *    
  */
 export function RoleBasedRoute({ 
   children, 

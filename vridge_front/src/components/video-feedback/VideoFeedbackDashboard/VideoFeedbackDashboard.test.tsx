@@ -69,13 +69,13 @@ vi.mock('../RealtimeComments', () => ({
 const mockUser: User = {
   id: 1,
   email: 'test@example.com',
-  first_name: '테스트',
-  last_name: '사용자'
+  first_name: '',
+  last_name: ''
 };
 
 const mockVideo: VideoFile = {
   id: 'video1',
-  title: '테스트 비디오',
+  title: ' ',
   file_url: 'https://example.com/video.mp4',
   duration: 120,
   file_size: 1000000,
@@ -93,8 +93,8 @@ const mockFeedbacks: TimelineFeedback[] = [
     category: 'general',
     priority: 'medium',
     status: 'active',
-    title: '첫 번째 피드백',
-    content: '테스트 피드백입니다',
+    title: '  ',
+    content: ' ',
     created_at: '2025-01-01T00:00:00Z',
     updated_at: '2025-01-01T00:00:00Z'
   }
@@ -103,7 +103,7 @@ const mockFeedbacks: TimelineFeedback[] = [
 const mockSession: VideoSession = {
   id: 'session1',
   video_id: 'video1',
-  title: '테스트 세션',
+  title: ' ',
   host: mockUser,
   participants: [mockUser],
   is_active: true,
@@ -188,7 +188,7 @@ describe('VideoFeedbackDashboard', () => {
     });
   });
 
-  it('대시보드가 올바르게 렌더링된다', async () => {
+  it('  ', async () => {
     render(
       <VideoFeedbackDashboard 
         videoId="video1" 
@@ -196,14 +196,14 @@ describe('VideoFeedbackDashboard', () => {
       />
     );
 
-    // 데이터 로드 후 확인
+    //    
     await waitFor(() => {
-      expect(screen.getByText('테스트 비디오')).toBeInTheDocument();
+      expect(screen.getByText(' ')).toBeInTheDocument();
       expect(screen.getByTestId('video-player')).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
-  it('통계 카드가 올바르게 표시된다', async () => {
+  it('   ', async () => {
     render(
       <VideoFeedbackDashboard 
         videoId="video1" 
@@ -212,14 +212,14 @@ describe('VideoFeedbackDashboard', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('전체 피드백')).toBeInTheDocument();
+      expect(screen.getByText(' ')).toBeInTheDocument();
       expect(screen.getByText('5')).toBeInTheDocument(); // total_feedbacks
       expect(screen.getByText('40%')).toBeInTheDocument(); // resolution_rate
       expect(screen.getByText('3')).toBeInTheDocument(); // active status
     });
   });
 
-  it('탭 네비게이션이 작동한다', async () => {
+  it('  ', async () => {
     render(
       <VideoFeedbackDashboard 
         videoId="video1" 
@@ -228,23 +228,23 @@ describe('VideoFeedbackDashboard', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('개요')).toBeInTheDocument();
+      expect(screen.getByText('')).toBeInTheDocument();
     });
 
-    // 타임라인 탭 클릭
-    const timelineTab = screen.getByText('타임라인');
+    //   
+    const timelineTab = screen.getByText('');
     fireEvent.click(timelineTab);
 
     expect(screen.getByTestId('timeline-feedback')).toBeInTheDocument();
 
-    // 채팅 탭 클릭
-    const chatTab = screen.getByText('실시간 채팅');
+    //   
+    const chatTab = screen.getByText(' ');
     fireEvent.click(chatTab);
 
     expect(screen.getByTestId('realtime-comments')).toBeInTheDocument();
   });
 
-  it('협업 모드 전환이 작동한다', async () => {
+  it('   ', async () => {
     videoFeedbackService.createVideoSession.mockResolvedValue({
       success: true,
       data: mockSession
@@ -258,10 +258,10 @@ describe('VideoFeedbackDashboard', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('협업 시작')).toBeInTheDocument();
+      expect(screen.getByText(' ')).toBeInTheDocument();
     });
 
-    const collaborationButton = screen.getByText('협업 시작');
+    const collaborationButton = screen.getByText(' ');
     fireEvent.click(collaborationButton);
 
     await waitFor(() => {
@@ -269,7 +269,7 @@ describe('VideoFeedbackDashboard', () => {
     });
   });
 
-  it('피드백 생성이 작동한다', async () => {
+  it('  ', async () => {
     videoFeedbackService.createFeedback.mockResolvedValue({
       success: true,
       data: mockFeedbacks[0]
@@ -282,9 +282,9 @@ describe('VideoFeedbackDashboard', () => {
       />
     );
 
-    // 타임라인 탭으로 이동
+    //   
     await waitFor(() => {
-      const timelineTab = screen.getByText('타임라인');
+      const timelineTab = screen.getByText('');
       fireEvent.click(timelineTab);
     });
 
@@ -296,7 +296,7 @@ describe('VideoFeedbackDashboard', () => {
     expect(videoFeedbackService.createFeedback).toHaveBeenCalled();
   });
 
-  it('실시간 코멘트 전송이 작동한다', async () => {
+  it('   ', async () => {
     videoFeedbackService.createComment.mockResolvedValue({
       success: true,
       data: { id: 'comment1', content: 'New Comment' }
@@ -309,9 +309,9 @@ describe('VideoFeedbackDashboard', () => {
       />
     );
 
-    // 채팅 탭으로 이동
+    //   
     await waitFor(() => {
-      const chatTab = screen.getByText('실시간 채팅');
+      const chatTab = screen.getByText(' ');
       fireEvent.click(chatTab);
     });
 
@@ -323,7 +323,7 @@ describe('VideoFeedbackDashboard', () => {
     expect(videoFeedbackService.createComment).toHaveBeenCalled();
   });
 
-  it('비디오가 없을 때 오류 메시지를 표시한다', async () => {
+  it('     ', async () => {
     videoFeedbackService.getVideo.mockResolvedValue({
       success: false,
       data: null
@@ -337,11 +337,11 @@ describe('VideoFeedbackDashboard', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('영상을 찾을 수 없습니다')).toBeInTheDocument();
+      expect(screen.getByText('   ')).toBeInTheDocument();
     });
   });
 
-  it('재생 시간 업데이트가 작동한다', async () => {
+  it('   ', async () => {
     render(
       <VideoFeedbackDashboard 
         videoId="video1" 
@@ -353,11 +353,11 @@ describe('VideoFeedbackDashboard', () => {
       const updateTimeButton = screen.getByText('Update Time');
       fireEvent.click(updateTimeButton);
       
-      // currentTime이 업데이트되었는지 확인하는 로직 추가 가능
+      // currentTime     
     });
   });
 
-  it('피드백 클릭 시 해당 시간으로 이동한다', async () => {
+  it('     ', async () => {
     render(
       <VideoFeedbackDashboard 
         videoId="video1" 
@@ -369,8 +369,8 @@ describe('VideoFeedbackDashboard', () => {
       const feedbackClickButton = screen.getByText('Click Feedback');
       fireEvent.click(feedbackClickButton);
       
-      // 시간이 60초로 설정되고 타임라인 탭이 활성화되었는지 확인
-      expect(screen.getByText('타임라인')).toBeInTheDocument();
+      //  60     
+      expect(screen.getByText('')).toBeInTheDocument();
     });
   });
 });

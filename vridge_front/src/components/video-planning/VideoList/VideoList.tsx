@@ -36,12 +36,12 @@ export function VideoList({ videos, loading, onEdit, onDelete }: VideoListProps)
     return (
       <div className="text-center py-12">
         <div className="bg-gray-50 rounded-lg p-8">
-          <div className="text-gray-400 text-4xl mb-4">📹</div>
+          <div className="text-gray-400 text-4xl mb-4"></div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            아직 영상 기획이 없습니다
+               
           </h3>
           <p className="text-gray-500">
-            첫 번째 영상 기획을 추가해보세요
+                
           </p>
         </div>
       </div>

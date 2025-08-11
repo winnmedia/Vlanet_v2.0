@@ -16,14 +16,14 @@
   },
   "results": [
     {
-      "test": "로그인 인증",
+      "test": " ",
       "status": "FAIL",
-      "message": "로그인 실패: Account creation failed: 404",
+      "message": " : Account creation failed: 404",
       "timestamp": "2025-08-09T13:32:48.510Z",
       "category": "Authentication",
       "severity": "CRITICAL",
       "priority": "P0",
-      "impact": "전체 시스템 접근 불가",
+      "impact": "   ",
       "error": "Account creation failed: 404"
     }
   ],
@@ -32,11 +32,11 @@
       "id": "BUG_1",
       "category": "Authentication",
       "severity": "CRITICAL",
-      "title": "로그인 인증",
-      "description": "로그인 실패: Account creation failed: 404",
+      "title": " ",
+      "description": " : Account creation failed: 404",
       "status": "OPEN",
       "priority": "P0",
-      "impact": "전체 시스템 접근 불가",
+      "impact": "   ",
       "timestamp": "2025-08-09T13:32:48.510Z"
     }
   ],
@@ -44,11 +44,11 @@
     {
       "category": "Authentication",
       "priority": "HIGH",
-      "action": "Authentication 관련 백엔드 API 엔드포인트 구현",
+      "action": "Authentication   API  ",
       "failedTests": [
-        "로그인 인증"
+        " "
       ],
-      "estimatedEffort": "2-4 시간",
+      "estimatedEffort": "2-4 ",
       "impact": "CRITICAL"
     }
   ]

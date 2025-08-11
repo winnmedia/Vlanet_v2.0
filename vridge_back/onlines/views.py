@@ -12,4 +12,4 @@ class OnlineVideo(View):
             return JsonResponse({"result": online}, status=200)
         except Exception as e:
             logging.info(str(e))
-            return JsonResponse({"message": "알 수 없는 에러입니다 고객센터에 문의해주세요."}, status=500)
+            return JsonResponse({"message": "     ."}, status=500)

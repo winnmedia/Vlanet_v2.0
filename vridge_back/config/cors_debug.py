@@ -1,5 +1,5 @@
 """
-CORS 디버깅 및 검증 유틸리티
+CORS    
 """
 import os
 from django.conf import settings
@@ -13,10 +13,10 @@ logger = logging.getLogger(__name__)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CORSDebugView(View):
-    """CORS 설정 디버깅 뷰"""
+    """CORS   """
     
     def get(self, request):
-        """현재 CORS 설정 확인"""
+        """ CORS  """
         cors_settings = {
             "CORS_ALLOW_ALL_ORIGINS": getattr(settings, 'CORS_ALLOW_ALL_ORIGINS', None),
             "CORS_ALLOWED_ORIGINS": getattr(settings, 'CORS_ALLOWED_ORIGINS', None),
@@ -39,7 +39,7 @@ class CORSDebugView(View):
             "message": "CORS configuration debug info"
         })
         
-        # 디버깅을 위해 CORS 헤더 강제 추가
+        #   CORS   
         origin = request.META.get('HTTP_ORIGIN', '*')
         response['Access-Control-Allow-Origin'] = origin
         response['Access-Control-Allow-Credentials'] = 'true'
@@ -49,7 +49,7 @@ class CORSDebugView(View):
         return response
     
     def options(self, request):
-        """OPTIONS 요청 처리"""
+        """OPTIONS  """
         response = JsonResponse({
             "status": "ok",
             "message": "CORS preflight check"

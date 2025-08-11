@@ -1,5 +1,5 @@
 """
-JWT 디버그용 뷰
+JWT  
 """
 from django.views import View
 from django.http import JsonResponse
@@ -12,10 +12,10 @@ import traceback
 
 @method_decorator(csrf_exempt, name='dispatch')
 class JWTDebugView(View):
-    """JWT 토큰 디버깅"""
+    """JWT  """
     
     def post(self, request):
-        """JWT 토큰 검증 테스트"""
+        """JWT   """
         try:
             data = json.loads(request.body)
             token = data.get('token')
@@ -23,12 +23,12 @@ class JWTDebugView(View):
             if not token:
                 return JsonResponse({"error": "No token provided"}, status=400)
             
-            # 토큰 파싱 시도
+            #   
             try:
                 access_token = AccessToken(token)
                 payload = dict(access_token.payload)
                 
-                # 사용자 조회 시도
+                #   
                 user_info = None
                 try:
                     from django.contrib.auth import get_user_model
@@ -69,15 +69,15 @@ class JWTDebugView(View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AuthDebugView(View):
-    """인증 디버깅"""
+    """ """
     
     def get(self, request):
-        """현재 인증 상태 확인"""
+        """   """
         try:
-            # 헤더 정보
+            #  
             auth_header = request.META.get('HTTP_AUTHORIZATION', 'No auth header')
             
-            # JWT 인증 시도
+            # JWT  
             jwt_result = None
             try:
                 jwt_auth = JWTAuthentication()
@@ -102,7 +102,7 @@ class AuthDebugView(View):
                     "traceback": traceback.format_exc()
                 }
             
-            # 데이터베이스 연결 확인
+            #   
             db_status = None
             try:
                 from django.db import connection
@@ -112,7 +112,7 @@ class AuthDebugView(View):
             except Exception as e:
                 db_status = f"error: {str(e)}"
             
-            # User 모델 필드 확인
+            # User   
             user_fields = None
             try:
                 from django.contrib.auth import get_user_model

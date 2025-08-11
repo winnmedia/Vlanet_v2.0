@@ -20,7 +20,7 @@ import json
 from datetime import datetime, timedelta
 
 class TrackEventView(APIView):
-    """개별 이벤트 추적"""
+    """  """
     
     def post(self, request):
         try:
@@ -30,7 +30,7 @@ class TrackEventView(APIView):
             event_type = data.get('eventType')
             event_data = data.get('data', {})
             
-            # 세션 가져오기 또는 생성
+            #    
             session, created = UserSession.objects.get_or_create(
                 session_id=session_id,
                 defaults={
@@ -41,12 +41,12 @@ class TrackEventView(APIView):
                 }
             )
             
-            # 사용자 정보 업데이트 (로그인한 경우)
+            #    ( )
             if user_id and not session.user_id:
                 session.user_id = user_id
                 session.save()
             
-            # 이벤트 생성
+            #  
             event = UserEvent.objects.create(
                 session=session,
                 event_id=data.get('id', f"{session_id}_{timezone.now().timestamp()}"),
@@ -54,7 +54,7 @@ class TrackEventView(APIView):
                 data=event_data
             )
             
-            # 실시간 처리 (processor가 있는 경우에만)
+            #   (processor  )
             if AnalyticsProcessor:
                 processor = AnalyticsProcessor()
                 processor.process_real_time_event(event)
@@ -76,7 +76,7 @@ class TrackEventView(APIView):
         return ip
 
 class SessionAnalyticsView(APIView):
-    """세션 분석 데이터 수집"""
+    """   """
     
     def post(self, request):
         try:
@@ -85,7 +85,7 @@ class SessionAnalyticsView(APIView):
             
             session = UserSession.objects.get(session_id=session_id)
             
-            # 폼 인터랙션 데이터 저장
+            #    
             form_interactions = data.get('formInteractions', {})
             for field_name, stats in form_interactions.items():
                 FormInteraction.objects.update_or_create(
@@ -94,7 +94,7 @@ class SessionAnalyticsView(APIView):
                     defaults=stats
                 )
             
-            # 클릭 히트맵 데이터 저장
+            #    
             click_heatmap = data.get('clickHeatmap', {})
             for key, count in click_heatmap.items():
                 step, button_type = key.split('_', 1)
@@ -105,7 +105,7 @@ class SessionAnalyticsView(APIView):
                     defaults={'click_count': count}
                 )
             
-            # 성능 메트릭 저장
+            #   
             performance_metrics = data.get('performanceMetrics', {})
             if performance_metrics:
                 current_step = performance_metrics.get('currentStep')
@@ -121,7 +121,7 @@ class SessionAnalyticsView(APIView):
                         }
                     )
             
-            # 세션 정보 업데이트
+            #   
             session.end_time = timezone.now()
             session.duration = performance_metrics.get('sessionDuration', 0)
             session.completion_rate = performance_metrics.get('completionRate', 0)
@@ -142,7 +142,7 @@ class SessionAnalyticsView(APIView):
             )
     
     def calculate_efficiency_score(self, metrics):
-        # 효율성 점수 계산 로직
+        #    
         ideal_times = {1: 300000, 2: 120000, 3: 180000, 4: 240000}
         current_step = metrics.get('currentStep', 1)
         step_duration = metrics.get('stepDuration', 0)
@@ -154,7 +154,7 @@ class SessionAnalyticsView(APIView):
             return max(0, 100 - ((step_duration - ideal_time) / ideal_time * 100))
     
     def calculate_engagement_score(self, metrics):
-        # 참여도 점수 계산 로직
+        #    
         form_interactions = metrics.get('formInteractions', {})
         total_interactions = sum(
             field.get('focusCount', 0) + field.get('changeCount', 0)
@@ -169,7 +169,7 @@ class SessionAnalyticsView(APIView):
             return max(0, 100 - ((total_interactions - 15) / 15 * 50))
     
     def calculate_frustration_score(self, metrics):
-        # 좌절감 점수 계산 로직
+        #    
         form_interactions = metrics.get('formInteractions', {})
         frustration_score = 0
         
@@ -181,23 +181,23 @@ class SessionAnalyticsView(APIView):
         return min(100, frustration_score)
 
 class DashboardDataView(APIView):
-    """대시보드 데이터 조회"""
+    """  """
     
     def get(self, request):
         try:
-            # 날짜 범위 파라미터
+            #   
             days = int(request.GET.get('days', 7))
             end_date = timezone.now().date()
             start_date = end_date - timedelta(days=days)
             
-            # 데이터베이스 테이블이 없을 경우 빈 데이터 반환
+            #       
             try:
-                # 기본 통계
+                #  
                 total_sessions = UserSession.objects.filter(
                     start_time__date__gte=start_date
                 ).count()
             except Exception:
-                # 테이블이 없거나 에러가 발생하면 기본값 반환
+                #      
                 return Response({
                     'summary': {
                         'total_sessions': 0,
@@ -218,14 +218,14 @@ class DashboardDataView(APIView):
                     'message': 'Analytics tables not yet created. Please run migrations.'
                 })
             
-            # 기본 통계 (테이블이 존재하는 경우)
+            #   (  )
             
             total_users = UserSession.objects.filter(
                 start_time__date__gte=start_date,
                 user__isnull=False
             ).values('user').distinct().count()
             
-            # 완료율 통계
+            #  
             completion_stats = UserSession.objects.filter(
                 start_time__date__gte=start_date
             ).aggregate(
@@ -240,7 +240,7 @@ class DashboardDataView(APIView):
                 if completion_stats['total_count'] > 0 else 0
             )
             
-            # 단계별 통계
+            #  
             step_stats = []
             for step in range(1, 5):
                 step_sessions = UserSession.objects.filter(
@@ -260,10 +260,10 @@ class DashboardDataView(APIView):
                         step_sessions.count() / total_sessions * 100
                         if total_sessions > 0 else 0
                     ),
-                    'average_duration': avg_duration / 1000 / 60,  # 분 단위
+                    'average_duration': avg_duration / 1000 / 60,  #  
                 })
             
-            # 일일 트렌드
+            #  
             daily_stats = UserSession.objects.filter(
                 start_time__date__gte=start_date
             ).annotate(
@@ -274,7 +274,7 @@ class DashboardDataView(APIView):
                 avg_completion=Avg('completion_rate')
             ).order_by('date')
             
-            # 인기 버튼 및 필드
+            #    
             popular_buttons = ClickHeatmap.objects.filter(
                 session__start_time__date__gte=start_date
             ).values('button_type').annotate(
@@ -287,7 +287,7 @@ class DashboardDataView(APIView):
                 total_interactions=Sum(F('focus_count') + F('change_count'))
             ).order_by('-total_interactions')[:10]
             
-            # 에러 통계
+            #  
             error_stats = UserEvent.objects.filter(
                 timestamp__date__gte=start_date,
                 event_type='error_occurred'
@@ -350,7 +350,7 @@ class DashboardDataView(APIView):
                 )
 
 class UserInsightsView(APIView):
-    """사용자 인사이트 조회"""
+    """  """
     
     def get(self, request):
         session_id = request.GET.get('session_id')
@@ -365,7 +365,7 @@ class UserInsightsView(APIView):
             session = UserSession.objects.get(session_id=session_id)
             insights = UserInsight.objects.filter(session=session, resolved=False)
             
-            # Serializer가 있는 경우 사용, 없으면 직접 데이터 구성
+            # Serializer   ,    
             if 'UserInsightSerializer' in globals():
                 serializer = UserInsightSerializer(insights, many=True)
                 insights_data = serializer.data
@@ -395,7 +395,7 @@ class UserInsightsView(APIView):
             )
 
 class FeedbackView(APIView):
-    """사용자 피드백 수집"""
+    """  """
     
     def post(self, request):
         try:
@@ -428,27 +428,27 @@ class FeedbackView(APIView):
             )
 
 class RealtimeMetricsView(APIView):
-    """실시간 메트릭 조회"""
+    """  """
     
     def get(self, request):
-        # 현재 활성 세션들 (최근 30분 이내)
+        #    ( 30 )
         active_threshold = timezone.now() - timedelta(minutes=30)
         active_sessions = UserSession.objects.filter(
             start_time__gte=active_threshold,
             end_time__isnull=True
         )
         
-        # 실시간 통계
+        #  
         current_users = active_sessions.count()
         
-        # 단계별 분포
+        #  
         step_distribution = {}
         for step in range(1, 5):
             step_distribution[f'step_{step}'] = active_sessions.filter(
                 final_step=step
             ).count()
         
-        # 평균 단계별 시간
+        #   
         recent_metrics = PerformanceMetric.objects.filter(
             session__start_time__gte=active_threshold
         ).values('step').annotate(
@@ -458,10 +458,10 @@ class RealtimeMetricsView(APIView):
         average_time_per_step = {}
         for metric in recent_metrics:
             average_time_per_step[f'step_{metric["step"]}'] = (
-                metric['avg_duration'] / 1000 / 60  # 분 단위
+                metric['avg_duration'] / 1000 / 60  #  
             )
         
-        # 실시간 완료율
+        #  
         recent_sessions = UserSession.objects.filter(
             start_time__gte=active_threshold
         )
@@ -469,7 +469,7 @@ class RealtimeMetricsView(APIView):
             avg_completion=Avg('completion_rate')
         )['avg_completion'] or 0
         
-        # 실시간 에러율
+        #  
         recent_errors = UserEvent.objects.filter(
             timestamp__gte=active_threshold,
             event_type='error_occurred'

@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 export const revalidate = 0;
 
-// 전체 컨텐츠를 dynamic import로 처리
+//   dynamic import 
 const VideoFeedbackContent = dynamic(
   () => import('./VideoFeedbackContent'),
   { 

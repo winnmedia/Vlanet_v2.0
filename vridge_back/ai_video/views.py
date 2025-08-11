@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.db import transaction
 import logging
 
-# django_filters를 선택적으로 임포트
+# django_filters  
 try:
     from django_filters.rest_framework import DjangoFilterBackend
     HAS_DJANGO_FILTERS = True
@@ -220,7 +220,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def lock(self, request, pk=None):
         """
-        Lock story for planning (기획 잠금)
+        Lock story for planning ( )
         POST /api/ai-video/stories/{id}/lock/
         """
         story = self.get_object()
@@ -256,7 +256,7 @@ class StoryViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def unlock(self, request, pk=None):
         """
-        Unlock story for editing (기획 해제)
+        Unlock story for editing ( )
         POST /api/ai-video/stories/{id}/unlock/
         """
         story = self.get_object()
@@ -490,15 +490,15 @@ class StoryViewSet(viewsets.ModelViewSet):
 
 class StoryDevelopmentViewSet(viewsets.ViewSet):
     """
-    스토리 발전 전용 ViewSet
-    프로젝트 설정에 기반한 고도화된 스토리 개발 기능
+       ViewSet
+          
     """
     permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['post'])
     def analyze_project(self, request):
         """
-        프로젝트 설정 분석 및 스토리 개발 가능성 평가
+               
         POST /api/ai-video/story-development/analyze-project/
         """
         project_id = request.data.get('project_id')
@@ -512,7 +512,7 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
             from projects.models import Project
             project = Project.objects.get(id=project_id, user=request.user)
             
-            # 프로젝트 설정 분석
+            #   
             project_data = project.project_data or {}
             
             analysis = {
@@ -522,7 +522,7 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
                 'recommendations': []
             }
             
-            # 필수 요소 검사
+            #   
             required_fields = ['genre', 'tone', 'intensity', 'target_audience']
             present_fields = []
             
@@ -535,15 +535,15 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
             analysis['project_completeness'] = (len(present_fields) / len(required_fields)) * 100
             analysis['story_readiness'] = analysis['project_completeness'] >= 75
             
-            # 추천 사항 생성
+            #   
             if not analysis['story_readiness']:
-                analysis['recommendations'].append('필수 프로젝트 설정을 완료해주세요')
+                analysis['recommendations'].append('   ')
             
             if 'key_message' not in project_data:
-                analysis['recommendations'].append('핵심 메시지를 설정하면 더 나은 스토리를 만들 수 있습니다')
+                analysis['recommendations'].append('        ')
             
             if 'brand_values' not in project_data:
-                analysis['recommendations'].append('브랜드 가치를 설정하면 일관된 메시지를 전달할 수 있습니다')
+                analysis['recommendations'].append('       ')
             
             return Response({
                 'project_id': project_id,
@@ -566,7 +566,7 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def generate_story_outline(self, request):
         """
-        프로젝트 설정에 기반한 스토리 개요 생성
+             
         POST /api/ai-video/story-development/generate-story-outline/
         """
         project_id = request.data.get('project_id')
@@ -580,7 +580,7 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
             from projects.models import Project
             project = Project.objects.get(id=project_id, user=request.user)
             
-            # 스토리 개발 실행
+            #   
             development_result = StoryDevelopmentService.develop_story_from_project(project)
             
             if development_result['success']:
@@ -609,7 +609,7 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def genre_templates(self, request):
         """
-        장르별 템플릿 목록 반환
+           
         GET /api/ai-video/story-development/genre-templates/
         """
         return Response({
@@ -621,7 +621,7 @@ class StoryDevelopmentViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def style_guide(self, request):
         """
-        톤과 인텐시티별 스타일 가이드
+           
         GET /api/ai-video/story-development/style-guide/
         """
         tone = request.query_params.get('tone', 'professional')

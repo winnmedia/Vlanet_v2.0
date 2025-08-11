@@ -2,7 +2,7 @@
 import requests
 import json
 
-# 로그인 테스트
+#  
 url = "http://localhost:8000/api/users/login/"
 data = {
     "email": "ceo@winnmedia.co.kr",
@@ -15,12 +15,12 @@ try:
     print(f"Response: {response.text}")
     
     if response.status_code == 200:
-        print("\n로그인 성공!")
+        print("\n !")
         response_data = response.json()
         if 'access' in response_data:
             print(f"Access Token: {response_data['access'][:50]}...")
     else:
-        print("\n로그인 실패!")
+        print("\n !")
         
 except Exception as e:
-    print(f"오류 발생: {e}")
+    print(f" : {e}")

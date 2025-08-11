@@ -2,7 +2,7 @@ import os
 import sys
 import django
 
-# Django 설정 초기화
+# Django  
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.railway")
 django.setup()
@@ -13,21 +13,21 @@ from django.db import transaction
 User = get_user_model()
 
 def create_test_users():
-    """여러 테스트 사용자 생성"""
+    """   """
     test_users = [
         {
             "email": "test@example.com",
             "password": "testpass123",
             "first_name": "Test",
             "last_name": "User",
-            "nickname": "테스트유저"
+            "nickname": ""
         },
         {
             "email": "admin@example.com",
             "password": "adminpass123",
             "first_name": "Admin",
             "last_name": "User",
-            "nickname": "관리자",
+            "nickname": "",
             "is_staff": True,
             "is_superuser": True
         },
@@ -36,7 +36,7 @@ def create_test_users():
             "password": "demopass123",
             "first_name": "Demo",
             "last_name": "User",
-            "nickname": "데모유저"
+            "nickname": ""
         }
     ]
     
@@ -48,9 +48,9 @@ def create_test_users():
         
         try:
             with transaction.atomic():
-                # 기존 사용자 확인
+                #   
                 if User.objects.filter(email=email).exists():
-                    print(f"\n사용자 {email}가 이미 존재합니다.")
+                    print(f"\n {email}  .")
                     user = User.objects.get(email=email)
                     user.set_password(password)
                     user.first_name = user_data.get("first_name", "")
@@ -61,9 +61,9 @@ def create_test_users():
                     if user_data.get("is_superuser"):
                         user.is_superuser = True
                     user.save()
-                    print(f"정보가 업데이트되었습니다.")
+                    print(f" .")
                 else:
-                    # 새 사용자 생성
+                    #   
                     user = User.objects.create_user(
                         username=email,
                         email=email,
@@ -76,7 +76,7 @@ def create_test_users():
                     )
                     user.nickname = user_data.get("nickname", "")
                     user.save()
-                    print(f"\n새 사용자 생성 완료: {email}")
+                    print(f"\n   : {email}")
                 
                 created_users.append({
                     "email": email,
@@ -86,7 +86,7 @@ def create_test_users():
                 })
                 
         except Exception as e:
-            print(f"사용자 {email} 생성 중 오류 발생: {e}")
+            print(f" {email}    : {e}")
     
     return created_users
 
@@ -94,14 +94,14 @@ if __name__ == "__main__":
     users = create_test_users()
     
     print("\n" + "="*50)
-    print("테스트 계정 정보")
+    print("  ")
     print("="*50)
     
     for user in users:
-        print(f"\n이메일: {user['email']}")
-        print(f"비밀번호: {user['password']}")
-        print(f"닉네임: {user['nickname']}")
+        print(f"\n: {user['email']}")
+        print(f": {user['password']}")
+        print(f": {user['nickname']}")
         if user['is_admin']:
-            print("(관리자 계정)")
+            print("( )")
     
     print("\n" + "="*50)

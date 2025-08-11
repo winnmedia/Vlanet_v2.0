@@ -1044,12 +1044,12 @@ class QualityAssuranceTestSuite:
         print("CATEGORY SCORES")
         print("-"*60)
         for category, score in report['category_scores'].items():
-            status = "✅" if score >= 80 else "⚠️" if score >= 60 else "❌"
+            status = "" if score >= 80 else "" if score >= 60 else ""
             print(f"{status} {category}: {score:.1f}%")
         
         if report['critical_issues']:
             print("\n" + "-"*60)
-            print("⚠️ CRITICAL ISSUES")
+            print(" CRITICAL ISSUES")
             print("-"*60)
             for issue in report['critical_issues']:
                 print(f"- {issue['test_name']}: {issue['message']}")

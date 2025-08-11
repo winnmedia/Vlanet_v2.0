@@ -9,7 +9,7 @@ class VideoPlanningImageSerializer(serializers.ModelSerializer):
 
 
 class VideoPlanningListSerializer(serializers.ModelSerializer):
-    """목록 조회용 간략한 시리얼라이저"""
+    """   """
     username = serializers.CharField(source='user.username', read_only=True)
     
     class Meta:
@@ -21,12 +21,12 @@ class VideoPlanningListSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        # 프론트엔드 호환성을 위해 plannings 배열로 래핑
+        #    plannings  
         return data
 
 
 class VideoPlanningSerializer(serializers.ModelSerializer):
-    """상세 조회 및 생성/수정용 시리얼라이저"""
+    """   / """
     username = serializers.CharField(source='user.username', read_only=True)
     images = VideoPlanningImageSerializer(many=True, read_only=True)
     
@@ -49,6 +49,6 @@ class VideoPlanningSerializer(serializers.ModelSerializer):
         if request and hasattr(request, 'user') and request.user.is_authenticated:
             validated_data['user'] = request.user
         else:
-            # 인증되지 않은 경우 None으로 설정 (모델에서 null=True여야 함)
+            #    None  ( null=True )
             validated_data['user'] = None
         return super().create(validated_data)

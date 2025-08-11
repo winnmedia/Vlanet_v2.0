@@ -24,7 +24,7 @@ const FeedbackPage = () => {
     priority: 'medium'
   })
 
-  // API 서비스 함수들
+  // API  
   const fetchFeedbacks = async () => {
     try {
       const result = await feedbackService.getFeedbacks()
@@ -35,7 +35,7 @@ const FeedbackPage = () => {
       }
     } catch (error) {
       console.error('Error fetching feedbacks:', error)
-      error('피드백을 불러오는데 실패했습니다.')
+      error('  .')
     } finally {
       setIsLoading(false)
     }
@@ -46,13 +46,13 @@ const FeedbackPage = () => {
       const result = await feedbackService.createFeedback(feedbackData)
       if (result.success && result.data) {
         setFeedbacks(prev => [...prev, result.data])
-        success('피드백이 생성되었습니다.')
+        success(' .')
       } else {
         throw new Error(result.error?.message || 'Failed to create feedback')
       }
     } catch (error) {
       console.error('Error creating feedback:', error)
-      error('피드백 생성에 실패했습니다.')
+      error('  .')
     }
   }
 
@@ -63,13 +63,13 @@ const FeedbackPage = () => {
         setFeedbacks(prev => prev.map(feedback => 
           feedback.id === id ? result.data : feedback
         ))
-        success('피드백이 수정되었습니다.')
+        success(' .')
       } else {
         throw new Error(result.error?.message || 'Failed to update feedback')
       }
     } catch (error) {
       console.error('Error updating feedback:', error)
-      error('피드백 수정에 실패했습니다.')
+      error('  .')
     }
   }
 
@@ -78,13 +78,13 @@ const FeedbackPage = () => {
       const result = await feedbackService.deleteFeedback(id)
       if (result.success) {
         setFeedbacks(prev => prev.filter(feedback => feedback.id !== id))
-        success('피드백이 삭제되었습니다.')
+        success(' .')
       } else {
         throw new Error(result.error?.message || 'Failed to delete feedback')
       }
     } catch (error) {
       console.error('Error deleting feedback:', error)
-      error('피드백 삭제에 실패했습니다.')
+      error('  .')
     }
   }
 
@@ -118,7 +118,7 @@ const FeedbackPage = () => {
   }
 
   const handleDelete = (id: number) => {
-    if (window.confirm('정말로 이 피드백을 삭제하시겠습니까?')) {
+    if (window.confirm('   ?')) {
       deleteFeedback(id)
     }
   }
@@ -158,18 +158,18 @@ const FeedbackPage = () => {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'pending': return '대기중'
-      case 'in_progress': return '진행중'
-      case 'resolved': return '해결됨'
+      case 'pending': return ''
+      case 'in_progress': return ''
+      case 'resolved': return ''
       default: return status
     }
   }
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
-      case 'high': return '높음'
-      case 'medium': return '보통'
-      case 'low': return '낮음'
+      case 'high': return ''
+      case 'medium': return ''
+      case 'low': return ''
       default: return priority
     }
   }
@@ -178,16 +178,16 @@ const FeedbackPage = () => {
     <DashboardLayout>
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">피드백 관리</h1>
+          <h1 className="text-2xl font-bold text-gray-800"> </h1>
           <Button 
             onClick={() => setShowModal(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
           >
-            새 피드백 추가
+              
           </Button>
         </div>
 
-        {/* 필터 버튼들 */}
+        {/*   */}
         <div className="mb-4 flex space-x-2">
           {['all', 'pending', 'in_progress', 'resolved'].map((status) => (
             <Button
@@ -200,9 +200,9 @@ const FeedbackPage = () => {
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
-              {status === 'all' ? '전체' : 
-               status === 'pending' ? '대기중' :
-               status === 'in_progress' ? '진행중' : '해결됨'}
+              {status === 'all' ? '' : 
+               status === 'pending' ? '' :
+               status === 'in_progress' ? '' : ''}
             </Button>
           ))}
         </div>
@@ -216,8 +216,8 @@ const FeedbackPage = () => {
             {filteredFeedbacks.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 {filter === 'all' 
-                  ? '아직 등록된 피드백이 없습니다. 새 피드백을 추가해보세요.'
-                  : `${getStatusText(filter)} 상태의 피드백이 없습니다.`
+                  ? '   .   .'
+                  : `${getStatusText(filter)}   .`
                 }
               </div>
             ) : (
@@ -239,8 +239,8 @@ const FeedbackPage = () => {
                         </div>
                         <p className="text-gray-600 mb-2">{feedback.content}</p>
                         <div className="flex items-center text-sm text-gray-500">
-                          <span className="mr-4">📂 {feedback.category}</span>
-                          <span>📅 {new Date(feedback.created_at).toLocaleDateString('ko-KR')}</span>
+                          <span className="mr-4"> {feedback.category}</span>
+                          <span> {new Date(feedback.created_at).toLocaleDateString('ko-KR')}</span>
                         </div>
                       </div>
                       <div className="flex flex-col space-y-2">
@@ -250,14 +250,14 @@ const FeedbackPage = () => {
                             className="text-blue-600 hover:bg-blue-50 px-3 py-1 text-sm"
                             variant="ghost"
                           >
-                            수정
+                            
                           </Button>
                           <Button
                             onClick={() => handleDelete(feedback.id)}
                             className="text-red-600 hover:bg-red-50 px-3 py-1 text-sm"
                             variant="ghost"
                           >
-                            삭제
+                            
                           </Button>
                         </div>
                         <select
@@ -265,9 +265,9 @@ const FeedbackPage = () => {
                           onChange={(e) => handleStatusChange(feedback.id, e.target.value as any)}
                           className="text-xs border border-gray-300 rounded px-2 py-1"
                         >
-                          <option value="pending">대기중</option>
-                          <option value="in_progress">진행중</option>
-                          <option value="resolved">해결됨</option>
+                          <option value="pending"></option>
+                          <option value="in_progress"></option>
+                          <option value="resolved"></option>
                         </select>
                       </div>
                     </div>
@@ -281,12 +281,12 @@ const FeedbackPage = () => {
         <Modal
           isOpen={showModal}
           onClose={resetForm}
-          title={editingFeedback ? '피드백 수정' : '새 피드백 추가'}
+          title={editingFeedback ? ' ' : '  '}
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                제목
+                
               </label>
               <Input
                 type="text"
@@ -294,13 +294,13 @@ const FeedbackPage = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 required
                 className="w-full"
-                placeholder="피드백 제목을 입력하세요"
+                placeholder="  "
               />
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                내용
+                
               </label>
               <textarea
                 value={formData.content}
@@ -308,39 +308,39 @@ const FeedbackPage = () => {
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={4}
-                placeholder="피드백 내용을 입력하세요"
+                placeholder="  "
               />
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                카테고리
+                
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="general">일반</option>
-                <option value="bug">버그</option>
-                <option value="feature">기능 요청</option>
-                <option value="improvement">개선 사항</option>
+                <option value="general"></option>
+                <option value="bug"></option>
+                <option value="feature"> </option>
+                <option value="improvement"> </option>
                 <option value="ui_ux">UI/UX</option>
               </select>
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                우선순위
+                
               </label>
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as any }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="low">낮음</option>
-                <option value="medium">보통</option>
-                <option value="high">높음</option>
+                <option value="low"></option>
+                <option value="medium"></option>
+                <option value="high"></option>
               </select>
             </div>
             
@@ -349,7 +349,7 @@ const FeedbackPage = () => {
                 type="submit"
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
               >
-                {editingFeedback ? '수정하기' : '추가하기'}
+                {editingFeedback ? '' : ''}
               </Button>
               <Button
                 type="button"
@@ -357,7 +357,7 @@ const FeedbackPage = () => {
                 variant="ghost"
                 className="flex-1 border border-gray-300 hover:bg-gray-50 py-2 rounded-lg"
               >
-                취소
+                
               </Button>
             </div>
           </form>

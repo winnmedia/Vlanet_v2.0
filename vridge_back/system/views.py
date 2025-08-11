@@ -1,5 +1,5 @@
 """
-시스템 헬스체크 및 모니터링 뷰
+    
 """
 from django.http import JsonResponse
 from django.db import connection
@@ -15,7 +15,7 @@ import os
 import platform
 import django
 
-# psutil은 선택적 의존성
+# psutil  
 try:
     import psutil
     HAS_PSUTIL = True
@@ -24,8 +24,8 @@ except ImportError:
 
 def health_check(request):
     """
-    시스템 헬스체크 엔드포인트
-    데이터베이스, 캐시, 파일시스템 등 확인
+      
+    , ,   
     """
     health_status = {
         'status': 'healthy',
@@ -40,7 +40,7 @@ def health_check(request):
         }
     }
     
-    # 1. 데이터베이스 체크
+    # 1.  
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
@@ -50,7 +50,7 @@ def health_check(request):
         health_status['database'] = f'error: {str(e)}'
         health_status['status'] = 'unhealthy'
     
-    # 2. 캐시 체크
+    # 2.  
     try:
         cache.set('health_check', 'ok', 10)
         if cache.get('health_check') == 'ok':
@@ -61,7 +61,7 @@ def health_check(request):
         health_status['cache'] = f'error: {str(e)}'
         health_status['status'] = 'degraded'
     
-    # 3. 파일시스템 체크
+    # 3.  
     try:
         media_root = getattr(settings, 'MEDIA_ROOT', None)
         if media_root:
@@ -75,7 +75,7 @@ def health_check(request):
         health_status['filesystem'] = f'error: {str(e)}'
         health_status['status'] = 'degraded'
     
-    # 4. 메모리 사용량 (psutil 있는 경우만)
+    # 4.   (psutil  )
     if HAS_PSUTIL:
         try:
             memory = psutil.virtual_memory()
@@ -86,10 +86,10 @@ def health_check(request):
                 'used': memory.used
             }
         except:
-            # psutil이 없어도 에러 없이 진행
+            # psutil    
             pass
     
-    # HTTP 상태 코드 결정
+    # HTTP   
     if health_status['status'] == 'unhealthy':
         status_code = 503  # Service Unavailable
     elif health_status['status'] == 'degraded':
@@ -103,8 +103,8 @@ def health_check(request):
 @require_http_methods(["GET"])
 def api_root(request):
     """
-    API 루트 엔드포인트
-    사용 가능한 API 엔드포인트 목록 제공
+    API  
+      API   
     """
     return JsonResponse({
         'message': 'VideoPlanet API',
@@ -145,18 +145,18 @@ def api_root(request):
 
 def migration_status(request):
     """
-    마이그레이션 상태 확인 엔드포인트
+       
     """
     try:
         executor = MigrationExecutor(connection)
         plan = executor.migration_plan(executor.loader.graph.leaf_nodes())
         
-        # 적용된 마이그레이션
+        #  
         applied_migrations = []
         for app_name, migration_name in executor.loader.applied_migrations:
             applied_migrations.append(f"{app_name}.{migration_name}")
         
-        # 대기 중인 마이그레이션
+        #   
         pending_migrations = []
         for migration, backwards in plan:
             if not backwards:
@@ -166,7 +166,7 @@ def migration_status(request):
             'all_applied': len(pending_migrations) == 0,
             'applied_count': len(applied_migrations),
             'pending_count': len(pending_migrations),
-            'applied_migrations': applied_migrations[-10:],  # 최근 10개만
+            'applied_migrations': applied_migrations[-10:],  #  10
             'pending_migrations': pending_migrations,
         })
     except Exception as e:
@@ -177,7 +177,7 @@ def migration_status(request):
 
 def version_info(request):
     """
-    시스템 버전 정보
+      
     """
     return JsonResponse({
         'app_name': 'VideoPlanet',
@@ -199,16 +199,16 @@ def version_info(request):
 @require_http_methods(["OPTIONS", "GET", "POST"])
 def options_handler(request):
     """
-    OPTIONS 요청 처리 (CORS preflight)
+    OPTIONS   (CORS preflight)
     """
     response = JsonResponse({'status': 'ok'})
     
-    # CORS 헤더 설정
+    # CORS  
     origin = request.headers.get('Origin', '*')
     response['Access-Control-Allow-Origin'] = origin
     response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
     response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
     response['Access-Control-Allow-Credentials'] = 'true'
-    response['Access-Control-Max-Age'] = '86400'  # 24시간 캐시
+    response['Access-Control-Max-Age'] = '86400'  # 24 
     
     return response

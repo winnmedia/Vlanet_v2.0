@@ -19,8 +19,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'feedback_from_spec',
-                'verbose_name': 'Feedback (API 스펙)',
-                'verbose_name_plural': 'Feedbacks (API 스펙)',
+                'verbose_name': 'Feedback (API )',
+                'verbose_name_plural': 'Feedbacks (API )',
                 'ordering': ['-id'],
             },
         ),

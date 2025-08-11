@@ -1,6 +1,6 @@
 /**
  * VideoPlanet Critical User Journey E2E Tests
- * Grace QA Lead의 핵심 사용자 여정 자동화 테스트
+ * Grace QA Lead     
  */
 
 import { test, expect, Page } from '@playwright/test';
@@ -161,7 +161,7 @@ class FeedbackPage {
 }
 
 // Test Suites
-test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 완성', () => {
+test.describe(' Critical User Journey -     ', () => {
   let loginPage: LoginPage;
   let signupPage: SignupPage;
   let dashboardPage: DashboardPage;
@@ -187,9 +187,9 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
     await page.setViewportSize({ width: 1920, height: 1080 });
   });
   
-  test('CUJ-001: 완전한 사용자 여정 - 회원가입부터 피드백까지', async ({ page }) => {
-    // Step 1: 회원가입
-    await test.step('회원가입 프로세스', async () => {
+  test('CUJ-001:    -  ', async ({ page }) => {
+    // Step 1: 
+    await test.step(' ', async () => {
       await signupPage.goto();
       await signupPage.signup(testUser);
       await signupPage.verifyEmailVerification();
@@ -198,15 +198,15 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       await page.goto(`/verify-email?token=test-token`);
     });
     
-    // Step 2: 로그인
-    await test.step('첫 로그인', async () => {
+    // Step 2: 
+    await test.step(' ', async () => {
       await loginPage.goto();
       await loginPage.login(testUser.email, testUser.password);
       await dashboardPage.verifyWelcomeMessage(testUser.name);
     });
     
-    // Step 3: 프로젝트 생성
-    await test.step('첫 프로젝트 생성', async () => {
+    // Step 3:  
+    await test.step('  ', async () => {
       const initialProjectCount = await dashboardPage.getProjectCount();
       await dashboardPage.createNewProject();
       await projectPage.fillProjectDetails(testProject);
@@ -219,8 +219,8 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       expect(newProjectCount).toBe(initialProjectCount + 1);
     });
     
-    // Step 4: 팀원 초대
-    await test.step('팀원 초대', async () => {
+    // Step 4:  
+    await test.step(' ', async () => {
       const inviteEmails = [
         'teammate1@example.com',
         'teammate2@example.com',
@@ -236,16 +236,16 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       await expect(page.locator('[data-testid="team-member-count"]')).toContainText('4');
     });
     
-    // Step 5: 피드백 작성
-    await test.step('첫 피드백 작성', async () => {
+    // Step 5:  
+    await test.step('  ', async () => {
       const feedback = testDataFactory.createFeedback();
       await page.click('[data-testid="feedback-tab"]');
       await feedbackPage.addFeedback(feedback);
       await feedbackPage.verifyFeedbackAdded(feedback.content);
     });
     
-    // Step 6: 대시보드 통계 확인
-    await test.step('대시보드 통계 검증', async () => {
+    // Step 6:   
+    await test.step('  ', async () => {
       await page.goto('/dashboard');
       const stats = await dashboardPage.verifyStatistics();
       expect(parseInt(stats.totalProjects || '0')).toBeGreaterThan(0);
@@ -253,12 +253,12 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
     });
   });
   
-  test('CUJ-002: 기존 사용자 일일 워크플로우', async ({ page }) => {
+  test('CUJ-002:    ', async ({ page }) => {
     // Pre-condition: Login as existing user
     await loginPage.goto();
     await loginPage.login('existing@example.com', 'Test123!@#');
     
-    await test.step('대시보드 빠른 체크', async () => {
+    await test.step('  ', async () => {
       // Check today's schedule
       await expect(page.locator('[data-testid="today-schedule"]')).toBeVisible();
       
@@ -271,7 +271,7 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       expect(deadlineProjects).toBeLessThanOrEqual(5);
     });
     
-    await test.step('프로젝트 상태 업데이트', async () => {
+    await test.step('  ', async () => {
       // Navigate to first project
       await page.click('[data-testid="project-card"]:first-child');
       
@@ -280,24 +280,24 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       await page.click('[data-testid="save-status-button"]');
       
       // Verify status updated
-      await expect(page.locator('[data-testid="status-badge"]')).toContainText('제작중');
+      await expect(page.locator('[data-testid="status-badge"]')).toContainText('');
     });
     
-    await test.step('피드백 응답', async () => {
+    await test.step(' ', async () => {
       await page.click('[data-testid="feedback-tab"]');
       
       // Reply to first feedback
       await page.click('[data-testid="feedback-item"]:first-child [data-testid="reply-button"]');
-      await page.fill('[data-testid="reply-input"]', '피드백 감사합니다. 수정하겠습니다.');
+      await page.fill('[data-testid="reply-input"]', ' . .');
       await page.click('[data-testid="send-reply-button"]');
       
       // Mark as resolved
       await page.click('[data-testid="mark-resolved-button"]');
-      await expect(page.locator('[data-testid="feedback-status"]')).toContainText('해결됨');
+      await expect(page.locator('[data-testid="feedback-status"]')).toContainText('');
     });
   });
   
-  test('CUJ-003: 다중 사용자 동시 협업', async ({ browser }) => {
+  test('CUJ-003:    ', async ({ browser }) => {
     // Create multiple browser contexts for different users
     const contexts = await Promise.all([
       browser.newContext(),
@@ -316,7 +316,7 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       await loginPage.login(`user${index + 1}@example.com`, 'Test123!@#');
     }));
     
-    await test.step('동시 프로젝트 편집', async () => {
+    await test.step('  ', async () => {
       // All users navigate to same project
       await Promise.all(pages.map(page => 
         page.goto('/projects/test-project-id')
@@ -343,10 +343,10 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
       // Check that all changes are preserved or properly merged
       await expect(pages[0].locator('[data-testid="project-title-display"]')).toBeVisible();
       await expect(pages[0].locator('[data-testid="project-description-display"]')).toBeVisible();
-      await expect(pages[0].locator('[data-testid="status-badge"]')).toContainText('검토중');
+      await expect(pages[0].locator('[data-testid="status-badge"]')).toContainText('');
     });
     
-    await test.step('실시간 피드백 동기화', async () => {
+    await test.step('  ', async () => {
       // User 1 adds feedback
       const feedbackPage1 = new FeedbackPage(pages[0]);
       const feedback1 = testDataFactory.createFeedback();
@@ -370,8 +370,8 @@ test.describe('🎯 Critical User Journey - 신규 사용자 첫 프로젝트 �
 });
 
 // Performance Tests
-test.describe('⚡ Performance Tests', () => {
-  test('PERF-001: 페이지 로드 성능', async ({ page }) => {
+test.describe(' Performance Tests', () => {
+  test('PERF-001:   ', async ({ page }) => {
     const metrics = [];
     
     const pagesToTest = [
@@ -382,7 +382,7 @@ test.describe('⚡ Performance Tests', () => {
     ];
     
     for (const pageInfo of pagesToTest) {
-      await test.step(`${pageInfo.name} 로드 시간 측정`, async () => {
+      await test.step(`${pageInfo.name}   `, async () => {
         const startTime = Date.now();
         await page.goto(pageInfo.url);
         await page.waitForLoadState('networkidle');
@@ -440,7 +440,7 @@ test.describe('⚡ Performance Tests', () => {
     console.log('Performance Test Results:', metrics);
   });
   
-  test('PERF-002: API 응답 시간', async ({ request }) => {
+  test('PERF-002: API  ', async ({ request }) => {
     const endpoints = [
       { path: '/api/projects', method: 'GET' },
       { path: '/api/auth/refresh', method: 'POST' },
@@ -448,7 +448,7 @@ test.describe('⚡ Performance Tests', () => {
     ];
     
     for (const endpoint of endpoints) {
-      await test.step(`${endpoint.method} ${endpoint.path} 응답 시간`, async () => {
+      await test.step(`${endpoint.method} ${endpoint.path}  `, async () => {
         const startTime = Date.now();
         
         const response = await request[endpoint.method.toLowerCase()](
@@ -473,8 +473,8 @@ test.describe('⚡ Performance Tests', () => {
 });
 
 // Security Tests
-test.describe('🔒 Security Tests', () => {
-  test('SEC-001: XSS 방어 테스트', async ({ page }) => {
+test.describe(' Security Tests', () => {
+  test('SEC-001: XSS  ', async ({ page }) => {
     const xssPayloads = [
       '<script>alert("XSS")</script>',
       '<img src=x onerror=alert("XSS")>',
@@ -491,7 +491,7 @@ test.describe('🔒 Security Tests', () => {
     await page.goto('/projects/create');
     
     for (const payload of xssPayloads) {
-      await test.step(`XSS 페이로드 테스트: ${payload.substring(0, 30)}...`, async () => {
+      await test.step(`XSS  : ${payload.substring(0, 30)}...`, async () => {
         await page.fill('[data-testid="project-title"]', payload);
         await page.fill('[data-testid="project-description"]', payload);
         await page.click('[data-testid="save-project-button"]');
@@ -510,7 +510,7 @@ test.describe('🔒 Security Tests', () => {
     }
   });
   
-  test('SEC-002: SQL Injection 방어 테스트', async ({ request }) => {
+  test('SEC-002: SQL Injection  ', async ({ request }) => {
     const sqlPayloads = [
       "'; DROP TABLE users; --",
       "1' OR '1'='1",
@@ -519,7 +519,7 @@ test.describe('🔒 Security Tests', () => {
     ];
     
     for (const payload of sqlPayloads) {
-      await test.step(`SQL Injection 테스트: ${payload}`, async () => {
+      await test.step(`SQL Injection : ${payload}`, async () => {
         const response = await request.post(`${TEST_CONFIG.apiURL}/api/auth/login`, {
           data: {
             email: payload,
@@ -538,13 +538,13 @@ test.describe('🔒 Security Tests', () => {
     }
   });
   
-  test('SEC-003: 인증 및 권한 테스트', async ({ request }) => {
-    await test.step('JWT 토큰 없이 보호된 리소스 접근', async () => {
+  test('SEC-003:    ', async ({ request }) => {
+    await test.step('JWT     ', async () => {
       const response = await request.get(`${TEST_CONFIG.apiURL}/api/projects`);
       expect(response.status()).toBe(401);
     });
     
-    await test.step('만료된 토큰으로 접근', async () => {
+    await test.step('  ', async () => {
       const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjB9.abc123';
       
       const response = await request.get(`${TEST_CONFIG.apiURL}/api/projects`, {
@@ -556,7 +556,7 @@ test.describe('🔒 Security Tests', () => {
       expect(response.status()).toBe(401);
     });
     
-    await test.step('다른 사용자의 리소스 접근 시도', async () => {
+    await test.step('    ', async () => {
       // Login as user1 and get token
       const loginResponse = await request.post(`${TEST_CONFIG.apiURL}/api/auth/login`, {
         data: {
@@ -580,8 +580,8 @@ test.describe('🔒 Security Tests', () => {
 });
 
 // Accessibility Tests
-test.describe('♿ Accessibility Tests', () => {
-  test('A11Y-001: WCAG 2.1 Level AA 준수', async ({ page }) => {
+test.describe(' Accessibility Tests', () => {
+  test('A11Y-001: WCAG 2.1 Level AA ', async ({ page }) => {
     const pages = [
       '/',
       '/login',
@@ -591,7 +591,7 @@ test.describe('♿ Accessibility Tests', () => {
     ];
     
     for (const url of pages) {
-      await test.step(`${url} 접근성 검사`, async () => {
+      await test.step(`${url}  `, async () => {
         await page.goto(url);
         
         // Check for proper heading structure
@@ -650,7 +650,7 @@ test.describe('♿ Accessibility Tests', () => {
     }
   });
   
-  test('A11Y-002: 키보드 네비게이션', async ({ page }) => {
+  test('A11Y-002:  ', async ({ page }) => {
     await page.goto('/');
     
     // Test tab navigation
@@ -692,7 +692,7 @@ test.describe('♿ Accessibility Tests', () => {
 });
 
 // Mobile Responsiveness Tests
-test.describe('📱 Mobile Responsiveness Tests', () => {
+test.describe(' Mobile Responsiveness Tests', () => {
   const devices = [
     { name: 'iPhone SE', width: 375, height: 667 },
     { name: 'iPhone 13', width: 390, height: 844 },
@@ -701,10 +701,10 @@ test.describe('📱 Mobile Responsiveness Tests', () => {
   ];
   
   for (const device of devices) {
-    test(`MOBILE-001: ${device.name} 반응형 테스트`, async ({ page }) => {
+    test(`MOBILE-001: ${device.name}  `, async ({ page }) => {
       await page.setViewportSize({ width: device.width, height: device.height });
       
-      await test.step('모바일 네비게이션', async () => {
+      await test.step(' ', async () => {
         await page.goto('/');
         
         // Check if hamburger menu is visible on mobile
@@ -724,7 +724,7 @@ test.describe('📱 Mobile Responsiveness Tests', () => {
         }
       });
       
-      await test.step('터치 타겟 크기 검증', async () => {
+      await test.step('   ', async () => {
         await page.goto('/login');
         
         // Check button sizes
@@ -740,7 +740,7 @@ test.describe('📱 Mobile Responsiveness Tests', () => {
         expect(buttonSize.height).toBeGreaterThanOrEqual(44);
       });
       
-      await test.step('콘텐츠 오버플로우 체크', async () => {
+      await test.step('  ', async () => {
         await page.goto('/projects');
         
         // Check for horizontal scroll
@@ -753,7 +753,7 @@ test.describe('📱 Mobile Responsiveness Tests', () => {
     });
   }
   
-  test('MOBILE-002: 오리엔테이션 변경', async ({ page }) => {
+  test('MOBILE-002:  ', async ({ page }) => {
     // Start in portrait
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/dashboard');

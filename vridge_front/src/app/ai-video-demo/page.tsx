@@ -55,7 +55,7 @@ export default function AIVideoDemoPage() {
 
   const handlePromptGenerate = async (prompt: string) => {
     if (!selectedScene) {
-      alert('씬을 먼저 선택해주세요.');
+      alert('  .');
       return;
     }
 
@@ -84,10 +84,10 @@ export default function AIVideoDemoPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                AI 비디오 생성 플랫폼
+                AI   
               </h1>
               <p className="text-gray-600 mt-2">
-                AI를 활용하여 스토리를 영상으로 만들어보세요
+                AI    
               </p>
             </div>
             
@@ -96,7 +96,7 @@ export default function AIVideoDemoPage() {
                 onClick={() => setShowStoryEditor(true)}
                 className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors"
               >
-                스토리 편집
+                 
               </button>
             )}
           </div>
@@ -110,9 +110,9 @@ export default function AIVideoDemoPage() {
                 {currentStory.description}
               </p>
               <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                <span>{scenes.length}개 씬</span>
-                <span>총 {Math.round(currentStory.totalDuration / 60 * 10) / 10}분</span>
-                <span>상태: {currentStory.status}</span>
+                <span>{scenes.length} </span>
+                <span> {Math.round(currentStory.totalDuration / 60 * 10) / 10}</span>
+                <span>: {currentStory.status}</span>
               </div>
             </div>
           )}
@@ -150,7 +150,7 @@ export default function AIVideoDemoPage() {
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                     <span className="text-sm font-medium text-blue-800">
-                      선택된 씬: {selectedScene.title}
+                       : {selectedScene.title}
                     </span>
                   </div>
                 </div>
@@ -179,28 +179,28 @@ export default function AIVideoDemoPage() {
 
               {/* Quick Stats */}
               <div className="bg-white rounded-lg shadow p-4">
-                <h3 className="font-medium text-gray-900 mb-3">프로젝트 현황</h3>
+                <h3 className="font-medium text-gray-900 mb-3"> </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">전체 씬</span>
-                    <span className="font-medium">{scenes.length}개</span>
+                    <span className="text-gray-600"> </span>
+                    <span className="font-medium">{scenes.length}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">완료된 씬</span>
+                    <span className="text-gray-600"> </span>
                     <span className="font-medium text-green-600">
-                      {scenes.filter(s => s.status === 'completed').length}개
+                      {scenes.filter(s => s.status === 'completed').length}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">생성 중인 씬</span>
+                    <span className="text-gray-600">  </span>
                     <span className="font-medium text-blue-600">
-                      {scenes.filter(s => s.status === 'generating').length}개
+                      {scenes.filter(s => s.status === 'generating').length}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">오류 씬</span>
+                    <span className="text-gray-600"> </span>
                     <span className="font-medium text-red-600">
-                      {scenes.filter(s => s.status === 'error').length}개
+                      {scenes.filter(s => s.status === 'error').length}
                     </span>
                   </div>
                 </div>
@@ -215,10 +215,10 @@ export default function AIVideoDemoPage() {
               </svg>
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              새로운 비디오 프로젝트 시작
+                 
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              스토리를 생성하고 AI를 활용하여 멋진 비디오를 만들어보세요
+                AI    
             </p>
             <button
               onClick={() => setShowStoryEditor(true)}
@@ -227,7 +227,7 @@ export default function AIVideoDemoPage() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              스토리 생성하기
+               
             </button>
           </div>
         )}

@@ -1,0 +1,15 @@
+{
+  "timestamp": "20250812_004445",
+  "total_tests": 0,
+  "passed": 0,
+  "failed": 0,
+  "skipped": 0,
+  "pass_rate": ,
+  "reports": {
+    "django": "/home/winnmedia/VideoPlanet/test-reports/django_test_20250812_004445.log",
+    "nextjs": "/home/winnmedia/VideoPlanet/test-reports/nextjs_test_20250812_004445.log",
+    "lint": "/home/winnmedia/VideoPlanet/test-reports/lint_20250812_004445.log",
+    "security": "/home/winnmedia/VideoPlanet/test-reports/security_20250812_004445.log",
+    "integration": "/home/winnmedia/VideoPlanet/test-reports/integration_20250812_004445.log"
+  }
+}

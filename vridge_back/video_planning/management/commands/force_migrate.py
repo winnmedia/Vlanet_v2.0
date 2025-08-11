@@ -8,19 +8,19 @@ class Command(BaseCommand):
     help = 'Force apply video_planning migrations'
 
     def handle(self, *args, **options):
-        self.stdout.write('🔧 video_planning 마이그레이션 강제 적용 시작...')
+        self.stdout.write(' video_planning    ...')
         
         try:
-            # 마이그레이션 상태 확인
-            self.stdout.write('\n현재 마이그레이션 상태:')
+            #   
+            self.stdout.write('\n  :')
             call_command('showmigrations', 'video_planning')
             
-            # 마이그레이션 적용
-            self.stdout.write('\n마이그레이션 적용 중...')
+            #  
+            self.stdout.write('\n  ...')
             call_command('migrate', 'video_planning', verbosity=2)
             
-            self.stdout.write(self.style.SUCCESS('\n✅ 마이그레이션 완료!'))
+            self.stdout.write(self.style.SUCCESS('\n  !'))
             
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f'\n❌ 마이그레이션 실패: {e}'))
+            self.stdout.write(self.style.ERROR(f'\n  : {e}'))
             logger.error(f"Force migration failed: {e}", exc_info=True)

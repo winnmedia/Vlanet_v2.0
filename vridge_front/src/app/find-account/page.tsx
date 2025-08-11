@@ -8,7 +8,7 @@ import { Spinner } from '@/components/ui/Spinner';
 type TabType = 'username' | 'password';
 
 /**
- * 계정/비밀번호 찾기 페이지
+ * /  
  */
 function FindAccountPageContent() {
   const [activeTab, setActiveTab] = useState<TabType>('username');
@@ -17,7 +17,7 @@ function FindAccountPageContent() {
   const handleSuccess = () => {
     setShowSuccess(true);
     if (activeTab === 'username') {
-      // 아이디 찾기 성공 시 
+      //     
       setTimeout(() => {
         window.location.href = '/login';
       }, 3000);
@@ -25,7 +25,7 @@ function FindAccountPageContent() {
   };
 
   const handleError = (error: Error) => {
-    console.error('계정 찾기 오류:', error);
+    console.error('  :', error);
   };
 
   return (
@@ -36,7 +36,7 @@ function FindAccountPageContent() {
         transition={{ duration: 0.6 }}
         className="sm:mx-auto sm:w-full sm:max-w-md"
       >
-        {/* 헤더 */}
+        {/*  */}
         <div className="text-center mb-8">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -49,7 +49,7 @@ function FindAccountPageContent() {
             </svg>
           </motion.div>
           <h2 className="text-3xl font-bold text-gray-900">VideoPlanet</h2>
-          <p className="mt-2 text-gray-600">계정 정보 찾기</p>
+          <p className="mt-2 text-gray-600">  </p>
         </div>
 
         {showSuccess && activeTab === 'username' ? (
@@ -64,17 +64,17 @@ function FindAccountPageContent() {
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900">이메일을 발송했습니다</h3>
+              <h3 className="text-xl font-semibold text-gray-900"> </h3>
               <p className="text-gray-600">
-                가입하신 이메일로 계정 정보를 발송했습니다.<br />
-                이메일을 확인해주세요.
+                    .<br />
+                 .
               </p>
-              <p className="text-sm text-gray-500">3초 후 로그인 페이지로 이동합니다...</p>
+              <p className="text-sm text-gray-500">3    ...</p>
             </div>
           </motion.div>
         ) : (
           <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10">
-            {/* 탭 메뉴 */}
+            {/*   */}
             <div className="flex mb-8">
               <button
                 onClick={() => setActiveTab('username')}
@@ -84,7 +84,7 @@ function FindAccountPageContent() {
                     : 'border-gray-200 text-gray-500 hover:text-gray-700'
                 }`}
               >
-                아이디 찾기
+                 
               </button>
               <button
                 onClick={() => setActiveTab('password')}
@@ -94,11 +94,11 @@ function FindAccountPageContent() {
                     : 'border-gray-200 text-gray-500 hover:text-gray-700'
                 }`}
               >
-                비밀번호 재설정
+                 
               </button>
             </div>
 
-            {/* 폼 컨텐츠 */}
+            {/*   */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -117,20 +117,20 @@ function FindAccountPageContent() {
           </div>
         )}
 
-        {/* 도움말 및 링크 */}
+        {/*    */}
         <div className="mt-6 text-center space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
             <div className="flex items-center gap-2 mb-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <span className="font-medium">도움말</span>
+              <span className="font-medium"></span>
             </div>
             <ul className="text-left space-y-1 text-xs">
-              <li>• 가입 시 사용한 이메일 주소를 정확히 입력해주세요</li>
-              <li>• 소셜 로그인으로 가입한 경우 해당 플랫폼을 이용해주세요</li>
-              <li>• 이메일이 오지 않는다면 스팸함을 확인해보세요</li>
-              <li>• 문제가 계속되면 고객센터에 문의해주세요</li>
+              <li>•       </li>
+              <li>•       </li>
+              <li>•     </li>
+              <li>•    </li>
             </ul>
           </div>
 
@@ -140,7 +140,7 @@ function FindAccountPageContent() {
                 href="/login" 
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
-                로그인 페이지로 돌아가기
+                  
               </a>
             </div>
             <div>
@@ -148,7 +148,7 @@ function FindAccountPageContent() {
                 href="/signup" 
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
-                계정이 없다면 회원가입
+                  
               </a>
             </div>
             <div>
@@ -156,7 +156,7 @@ function FindAccountPageContent() {
                 href="/" 
                 className="text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
-                ← 홈으로 돌아가기
+                ←  
               </a>
             </div>
           </div>

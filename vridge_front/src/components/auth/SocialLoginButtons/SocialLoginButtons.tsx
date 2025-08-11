@@ -17,8 +17,8 @@ export interface SocialLoginButtonsProps {
 }
 
 /**
- * 소셜 로그인 버튼 컴포넌트
- * Google, Kakao 로그인을 지원하며 로딩 상태와 에러 처리를 포함
+ *    
+ * Google, Kakao       
  */
 export function SocialLoginButtons({
   mode = 'login',
@@ -33,18 +33,18 @@ export function SocialLoginButtons({
   const handleGoogleLogin = async () => {
     if (disabled || loadingProvider) return;
 
-    // 임시로 준비중 메시지 표시
+    //    
     alert(AUTH_MESSAGES.GOOGLE_LOGIN_PREPARING);
     return;
 
-    // TODO: 백엔드 소셜 로그인 구현 완료 후 주석 해제
+    // TODO:        
     /*
     try {
       setLoadingProvider('google');
       await loginWithGoogle();
       onSuccess?.('google');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error : new Error('Google 로그인에 실패했습니다.');
+      const errorMessage = error instanceof Error ? error : new Error('Google  .');
       onError?.(errorMessage);
     } finally {
       setLoadingProvider(null);
@@ -55,18 +55,18 @@ export function SocialLoginButtons({
   const handleKakaoLogin = async () => {
     if (disabled || loadingProvider) return;
 
-    // 임시로 준비중 메시지 표시
+    //    
     alert(AUTH_MESSAGES.KAKAO_LOGIN_PREPARING);
     return;
 
-    // TODO: 백엔드 소셜 로그인 구현 완료 후 주석 해제
+    // TODO:        
     /*
     try {
       setLoadingProvider('kakao');
       await loginWithKakao();
       onSuccess?.('kakao');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error : new Error('Kakao 로그인에 실패했습니다.');
+      const errorMessage = error instanceof Error ? error : new Error('Kakao  .');
       onError?.(errorMessage);
     } finally {
       setLoadingProvider(null);
@@ -83,31 +83,31 @@ export function SocialLoginButtons({
       transition={{ duration: 0.3 }}
       className={cn('space-y-3', className)}
     >
-      {/* 구분선 */}
+      {/*  */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-gray-300" />
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-4 bg-white text-gray-500">
-            {mode === 'signup' ? '간편 회원가입' : '간편 로그인'}
+            {mode === 'signup' ? ' ' : ' '}
           </span>
         </div>
       </div>
 
-      {/* 소셜 로그인 버튼들 */}
+      {/*    */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Google 로그인 */}
+        {/* Google  */}
         <Button
           type="button"
           variant="outline"
           onClick={handleGoogleLogin}
-          disabled={true} // 임시로 비활성화
+          disabled={true} //  
           className={cn(
             'w-full h-12 text-gray-700',
             'border-gray-300 hover:border-gray-400',
             'hover:bg-gray-50 transition-colors duration-200',
-            'opacity-60 cursor-not-allowed', // 준비중 스타일
+            'opacity-60 cursor-not-allowed', //  
             loadingProvider === 'google' && 'bg-gray-50'
           )}
         >
@@ -130,21 +130,21 @@ export function SocialLoginButtons({
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Google {mode === 'signup' ? '회원가입' : '로그인'} (준비중)
+            Google {mode === 'signup' ? '' : ''} ()
           </>
         </Button>
 
-        {/* Kakao 로그인 */}
+        {/* Kakao  */}
         <Button
           type="button"
           onClick={handleKakaoLogin}
-          disabled={true} // 임시로 비활성화
+          disabled={true} //  
           className={cn(
             'w-full h-12 text-gray-900 font-medium',
             'bg-[#FEE500] hover:bg-[#FEE500]/90',
             'border border-[#FEE500] hover:border-[#FEE500]/90',
             'shadow-sm hover:shadow-md transition-all duration-200',
-            'opacity-60 cursor-not-allowed', // 준비중 스타일
+            'opacity-60 cursor-not-allowed', //  
             loadingProvider === 'kakao' && 'bg-[#FEE500]/80'
           )}
         >
@@ -155,39 +155,39 @@ export function SocialLoginButtons({
                 d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3Z"
               />
             </svg>
-            Kakao {mode === 'signup' ? '회원가입' : '로그인'} (준비중)
+            Kakao {mode === 'signup' ? '' : ''} ()
           </>
         </Button>
       </div>
 
-      {/* 추가 정보 텍스트 */}
+      {/*    */}
       <p className="text-center text-xs text-gray-500 mt-4">
-        소셜 {mode === 'signup' ? '회원가입' : '로그인'} 시{' '}
+         {mode === 'signup' ? '' : ''} {' '}
         <a 
           href="/terms" 
           target="_blank" 
           rel="noopener noreferrer"
           className="text-brand-primary hover:underline"
         >
-          이용약관
+          
         </a>
-        {' '}및{' '}
+        {' '}{' '}
         <a 
           href="/privacy" 
           target="_blank" 
           rel="noopener noreferrer"
           className="text-brand-primary hover:underline"
         >
-          개인정보처리방침
+          
         </a>
-        에 동의하게 됩니다.
+          .
       </p>
     </motion.div>
   );
 }
 
 /**
- * 개별 소셜 로그인 버튼 컴포넌트
+ *     
  */
 interface SocialLoginButtonProps {
   provider: 'google' | 'kakao';
@@ -242,7 +242,7 @@ export function SocialLoginButton({
   };
 
   const getSocialLabel = (provider: 'google' | 'kakao', mode: 'login' | 'signup') => {
-    const action = mode === 'signup' ? '회원가입' : '로그인';
+    const action = mode === 'signup' ? '' : '';
     switch (provider) {
       case 'google':
         return `Google ${action}`;
@@ -276,7 +276,7 @@ export function SocialLoginButton({
       {loading ? (
         <span className="flex items-center justify-center gap-2">
           <Spinner size="sm" color="gray" />
-          연결 중...
+           ...
         </span>
       ) : (
         <span className="flex items-center justify-center gap-3">

@@ -19,8 +19,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'videoanalysisresult_from_spec',
-                'verbose_name': 'VideoAnalysisResult (API 스펙)',
-                'verbose_name_plural': 'VideoAnalysisResults (API 스펙)',
+                'verbose_name': 'VideoAnalysisResult (API )',
+                'verbose_name_plural': 'VideoAnalysisResults (API )',
                 'ordering': ['-id'],
             },
         ),

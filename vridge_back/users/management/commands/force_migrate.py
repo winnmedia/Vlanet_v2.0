@@ -6,10 +6,10 @@ class Command(BaseCommand):
     help = 'Force create missing tables and columns'
 
     def handle(self, *args, **options):
-        self.stdout.write('🔧 강제 마이그레이션 시작...')
+        self.stdout.write('   ...')
         
         with connection.cursor() as cursor:
-            # 1. users_notification 테이블 생성
+            # 1. users_notification  
             try:
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS users_notification (
@@ -27,47 +27,47 @@ class Command(BaseCommand):
                         extra_data JSONB DEFAULT '{}'::jsonb
                     );
                 """)
-                self.stdout.write(self.style.SUCCESS('✅ users_notification 테이블 생성'))
+                self.stdout.write(self.style.SUCCESS(' users_notification  '))
                 
-                # 인덱스 추가
+                #  
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_notification_recipient_created ON users_notification(recipient_id, created DESC);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_notification_recipient_read ON users_notification(recipient_id, is_read);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_notification_type ON users_notification(notification_type);")
                 
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'users_notification 테이블: {e}'))
+                self.stdout.write(self.style.WARNING(f'users_notification : {e}'))
             
-            # 2. email_verified 컬럼 추가
+            # 2. email_verified  
             try:
                 cursor.execute("""
                     ALTER TABLE users_user 
                     ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE;
                 """)
-                self.stdout.write(self.style.SUCCESS('✅ email_verified 컬럼 추가'))
+                self.stdout.write(self.style.SUCCESS(' email_verified  '))
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'email_verified 컬럼: {e}'))
+                self.stdout.write(self.style.WARNING(f'email_verified : {e}'))
             
-            # 3. email_verified_at 컬럼 추가
+            # 3. email_verified_at  
             try:
                 cursor.execute("""
                     ALTER TABLE users_user 
                     ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMP WITH TIME ZONE;
                 """)
-                self.stdout.write(self.style.SUCCESS('✅ email_verified_at 컬럼 추가'))
+                self.stdout.write(self.style.SUCCESS(' email_verified_at  '))
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'email_verified_at 컬럼: {e}'))
+                self.stdout.write(self.style.WARNING(f'email_verified_at : {e}'))
             
-            # 4. friend_code 컬럼 추가
+            # 4. friend_code  
             try:
                 cursor.execute("""
                     ALTER TABLE users_user 
                     ADD COLUMN IF NOT EXISTS friend_code VARCHAR(20) UNIQUE;
                 """)
-                self.stdout.write(self.style.SUCCESS('✅ friend_code 컬럼 추가'))
+                self.stdout.write(self.style.SUCCESS(' friend_code  '))
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'friend_code 컬럼: {e}'))
+                self.stdout.write(self.style.WARNING(f'friend_code : {e}'))
             
-            # 5. users_recentinvitation 테이블 생성
+            # 5. users_recentinvitation  
             try:
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS users_recentinvitation (
@@ -83,16 +83,16 @@ class Command(BaseCommand):
                         UNIQUE(inviter_id, invitee_email)
                     );
                 """)
-                self.stdout.write(self.style.SUCCESS('✅ users_recentinvitation 테이블 생성'))
+                self.stdout.write(self.style.SUCCESS(' users_recentinvitation  '))
                 
-                # 인덱스 추가
+                #  
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_recentinvitation_inviter ON users_recentinvitation(inviter_id);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_recentinvitation_last_invited ON users_recentinvitation(last_invited_at DESC);")
                 
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'users_recentinvitation 테이블: {e}'))
+                self.stdout.write(self.style.WARNING(f'users_recentinvitation : {e}'))
             
-            # 6. users_friendship 테이블 생성
+            # 6. users_friendship  
             try:
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS users_friendship (
@@ -107,18 +107,18 @@ class Command(BaseCommand):
                         UNIQUE(from_user_id, to_user_id)
                     );
                 """)
-                self.stdout.write(self.style.SUCCESS('✅ users_friendship 테이블 생성'))
+                self.stdout.write(self.style.SUCCESS(' users_friendship  '))
                 
-                # 인덱스 추가
+                #  
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_friendship_from_user ON users_friendship(from_user_id);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_friendship_to_user ON users_friendship(to_user_id);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS users_friendship_status ON users_friendship(status);")
                 
             except Exception as e:
-                self.stdout.write(self.style.WARNING(f'users_friendship 테이블: {e}'))
+                self.stdout.write(self.style.WARNING(f'users_friendship : {e}'))
         
-        # 7. 마이그레이션 재실행
-        self.stdout.write('\n📋 마이그레이션 재실행...')
+        # 7.  
+        self.stdout.write('\n  ...')
         call_command('migrate', '--noinput')
         
-        self.stdout.write(self.style.SUCCESS('\n✅ 강제 마이그레이션 완료!'))
+        self.stdout.write(self.style.SUCCESS('\n   !'))

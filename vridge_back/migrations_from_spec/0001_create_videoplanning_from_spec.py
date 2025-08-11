@@ -24,8 +24,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'videoplanning_from_spec',
-                'verbose_name': 'VideoPlanning (API 스펙)',
-                'verbose_name_plural': 'VideoPlannings (API 스펙)',
+                'verbose_name': 'VideoPlanning (API )',
+                'verbose_name_plural': 'VideoPlannings (API )',
                 'ordering': ['-id'],
             },
         ),

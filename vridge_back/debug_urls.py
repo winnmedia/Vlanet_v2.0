@@ -1,36 +1,36 @@
 #!/usr/bin/env python
 """
-URL 디버깅 스크립트
-Django에 등록된 모든 URL 패턴을 출력하여 문제를 진단합니다.
+URL  
+Django   URL    .
 """
 import os
 import sys
 import django
 
-# Django 설정 모듈 설정
+# Django   
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings_base')
 
-# Django 초기화
+# Django 
 django.setup()
 
 from django.urls import get_resolver
 from django.conf import settings
 
 def show_urls(urlpatterns=None, depth=0):
-    """재귀적으로 모든 URL 패턴을 출력"""
+    """  URL  """
     if urlpatterns is None:
         urlpatterns = get_resolver().url_patterns
         
     for pattern in urlpatterns:
         print("  " * depth, end="")
         
-        # URLPattern 또는 URLResolver 처리
+        # URLPattern  URLResolver 
         if hasattr(pattern, 'pattern'):
-            # 패턴 정보 출력
+            #   
             pattern_str = str(pattern.pattern)
             print(f"Pattern: {pattern_str}", end="")
             
-            # View 정보가 있으면 출력
+            # View   
             if hasattr(pattern, 'callback'):
                 view = pattern.callback
                 if hasattr(view, 'view_class'):
@@ -39,25 +39,25 @@ def show_urls(urlpatterns=None, depth=0):
                     view_name = f"{view.__module__}.{view.__name__}" if hasattr(view, '__name__') else str(view)
                 print(f" -> {view_name}", end="")
                 
-            # 이름이 있으면 출력
+            #   
             if hasattr(pattern, 'name') and pattern.name:
                 print(f" [name={pattern.name}]", end="")
                 
-            print()  # 줄바꿈
+            print()  # 
             
-            # 하위 패턴이 있으면 재귀 호출
+            #     
             if hasattr(pattern, 'url_patterns'):
                 show_urls(pattern.url_patterns, depth + 1)
 
 def find_auth_urls():
-    """인증 관련 URL만 찾아서 출력"""
+    """  URL  """
     print("\n=== Authentication URLs ===")
     resolver = get_resolver()
     
     for pattern in resolver.url_patterns:
         pattern_str = str(pattern.pattern)
         
-        # auth 관련 URL만 필터링
+        # auth  URL 
         if 'auth' in pattern_str.lower():
             print(f"\nPattern: {pattern_str}")
             
@@ -73,21 +73,21 @@ def find_auth_urls():
                 print(f"  Name: {pattern.name}")
                 
 def check_view_imports():
-    """View 클래스들이 제대로 임포트되는지 확인"""
+    """View    """
     print("\n=== Checking View Imports ===")
     
     try:
         from users.views_signup_safe import SafeSignUp, SafeSignIn
-        print("✅ SafeSignUp imported successfully:", SafeSignUp)
-        print("✅ SafeSignIn imported successfully:", SafeSignIn)
+        print(" SafeSignUp imported successfully:", SafeSignUp)
+        print(" SafeSignIn imported successfully:", SafeSignIn)
     except ImportError as e:
-        print("❌ Failed to import SafeSignUp/SafeSignIn:", e)
+        print(" Failed to import SafeSignUp/SafeSignIn:", e)
         
     try:
         from rest_framework_simplejwt.views import TokenRefreshView
-        print("✅ TokenRefreshView imported successfully:", TokenRefreshView)
+        print(" TokenRefreshView imported successfully:", TokenRefreshView)
     except ImportError as e:
-        print("❌ Failed to import TokenRefreshView:", e)
+        print(" Failed to import TokenRefreshView:", e)
 
 def main():
     print("=" * 60)
@@ -98,13 +98,13 @@ def main():
     print(f"ROOT_URLCONF: {settings.ROOT_URLCONF}")
     print("=" * 60)
     
-    # View 임포트 확인
+    # View  
     check_view_imports()
     
-    # 인증 URL 확인
+    #  URL 
     find_auth_urls()
     
-    # 전체 URL 패턴 출력 (선택적)
+    #  URL   ()
     print("\n=== All URL Patterns ===")
     show_urls()
 

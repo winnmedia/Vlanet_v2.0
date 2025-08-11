@@ -1,12 +1,12 @@
 """
-VideoPlanning/Calendar/ProjectCreate/Feedback API에서 자동 생성된 Django 모델
+VideoPlanning/Calendar/ProjectCreate/Feedback API   Django 
 """
 from django.db import models
 from django.contrib.auth.models import User
 
 
 class VideoPlanningFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 VideoPlanning 모델"""
+    """API    VideoPlanning """
     title = models.CharField(max_length=255, null=True, blank=True)
     planning_text = models.CharField(max_length=255, null=True, blank=True)
     stories = models.JSONField(default=dict, null=True, blank=True)
@@ -21,8 +21,8 @@ class VideoPlanningFromSpec(models.Model):
 
     class Meta:
         db_table = 'videoplanning_from_spec'
-        verbose_name = 'VideoPlanning (API 스펙)'
-        verbose_name_plural = 'VideoPlannings (API 스펙)'
+        verbose_name = 'VideoPlanning (API )'
+        verbose_name_plural = 'VideoPlannings (API )'
         ordering = ['-id']
 
     def __str__(self):
@@ -30,7 +30,7 @@ class VideoPlanningFromSpec(models.Model):
 
 
 class ProjectFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 Project 모델"""
+    """API    Project """
     name = models.CharField(max_length=255, null=True, blank=True)
     manager = models.CharField(max_length=255, null=True, blank=True)
     consumer = models.CharField(max_length=255, null=True, blank=True)
@@ -44,8 +44,8 @@ class ProjectFromSpec(models.Model):
 
     class Meta:
         db_table = 'project_from_spec'
-        verbose_name = 'Project (API 스펙)'
-        verbose_name_plural = 'Projects (API 스펙)'
+        verbose_name = 'Project (API )'
+        verbose_name_plural = 'Projects (API )'
         ordering = ['-id']
 
     def __str__(self):
@@ -53,7 +53,7 @@ class ProjectFromSpec(models.Model):
 
 
 class FeedbackFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 Feedback 모델"""
+    """API    Feedback """
     title = models.CharField(max_length=255, null=True, blank=True)
     url = models.URLField(max_length=500, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
@@ -63,8 +63,8 @@ class FeedbackFromSpec(models.Model):
 
     class Meta:
         db_table = 'feedback_from_spec'
-        verbose_name = 'Feedback (API 스펙)'
-        verbose_name_plural = 'Feedbacks (API 스펙)'
+        verbose_name = 'Feedback (API )'
+        verbose_name_plural = 'Feedbacks (API )'
         ordering = ['-id']
 
     def __str__(self):
@@ -72,7 +72,7 @@ class FeedbackFromSpec(models.Model):
 
 
 class UserFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 User 모델"""
+    """API    User """
     username = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField(max_length=254, null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
@@ -83,8 +83,8 @@ class UserFromSpec(models.Model):
 
     class Meta:
         db_table = 'user_from_spec'
-        verbose_name = 'User (API 스펙)'
-        verbose_name_plural = 'Users (API 스펙)'
+        verbose_name = 'User (API )'
+        verbose_name_plural = 'Users (API )'
         ordering = ['-id']
 
     def __str__(self):
@@ -92,7 +92,7 @@ class UserFromSpec(models.Model):
 
 
 class VideoAnalysisResultFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 VideoAnalysisResult 모델"""
+    """API    VideoAnalysisResult """
     video_id = models.CharField(max_length=255, null=True, blank=True)
     analysis_status = models.CharField(max_length=255, null=True, blank=True)
     twelve_labs_video_id = models.CharField(max_length=255, null=True, blank=True)
@@ -102,8 +102,8 @@ class VideoAnalysisResultFromSpec(models.Model):
 
     class Meta:
         db_table = 'videoanalysisresult_from_spec'
-        verbose_name = 'VideoAnalysisResult (API 스펙)'
-        verbose_name_plural = 'VideoAnalysisResults (API 스펙)'
+        verbose_name = 'VideoAnalysisResult (API )'
+        verbose_name_plural = 'VideoAnalysisResults (API )'
         ordering = ['-id']
 
     def __str__(self):
@@ -111,7 +111,7 @@ class VideoAnalysisResultFromSpec(models.Model):
 
 
 class AIFeedbackItemFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 AIFeedbackItem 모델"""
+    """API    AIFeedbackItem """
     feedback_type = models.CharField(max_length=255, null=True, blank=True)
     confidence = models.FloatField(null=True, blank=True)
     teacher_personality = models.CharField(max_length=255, null=True, blank=True)
@@ -120,8 +120,8 @@ class AIFeedbackItemFromSpec(models.Model):
 
     class Meta:
         db_table = 'aifeedbackitem_from_spec'
-        verbose_name = 'AIFeedbackItem (API 스펙)'
-        verbose_name_plural = 'AIFeedbackItems (API 스펙)'
+        verbose_name = 'AIFeedbackItem (API )'
+        verbose_name_plural = 'AIFeedbackItems (API )'
         ordering = ['-id']
 
     def __str__(self):
@@ -129,7 +129,7 @@ class AIFeedbackItemFromSpec(models.Model):
 
 
 class IdempotencyRecordFromSpec(models.Model):
-    """API 스펙에서 자동 생성된 IdempotencyRecord 모델"""
+    """API    IdempotencyRecord """
     idempotency_key = models.CharField(max_length=255, null=True, blank=True)
     project_id = models.IntegerField(null=True, blank=True)
     request_data = models.CharField(max_length=255, null=True, blank=True)
@@ -138,8 +138,8 @@ class IdempotencyRecordFromSpec(models.Model):
 
     class Meta:
         db_table = 'idempotencyrecord_from_spec'
-        verbose_name = 'IdempotencyRecord (API 스펙)'
-        verbose_name_plural = 'IdempotencyRecords (API 스펙)'
+        verbose_name = 'IdempotencyRecord (API )'
+        verbose_name_plural = 'IdempotencyRecords (API )'
         ordering = ['-id']
 
     def __str__(self):

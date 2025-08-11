@@ -1,6 +1,6 @@
 """
-VideoPlanet 데이터베이스 최적화 모듈
-N+1 문제 해결, 쿼리 최적화, 인덱스 관리
+VideoPlanet   
+N+1  ,  ,  
 """
 
 from django.db import models
@@ -14,13 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 class OptimizedQueryMixin:
-    """쿼리 최적화를 위한 믹스인 클래스"""
+    """    """
     
     def get_optimized_queryset(self):
-        """최적화된 쿼리셋 반환"""
+        """  """
         queryset = super().get_queryset()
         
-        # 모델별 최적화 전략 적용
+        #    
         model_name = self.model.__name__.lower()
         
         optimization_strategies = {
@@ -36,7 +36,7 @@ class OptimizedQueryMixin:
         return queryset
         
     def _optimize_project_queryset(self, queryset):
-        """프로젝트 쿼리셋 최적화"""
+        """  """
         return queryset.select_related(
             'user',
             'basic_plan'
@@ -56,7 +56,7 @@ class OptimizedQueryMixin:
         )
         
     def _optimize_feedback_queryset(self, queryset):
-        """피드백 쿼리셋 최적화"""
+        """  """
         return queryset.select_related(
             'user',
             'project'
@@ -82,7 +82,7 @@ class OptimizedQueryMixin:
         )
         
     def _optimize_user_queryset(self, queryset):
-        """사용자 쿼리셋 최적화"""
+        """  """
         return queryset.prefetch_related(
             'projects_as_owner',
             'projects_as_member',
@@ -97,7 +97,7 @@ class OptimizedQueryMixin:
         )
         
     def _optimize_videoplanning_queryset(self, queryset):
-        """영상 기획 쿼리셋 최적화"""
+        """   """
         return queryset.select_related(
             'user',
             'project'
@@ -112,12 +112,12 @@ class OptimizedQueryMixin:
 
 
 class CacheOptimizationMixin:
-    """캐시 최적화를 위한 믹스인 클래스"""
+    """    """
     
-    cache_timeout = 300  # 5분
+    cache_timeout = 300  # 5
     
     def get_cached_or_compute(self, cache_key, compute_func, timeout=None):
-        """캐시에서 가져오거나 계산 후 캐시에 저장"""
+        """     """
         if timeout is None:
             timeout = self.cache_timeout
             
@@ -132,12 +132,12 @@ class CacheOptimizationMixin:
         return result
         
     def invalidate_cache_pattern(self, pattern):
-        """패턴과 일치하는 캐시 키 무효화"""
+        """    """
         from django.core.cache import cache
         from django.core.cache.backends.base import DEFAULT_TIMEOUT
         
         if hasattr(cache, '_cache'):
-            # Redis 백엔드인 경우
+            # Redis  
             try:
                 keys = cache._cache.keys(f"*{pattern}*")
                 if keys:
@@ -148,15 +148,15 @@ class CacheOptimizationMixin:
 
 
 class DatabaseIndexManager:
-    """데이터베이스 인덱스 관리 클래스"""
+    """   """
     
     @staticmethod
     def create_missing_indexes():
-        """누락된 인덱스 생성"""
+        """  """
         from django.db import connection
         
         index_definitions = [
-            # 프로젝트 관련 인덱스
+            #   
             {
                 'name': 'idx_project_user_status',
                 'table': 'projects_project',
@@ -169,7 +169,7 @@ class DatabaseIndexManager:
                 'columns': ['created_at'],
                 'condition': None
             },
-            # 피드백 관련 인덱스
+            #   
             {
                 'name': 'idx_feedback_user_created',
                 'table': 'feedbacks_feedback',
@@ -182,14 +182,14 @@ class DatabaseIndexManager:
                 'columns': ['project_id'],
                 'condition': 'project_id IS NOT NULL'
             },
-            # 피드백 코멘트 인덱스
+            #   
             {
                 'name': 'idx_feedback_comment_feedback',
                 'table': 'feedbacks_feedbackcomment',
                 'columns': ['feedback_id', 'time_stamp'],
                 'condition': None
             },
-            # 사용자 관련 인덱스
+            #   
             {
                 'name': 'idx_user_email',
                 'table': 'users_user',
@@ -202,7 +202,7 @@ class DatabaseIndexManager:
                 'columns': ['login_method'],
                 'condition': None
             },
-            # 영상 기획 인덱스
+            #   
             {
                 'name': 'idx_videoplanning_user',
                 'table': 'video_planning_videoplanning',
@@ -216,14 +216,14 @@ class DatabaseIndexManager:
         with connection.cursor() as cursor:
             for index_def in index_definitions:
                 try:
-                    # 인덱스 존재 여부 확인
+                    #    
                     cursor.execute(
                         "SELECT 1 FROM pg_indexes WHERE indexname = %s",
                         [index_def['name']]
                     )
                     
                     if not cursor.fetchone():
-                        # 인덱스 생성
+                        #  
                         columns_str = ', '.join(index_def['columns'])
                         condition_str = f" WHERE {index_def['condition']}" if index_def['condition'] else ""
                         
@@ -243,20 +243,20 @@ class DatabaseIndexManager:
         
     @staticmethod
     def analyze_slow_queries():
-        """느린 쿼리 분석"""
+        """  """
         from django.db import connection
         
         slow_queries = []
         
         with connection.cursor() as cursor:
             try:
-                # pg_stat_statements 확장이 설치되어 있는지 확인
+                # pg_stat_statements    
                 cursor.execute(
                     "SELECT 1 FROM pg_extension WHERE extname = 'pg_stat_statements'"
                 )
                 
                 if cursor.fetchone():
-                    # 느린 쿼리 조회 (평균 실행 시간 100ms 이상)
+                    #    (   100ms )
                     cursor.execute("""
                         SELECT 
                             query,
@@ -272,7 +272,7 @@ class DatabaseIndexManager:
                     
                     for row in cursor.fetchall():
                         slow_queries.append({
-                            'query': row[0][:200],  # 쿼리 처음 200자
+                            'query': row[0][:200],  #   200
                             'calls': row[1],
                             'mean_time_ms': row[2],
                             'total_time_ms': row[3],
@@ -286,23 +286,23 @@ class DatabaseIndexManager:
         
     @staticmethod
     def optimize_database_settings():
-        """데이터베이스 설정 최적화 제안"""
+        """   """
         from django.db import connection
         
         recommendations = []
         
         with connection.cursor() as cursor:
             try:
-                # 현재 설정 확인
+                #   
                 settings_to_check = [
-                    ('shared_buffers', '256MB', '메모리의 25% 권장'),
-                    ('effective_cache_size', '1GB', '메모리의 50-75% 권장'),
-                    ('work_mem', '4MB', '복잡한 쿼리가 많으면 증가'),
-                    ('maintenance_work_mem', '64MB', 'VACUUM 성능 향상'),
-                    ('random_page_cost', '4', 'SSD의 경우 1.1로 설정'),
-                    ('checkpoint_completion_target', '0.9', '체크포인트 부하 분산'),
-                    ('wal_buffers', '16MB', 'Write 성능 향상'),
-                    ('default_statistics_target', '100', '쿼리 플래너 정확도 향상')
+                    ('shared_buffers', '256MB', ' 25% '),
+                    ('effective_cache_size', '1GB', ' 50-75% '),
+                    ('work_mem', '4MB', '   '),
+                    ('maintenance_work_mem', '64MB', 'VACUUM  '),
+                    ('random_page_cost', '4', 'SSD  1.1 '),
+                    ('checkpoint_completion_target', '0.9', '  '),
+                    ('wal_buffers', '16MB', 'Write  '),
+                    ('default_statistics_target', '100', '   ')
                 ]
                 
                 for setting_name, recommended, description in settings_to_check:
@@ -328,18 +328,18 @@ class DatabaseIndexManager:
 
 
 class QueryPerformanceMonitor:
-    """쿼리 성능 모니터링 클래스"""
+    """   """
     
     @staticmethod
     def log_slow_query(query, execution_time, view_name=None):
-        """느린 쿼리 로깅"""
-        if execution_time > 1.0:  # 1초 이상
+        """  """
+        if execution_time > 1.0:  # 1 
             logger.warning(
                 f"Slow query detected in {view_name or 'unknown'}: "
                 f"{execution_time:.2f}s - {query[:200]}"
             )
             
-            # 캐시에 통계 저장
+            #   
             cache_key = f"slow_query_stats_{timezone.now().strftime('%Y%m%d')}"
             stats = cache.get(cache_key, [])
             stats.append({
@@ -348,11 +348,11 @@ class QueryPerformanceMonitor:
                 'view_name': view_name,
                 'timestamp': timezone.now().isoformat()
             })
-            cache.set(cache_key, stats, 86400)  # 24시간 보관
+            cache.set(cache_key, stats, 86400)  # 24 
             
     @staticmethod
     def get_query_statistics():
-        """쿼리 통계 조회"""
+        """  """
         from django.db import connection
         
         stats = {
@@ -362,7 +362,7 @@ class QueryPerformanceMonitor:
             'recommendations': []
         }
         
-        # 오늘의 느린 쿼리 통계
+        #    
         cache_key = f"slow_query_stats_{timezone.now().strftime('%Y%m%d')}"
         slow_queries = cache.get(cache_key, [])
         
@@ -373,39 +373,39 @@ class QueryPerformanceMonitor:
                 reverse=True
             )[:10]
             
-        # N+1 문제 감지
+        # N+1  
         with connection.cursor() as cursor:
             stats['total_queries'] = len(connection.queries)
             
-            # 동일한 패턴의 쿼리가 반복되는 경우 N+1 문제 가능성
+            #      N+1  
             query_patterns = {}
             for query in connection.queries:
-                # SELECT 쿼리만 분석
+                # SELECT  
                 if query['sql'].startswith('SELECT'):
-                    # 테이블명 추출 (간단한 패턴 매칭)
+                    #   (  )
                     pattern = query['sql'].split('FROM')[1].split('WHERE')[0].strip() if 'FROM' in query['sql'] else ''
                     if pattern:
                         query_patterns[pattern] = query_patterns.get(pattern, 0) + 1
                         
-            # 5회 이상 반복되는 패턴은 N+1 문제 가능성
+            # 5    N+1  
             for pattern, count in query_patterns.items():
                 if count > 5:
                     stats['recommendations'].append({
                         'type': 'n_plus_one',
                         'pattern': pattern,
                         'count': count,
-                        'suggestion': 'select_related() 또는 prefetch_related() 사용 검토'
+                        'suggestion': 'select_related()  prefetch_related()  '
                     })
                     
         return stats
 
 
 class BulkOperationOptimizer:
-    """대량 작업 최적화 클래스"""
+    """   """
     
     @staticmethod
     def bulk_create_with_batch(model_class, objects, batch_size=1000):
-        """배치 단위로 대량 생성"""
+        """   """
         created_objects = []
         
         for i in range(0, len(objects), batch_size):
@@ -418,7 +418,7 @@ class BulkOperationOptimizer:
         
     @staticmethod
     def bulk_update_with_batch(model_class, objects, fields, batch_size=1000):
-        """배치 단위로 대량 업데이트"""
+        """   """
         updated_count = 0
         
         for i in range(0, len(objects), batch_size):
@@ -431,12 +431,12 @@ class BulkOperationOptimizer:
         
     @staticmethod
     def efficient_delete(queryset, batch_size=1000):
-        """효율적인 대량 삭제 (소프트 삭제 권장)"""
+        """   (  )"""
         if hasattr(queryset.model, 'is_deleted'):
-            # 소프트 삭제
+            #  
             return queryset.update(is_deleted=True, deleted_at=timezone.now())
         else:
-            # 하드 삭제 (배치 단위)
+            #   ( )
             deleted_count = 0
             while True:
                 batch = list(queryset[:batch_size].values_list('pk', flat=True))

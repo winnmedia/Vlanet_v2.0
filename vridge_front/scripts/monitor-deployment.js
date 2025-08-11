@@ -77,7 +77,7 @@ class DeploymentMonitor {
           null
     };
 
-    // 상태별 카운트 업데이트
+    //   
     this.metrics.totalDeployments++;
     
     if (deployment.state === 'READY') {
@@ -85,7 +85,7 @@ class DeploymentMonitor {
     } else if (deployment.state === 'ERROR' || deployment.state === 'CANCELED') {
       this.metrics.failedDeployments++;
       
-      // 에러 분석
+      //  
       if (deployment.error) {
         const errorType = this.categorizeError(deployment.error);
         this.metrics.commonErrors[errorType] = 
@@ -93,7 +93,7 @@ class DeploymentMonitor {
       }
     }
 
-    // 평균 빌드 시간 계산
+    //    
     if (analysis.buildTime) {
       const prevAvg = this.metrics.averageBuildTime || 0;
       const prevCount = this.metrics.successfulDeployments - 1;
@@ -133,11 +133,11 @@ class DeploymentMonitor {
     }
 
     const emoji = {
-      error: '🔴',
-      warning: '⚠️',
-      success: '✅',
-      info: 'ℹ️'
-    }[type] || 'ℹ️';
+      error: '',
+      warning: '',
+      success: '',
+      info: 'ℹ'
+    }[type] || 'ℹ';
 
     const payload = {
       text: `${emoji} Vercel Deployment Monitor`,
@@ -152,7 +152,7 @@ class DeploymentMonitor {
       ]
     };
 
-    // Slack webhook으로 전송
+    // Slack webhook 
     try {
       await this.sendWebhook(payload);
     } catch (error) {
@@ -188,7 +188,7 @@ class DeploymentMonitor {
       (this.metrics.successfulDeployments / this.metrics.totalDeployments * 100).toFixed(2) :
       0;
 
-    let report = `📊 *Deployment Statistics*\n`;
+    let report = ` *Deployment Statistics*\n`;
     report += `• Total Deployments: ${this.metrics.totalDeployments}\n`;
     report += `• Success Rate: ${successRate}%\n`;
     report += `• Average Build Time: ${this.metrics.averageBuildTime.toFixed(2)}s\n`;
@@ -229,7 +229,7 @@ class DeploymentMonitor {
   }
 
   async monitor() {
-    console.log('🔍 Starting deployment monitoring...');
+    console.log(' Starting deployment monitoring...');
     
     try {
       const response = await this.fetchDeployments();
@@ -238,10 +238,10 @@ class DeploymentMonitor {
       for (const deployment of deployments) {
         const analysis = this.analyzeDeployment(deployment);
         
-        // 실패한 배포 알림
+        //   
         if (deployment.state === 'ERROR') {
           await this.sendNotification(
-            `❌ Deployment failed!\n` +
+            ` Deployment failed!\n` +
             `ID: ${deployment.id}\n` +
             `Error: ${deployment.error?.message || 'Unknown error'}\n` +
             `Time: ${new Date(deployment.created).toISOString()}`,
@@ -249,13 +249,13 @@ class DeploymentMonitor {
           );
         }
         
-        // 성공한 배포 확인
+        //   
         if (deployment.state === 'READY' && deployment.url) {
           const health = await this.checkHealth(`https://${deployment.url}`);
           
           if (!health.healthy) {
             await this.sendNotification(
-              `⚠️ Deployment succeeded but site is not responding properly!\n` +
+              ` Deployment succeeded but site is not responding properly!\n` +
               `URL: https://${deployment.url}\n` +
               `Status Code: ${health.statusCode}\n` +
               `Error: ${health.error || 'None'}`,
@@ -265,19 +265,19 @@ class DeploymentMonitor {
         }
       }
       
-      // 메트릭 저장
+      //  
       this.saveMetrics();
       
-      // 주기적 리포트
+      //  
       if (this.metrics.totalDeployments % 10 === 0 && this.metrics.totalDeployments > 0) {
         await this.sendNotification(this.generateReport(), 'info');
       }
       
-      // 성공률이 낮을 때 경고
+      //    
       const successRate = this.metrics.successfulDeployments / this.metrics.totalDeployments;
       if (successRate < 0.8 && this.metrics.totalDeployments > 5) {
         await this.sendNotification(
-          `⚠️ Low deployment success rate: ${(successRate * 100).toFixed(2)}%\n` +
+          ` Low deployment success rate: ${(successRate * 100).toFixed(2)}%\n` +
           `Consider reviewing common errors and deployment configuration.`,
           'warning'
         );
@@ -286,13 +286,13 @@ class DeploymentMonitor {
     } catch (error) {
       console.error('Monitoring error:', error);
       await this.sendNotification(
-        `❌ Monitoring system error: ${error.message}`,
+        ` Monitoring system error: ${error.message}`,
         'error'
       );
     }
   }
 
-  async runContinuous(interval = 300000) { // 5분마다
+  async runContinuous(interval = 300000) { // 5
     await this.monitor();
     setInterval(() => this.monitor(), interval);
   }
@@ -306,7 +306,7 @@ class DeploymentMonitor {
   }
 }
 
-// CLI 실행
+// CLI 
 if (require.main === module) {
   const monitor = new DeploymentMonitor();
   

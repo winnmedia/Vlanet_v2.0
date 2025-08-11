@@ -10,10 +10,10 @@ module.exports = {
   theme: {
     extend: {
       // ========================================
-      // 색상 시스템 (Color System)
+      //   (Color System)
       // ========================================
       colors: {
-        // 브랜드 색상
+        //  
         brand: {
           primary: '#1631F8',
           'primary-dark': '#0F23C9',
@@ -21,7 +21,7 @@ module.exports = {
           accent: '#00D4FF',
         },
         
-        // 프로젝트 단계별 색상
+        //   
         phase: {
           planning: {
             DEFAULT: '#3B82F6',
@@ -55,7 +55,7 @@ module.exports = {
           },
         },
         
-        // 피드백 상태 색상
+        //   
         feedback: {
           pending: {
             DEFAULT: '#F59E0B',
@@ -75,7 +75,7 @@ module.exports = {
           },
         },
         
-        // 우선순위 색상
+        //  
         priority: {
           critical: {
             DEFAULT: '#DC2626',
@@ -95,7 +95,7 @@ module.exports = {
           },
         },
         
-        // AI 기능 색상
+        // AI  
         ai: {
           generate: {
             DEFAULT: '#8B5CF6',
@@ -113,7 +113,7 @@ module.exports = {
       },
       
       // ========================================
-      // 타이포그래피 (Typography)
+      //  (Typography)
       // ========================================
       fontFamily: {
         sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
@@ -135,7 +135,7 @@ module.exports = {
       },
       
       // ========================================
-      // 간격 시스템 (Spacing)
+      //   (Spacing)
       // ========================================
       spacing: {
         '4.5': '1.125rem',  // 18px
@@ -152,7 +152,7 @@ module.exports = {
       },
       
       // ========================================
-      // 보더 반경 (Border Radius)
+      //   (Border Radius)
       // ========================================
       borderRadius: {
         'xs': '0.125rem',   // 2px
@@ -166,7 +166,7 @@ module.exports = {
       },
       
       // ========================================
-      // 그림자 (Box Shadow)
+      //  (Box Shadow)
       // ========================================
       boxShadow: {
         'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
@@ -184,7 +184,7 @@ module.exports = {
       },
       
       // ========================================
-      // 애니메이션 (Animation)
+      //  (Animation)
       // ========================================
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
@@ -246,7 +246,7 @@ module.exports = {
       },
       
       // ========================================
-      // 트랜지션 (Transition)
+      //  (Transition)
       // ========================================
       transitionDuration: {
         '0': '0ms',
@@ -271,7 +271,7 @@ module.exports = {
       },
       
       // ========================================
-      // 브레이크포인트 확장 (Screens)
+      //   (Screens)
       // ========================================
       screens: {
         'xs': '480px',
@@ -312,7 +312,7 @@ module.exports = {
       },
       
       // ========================================
-      // 최소/최대 크기 (Min/Max)
+      // /  (Min/Max)
       // ========================================
       minWidth: {
         '0': '0',
@@ -346,7 +346,7 @@ module.exports = {
       },
       
       // ========================================
-      // 백드롭 필터 (Backdrop)
+      //   (Backdrop)
       // ========================================
       backdropBlur: {
         xs: '2px',
@@ -366,16 +366,16 @@ module.exports = {
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/container-queries'),
     require('@tailwindcss/line-clamp'),
-    // 커스텀 유틸리티 클래스
+    //   
     function({ addUtilities }) {
       const newUtilities = {
-        // 텍스트 그라데이션
+        //  
         '.text-gradient': {
           'background-clip': 'text',
           '-webkit-background-clip': 'text',
           '-webkit-text-fill-color': 'transparent',
         },
-        // 스크롤바 숨기기
+        //  
         '.scrollbar-hide': {
           /* IE and Edge */
           '-ms-overflow-style': 'none',
@@ -386,20 +386,20 @@ module.exports = {
             display: 'none',
           },
         },
-        // 글래스모피즘
+        // 
         '.glass': {
           'background': 'rgba(255, 255, 255, 0.1)',
           'backdrop-filter': 'blur(10px)',
           'border': '1px solid rgba(255, 255, 255, 0.2)',
         },
-        // 텍스트 선택 방지
+        //   
         '.no-select': {
           '-webkit-user-select': 'none',
           '-moz-user-select': 'none',
           '-ms-user-select': 'none',
           'user-select': 'none',
         },
-        // 안전 영역 (모바일)
+        //   ()
         '.safe-top': {
           'padding-top': 'env(safe-area-inset-top)',
         },
@@ -412,7 +412,7 @@ module.exports = {
         '.safe-right': {
           'padding-right': 'env(safe-area-inset-right)',
         },
-        // Line clamp 유틸리티 (플러그인이 없을 경우 대체)
+        // Line clamp  (   )
         '.line-clamp-1': {
           'display': '-webkit-box',
           '-webkit-line-clamp': '1',

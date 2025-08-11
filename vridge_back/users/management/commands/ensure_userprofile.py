@@ -6,7 +6,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with connection.cursor() as cursor:
-            # UserProfile 테이블 확인
+            # UserProfile  
             cursor.execute("""
                 SELECT EXISTS (
                     SELECT FROM information_schema.tables 
@@ -17,11 +17,11 @@ class Command(BaseCommand):
             exists = cursor.fetchone()[0]
             
             if exists:
-                self.stdout.write(self.style.SUCCESS('✅ UserProfile table exists'))
+                self.stdout.write(self.style.SUCCESS(' UserProfile table exists'))
             else:
-                self.stdout.write(self.style.ERROR('❌ UserProfile table does not exist'))
+                self.stdout.write(self.style.ERROR(' UserProfile table does not exist'))
                 
-                # 테이블 생성 시도
+                #   
                 try:
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS users_userprofile (
@@ -36,6 +36,6 @@ class Command(BaseCommand):
                             position VARCHAR(100)
                         );
                     """)
-                    self.stdout.write(self.style.SUCCESS('✅ UserProfile table created'))
+                    self.stdout.write(self.style.SUCCESS(' UserProfile table created'))
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'Failed to create table: {e}'))

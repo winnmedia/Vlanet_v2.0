@@ -56,29 +56,29 @@ interface ExportOptions {
 const EXPORT_FORMATS = [
   {
     id: 'pdf',
-    label: 'PDF 리포트',
-    description: '전체 피드백을 정리된 PDF 문서로 내보냅니다',
+    label: 'PDF ',
+    description: '   PDF  ',
     icon: <FileText size={20} />,
     color: 'text-red-600'
   },
   {
     id: 'excel',
-    label: 'Excel 스프레드시트',
-    description: '피드백 데이터를 Excel 파일로 내보냅니다',
+    label: 'Excel ',
+    description: '  Excel  ',
     icon: <FileSpreadsheet size={20} />,
     color: 'text-green-600'
   },
   {
     id: 'timeline',
-    label: '타임라인 HTML',
-    description: '시각적 타임라인 형태로 내보냅니다',
+    label: ' HTML',
+    description: '   ',
     icon: <Play size={20} />,
     color: 'text-purple-600'
   },
   {
     id: 'json',
-    label: 'JSON 데이터',
-    description: '개발자용 구조화된 데이터 형식',
+    label: 'JSON ',
+    description: '   ',
     icon: <Table size={20} />,
     color: 'text-blue-600'
   }
@@ -116,7 +116,7 @@ export default function FeedbackExporter({
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
 
-  // 필터링된 피드백 계산
+  //   
   const filteredFeedbacks = feedbacks.filter(feedback => {
     if (!options.includeResolved && feedback.status === 'resolved') return false;
     if (!options.includeDeclined && feedback.status === 'declined') return false;
@@ -133,10 +133,10 @@ export default function FeedbackExporter({
     return true;
   });
 
-  // 내보내기 실행
+  //  
   const handleExport = async () => {
     if (filteredFeedbacks.length === 0) {
-      error('내보낼 피드백이 없습니다. 필터 조건을 확인해주세요.');
+      error('  .   .');
       return;
     }
 
@@ -144,7 +144,7 @@ export default function FeedbackExporter({
     setExportProgress(0);
 
     try {
-      // 진행률 시뮬레이션
+      //  
       const progressInterval = setInterval(() => {
         setExportProgress(prev => Math.min(prev + 10, 90));
       }, 200);
@@ -160,7 +160,7 @@ export default function FeedbackExporter({
           result = await videoFeedbackService.exportTimeline(video.id);
           break;
         case 'json':
-          // JSON은 클라이언트에서 직접 생성
+          // JSON   
           const jsonData = {
             video: {
               id: video.id,
@@ -193,7 +193,7 @@ export default function FeedbackExporter({
           
           clearInterval(progressInterval);
           setExportProgress(100);
-          success('JSON 파일이 다운로드되었습니다.');
+          success('JSON  .');
           onClose();
           return;
       }
@@ -202,23 +202,23 @@ export default function FeedbackExporter({
       setExportProgress(100);
 
       if (result?.success && result.data?.download_url) {
-        // 파일 다운로드
+        //  
         window.open(result.data.download_url, '_blank');
-        success('파일이 성공적으로 내보내졌습니다.');
+        success('  .');
         onClose();
       } else {
-        throw new Error('내보내기에 실패했습니다.');
+        throw new Error(' .');
       }
     } catch (err) {
-      console.error('내보내기 오류:', err);
-      error('내보내기에 실패했습니다.');
+      console.error(' :', err);
+      error(' .');
     } finally {
       setIsExporting(false);
       setExportProgress(0);
     }
   };
 
-  // 미리보기 데이터
+  //  
   const getPreviewData = () => {
     const totalFeedbacks = filteredFeedbacks.length;
     const resolvedCount = filteredFeedbacks.filter(f => f.status === 'resolved').length;
@@ -241,13 +241,13 @@ export default function FeedbackExporter({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="피드백 내보내기"
+      title=" "
       className="max-w-4xl"
     >
       <div className="space-y-6">
-        {/* 내보내기 형식 선택 */}
+        {/*    */}
         <div>
-          <h4 className="text-lg font-medium text-gray-800 mb-4">내보내기 형식</h4>
+          <h4 className="text-lg font-medium text-gray-800 mb-4"> </h4>
           <div className="grid grid-cols-2 gap-4">
             {EXPORT_FORMATS.map((format) => (
               <button
@@ -272,13 +272,13 @@ export default function FeedbackExporter({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* 필터 옵션 */}
+          {/*   */}
           <div>
-            <h4 className="text-lg font-medium text-gray-800 mb-4">필터 옵션</h4>
+            <h4 className="text-lg font-medium text-gray-800 mb-4"> </h4>
             <div className="space-y-4">
-              {/* 상태 필터 */}
+              {/*   */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">포함할 피드백 상태</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">  </label>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2">
                     <input
@@ -288,7 +288,7 @@ export default function FeedbackExporter({
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                     <CheckCircle2 size={16} className="text-green-500" />
-                    <span className="text-sm">해결된 피드백</span>
+                    <span className="text-sm"> </span>
                   </label>
                   <label className="flex items-center gap-2">
                     <input
@@ -297,14 +297,14 @@ export default function FeedbackExporter({
                       onChange={(e) => setOptions(prev => ({ ...prev, includeDeclined: e.target.checked }))}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-sm">거부된 피드백</span>
+                    <span className="text-sm"> </span>
                   </label>
                 </div>
               </div>
 
-              {/* 카테고리 필터 */}
+              {/*   */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">카테고리</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2"></label>
                 <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
                   {CATEGORIES.map((category) => (
                     <label key={category} className="flex items-center gap-2">
@@ -332,9 +332,9 @@ export default function FeedbackExporter({
                 </div>
               </div>
 
-              {/* 날짜 범위 */}
+              {/*   */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">날짜 범위 (선택사항)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">  ()</label>
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     type="date"
@@ -365,11 +365,11 @@ export default function FeedbackExporter({
             </div>
           </div>
 
-          {/* 형식 옵션 및 미리보기 */}
+          {/*     */}
           <div>
-            <h4 className="text-lg font-medium text-gray-800 mb-4">형식 옵션</h4>
+            <h4 className="text-lg font-medium text-gray-800 mb-4"> </h4>
             <div className="space-y-4">
-              {/* 포함 옵션 */}
+              {/*   */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2">
                   <input
@@ -378,7 +378,7 @@ export default function FeedbackExporter({
                     onChange={(e) => setOptions(prev => ({ ...prev, includeReplies: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm">답글 포함</span>
+                  <span className="text-sm"> </span>
                 </label>
                 <label className="flex items-center gap-2">
                   <input
@@ -388,7 +388,7 @@ export default function FeedbackExporter({
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                   <Clock size={16} className="text-blue-500" />
-                  <span className="text-sm">타임스탬프 포함</span>
+                  <span className="text-sm"> </span>
                 </label>
                 <label className="flex items-center gap-2">
                   <input
@@ -398,58 +398,58 @@ export default function FeedbackExporter({
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                   <Image size={16} className="text-green-500" />
-                  <span className="text-sm">스크린샷 포함</span>
+                  <span className="text-sm"> </span>
                 </label>
               </div>
 
-              {/* 정렬 옵션 */}
+              {/*   */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">정렬 기준</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1"> </label>
                   <select
                     value={options.sortBy}
                     onChange={(e) => setOptions(prev => ({ ...prev, sortBy: e.target.value as any }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="timestamp">시간 순서</option>
-                    <option value="created_at">생성일</option>
-                    <option value="priority">우선순위</option>
+                    <option value="timestamp"> </option>
+                    <option value="created_at"></option>
+                    <option value="priority"></option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">정렬 방향</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1"> </label>
                   <select
                     value={options.sortOrder}
                     onChange={(e) => setOptions(prev => ({ ...prev, sortOrder: e.target.value as any }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="asc">오름차순</option>
-                    <option value="desc">내림차순</option>
+                    <option value="asc"></option>
+                    <option value="desc"></option>
                   </select>
                 </div>
               </div>
 
-              {/* 미리보기 */}
+              {/*  */}
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h5 className="font-medium text-blue-800 mb-3">내보내기 미리보기</h5>
+                <h5 className="font-medium text-blue-800 mb-3"> </h5>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-blue-700">총 피드백:</span>
-                    <span className="font-medium text-blue-800">{previewData.totalFeedbacks}개</span>
+                    <span className="text-blue-700"> :</span>
+                    <span className="font-medium text-blue-800">{previewData.totalFeedbacks}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-blue-700">해결률:</span>
+                    <span className="text-blue-700">:</span>
                     <span className="font-medium text-blue-800">{previewData.resolutionRate}%</span>
                   </div>
                   {previewData.totalFeedbacks > 0 && (
                     <div className="pt-2 border-t border-blue-200">
-                      <div className="text-blue-700 mb-1">카테고리별:</div>
+                      <div className="text-blue-700 mb-1">:</div>
                       {Object.entries(previewData.categoryCounts)
                         .filter(([, count]) => count > 0)
                         .map(([category, count]) => (
                           <div key={category} className="flex justify-between text-xs">
                             <span className="capitalize">{category}:</span>
-                            <span>{count}개</span>
+                            <span>{count}</span>
                           </div>
                         ))}
                     </div>
@@ -460,11 +460,11 @@ export default function FeedbackExporter({
           </div>
         </div>
 
-        {/* 진행률 */}
+        {/*  */}
         {isExporting && (
           <div className="p-4 bg-gray-50 rounded-lg">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">내보내는 중...</span>
+              <span className="text-sm font-medium text-gray-700"> ...</span>
               <span className="text-sm text-gray-600">{exportProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -476,7 +476,7 @@ export default function FeedbackExporter({
           </div>
         )}
 
-        {/* 액션 버튼 */}
+        {/*   */}
         <div className="flex gap-3 pt-4 border-t">
           <Button
             onClick={handleExport}
@@ -488,7 +488,7 @@ export default function FeedbackExporter({
             ) : (
               <Download size={16} />
             )}
-            {isExporting ? '내보내는 중...' : `${previewData.totalFeedbacks}개 피드백 내보내기`}
+            {isExporting ? ' ...' : `${previewData.totalFeedbacks}  `}
           </Button>
           
           <Button
@@ -497,7 +497,7 @@ export default function FeedbackExporter({
             disabled={isExporting}
             className="px-6"
           >
-            취소
+            
           </Button>
         </div>
       </div>

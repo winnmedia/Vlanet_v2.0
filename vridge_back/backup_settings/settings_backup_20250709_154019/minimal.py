@@ -1,4 +1,4 @@
-# 최소한의 Railway 배포용 Django 설정
+#  Railway  Django 
 import os
 import dj_database_url
 from pathlib import Path
@@ -6,14 +6,14 @@ from pathlib import Path
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# 보안 설정
-DEBUG = True  # 일단 디버그 모드로
+#  
+DEBUG = True  #   
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-DcuaI3zQmYubdwPqXgkCQgJkfZJCeiJ5NM7-HqsgEQRUADnZeb')
 
-# 허용된 호스트
-ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
+#  
+ALLOWED_HOSTS = ['*']  #   
 
-# 최소한의 앱들만
+#  
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -54,7 +54,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# 데이터베이스
+# 
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
@@ -62,15 +62,15 @@ DATABASES = {
     )
 }
 
-# 국제화
+# 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# 정적 파일
+#  
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# 기본 필드
+#  
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

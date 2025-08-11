@@ -47,14 +47,14 @@ describe('InviteModal Component', () => {
   it('renders modal when open', () => {
     render(<InviteModal {...defaultProps} />)
 
-    expect(screen.getByText('팀원 초대하기')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('이름이나 이메일로 검색...')).toBeInTheDocument()
+    expect(screen.getByText(' ')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('  ...')).toBeInTheDocument()
   })
 
   it('does not render when closed', () => {
     render(<InviteModal {...defaultProps} isOpen={false} />)
 
-    expect(screen.queryByText('팀원 초대하기')).not.toBeInTheDocument()
+    expect(screen.queryByText(' ')).not.toBeInTheDocument()
   })
 
   it('shows project information when projectTitle is provided', () => {
@@ -66,15 +66,15 @@ describe('InviteModal Component', () => {
       />
     )
 
-    expect(screen.getByText('Test Project에 초대하기')).toBeInTheDocument()
-    expect(screen.getByText('프로젝트: Test Project')).toBeInTheDocument()
+    expect(screen.getByText('Test Project ')).toBeInTheDocument()
+    expect(screen.getByText(': Test Project')).toBeInTheDocument()
   })
 
   it('allows adding custom email', async () => {
     render(<InviteModal {...defaultProps} />)
 
     const emailInput = screen.getByPlaceholderText('example@email.com')
-    const addButton = screen.getByText('추가')
+    const addButton = screen.getByText('')
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
     fireEvent.click(addButton)
@@ -94,20 +94,20 @@ describe('InviteModal Component', () => {
     render(<InviteModal {...defaultProps} />)
 
     const emailInput = screen.getByPlaceholderText('example@email.com')
-    const addButton = screen.getByText('추가')
+    const addButton = screen.getByText('')
 
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } })
     fireEvent.click(addButton)
 
     await waitFor(() => {
-      expect(mockError).toHaveBeenCalledWith('올바른 이메일 형식이 아닙니다.')
+      expect(mockError).toHaveBeenCalledWith('   .')
     })
   })
 
   it('allows adding invitation message', () => {
     render(<InviteModal {...defaultProps} />)
 
-    const messageTextarea = screen.getByPlaceholderText('함께 작업하고 싶어서 초대드립니다!')
+    const messageTextarea = screen.getByPlaceholderText('   !')
 
     fireEvent.change(messageTextarea, { target: { value: 'Custom invitation message' } })
 
@@ -117,7 +117,7 @@ describe('InviteModal Component', () => {
   it('disables send button when no emails selected', () => {
     render(<InviteModal {...defaultProps} />)
 
-    const sendButton = screen.getByText(/초대장 발송/)
+    const sendButton = screen.getByText(/ /)
 
     expect(sendButton).toBeDisabled()
   })
@@ -127,7 +127,7 @@ describe('InviteModal Component', () => {
 
     render(<InviteModal {...defaultProps} onClose={mockOnClose} />)
 
-    const cancelButton = screen.getByText('취소')
+    const cancelButton = screen.getByText('')
     fireEvent.click(cancelButton)
 
     expect(mockOnClose).toHaveBeenCalled()

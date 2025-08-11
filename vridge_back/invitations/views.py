@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from django.db.models import Q, Count
 from django.utils import timezone
-from .models import Invitation, TeamMember, Friend
+from .models import Invitation, TeamMember, InvitationFriend
 from .serializers import (
     InvitationSerializer, SendInvitationSerializer,
     UpdateInvitationSerializer, TeamMemberSerializer,
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class SendInvitation(APIView):
-    """초대 발송"""
+    """ """
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
@@ -31,7 +31,7 @@ class SendInvitation(APIView):
             
             data = serializer.validated_data
             
-            # 이미 같은 초대가 있는지 확인
+            #     
             existing = Invitation.objects.filter(
                 sender=request.user,
                 recipient_email=data['recipient_email'],
@@ -40,22 +40,22 @@ class SendInvitation(APIView):
             
             if existing and not existing.is_expired():
                 return Response(
-                    {"error": "이미 대기 중인 초대가 있습니다."},
+                    {"error": "    ."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # 프로젝트 확인 (선택사항)
+            #   ()
             project = None
             if 'project_id' in data and data['project_id']:
                 try:
                     project = Project.objects.get(id=data['project_id'], user=request.user)
                 except Project.DoesNotExist:
                     return Response(
-                        {"error": "프로젝트를 찾을 수 없습니다."},
+                        {"error": "   ."},
                         status=status.HTTP_404_NOT_FOUND
                     )
             
-            # 초대 생성
+            #  
             invitation = Invitation.objects.create(
                 sender=request.user,
                 recipient_email=data['recipient_email'],
@@ -63,7 +63,7 @@ class SendInvitation(APIView):
                 message=data.get('message', '')
             )
             
-            # TODO: 이메일 발송 로직 추가
+            # TODO:    
             
             serializer = InvitationSerializer(invitation)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -71,13 +71,13 @@ class SendInvitation(APIView):
         except Exception as e:
             logger.error(f"Send invitation error: {str(e)}")
             return Response(
-                {"error": "초대 발송 중 오류가 발생했습니다."},
+                {"error": "    ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
 class ReceivedInvitations(generics.ListAPIView):
-    """받은 초대 목록"""
+    """  """
     serializer_class = InvitationSerializer
     permission_classes = [IsAuthenticated]
     
@@ -88,7 +88,7 @@ class ReceivedInvitations(generics.ListAPIView):
 
 
 class SentInvitations(generics.ListAPIView):
-    """보낸 초대 목록"""
+    """  """
     serializer_class = InvitationSerializer
     permission_classes = [IsAuthenticated]
     
@@ -99,7 +99,7 @@ class SentInvitations(generics.ListAPIView):
 
 
 class InvitationDetail(generics.RetrieveAPIView):
-    """초대 상세 조회"""
+    """  """
     serializer_class = InvitationSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
@@ -112,7 +112,7 @@ class InvitationDetail(generics.RetrieveAPIView):
 
 
 class RespondToInvitation(APIView):
-    """초대 응답 (수락/거절)"""
+    """  (/)"""
     permission_classes = [IsAuthenticated]
     
     def patch(self, request, pk):
@@ -125,7 +125,7 @@ class RespondToInvitation(APIView):
             
             if invitation.is_expired():
                 return Response(
-                    {"error": "초대가 만료되었습니다."},
+                    {"error": " ."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
@@ -137,7 +137,7 @@ class RespondToInvitation(APIView):
             invitation.status = data['status']
             invitation.save()
             
-            # 수락한 경우 팀 멤버로 추가
+            #     
             if data['status'] == 'accepted' and invitation.project:
                 TeamMember.objects.get_or_create(
                     user=request.user,
@@ -145,7 +145,7 @@ class RespondToInvitation(APIView):
                     defaults={'role': 'member'}
                 )
             
-            # TODO: 초대 발송자에게 알림 전송
+            # TODO:    
             
             return Response(
                 InvitationSerializer(invitation).data,
@@ -154,19 +154,19 @@ class RespondToInvitation(APIView):
             
         except Invitation.DoesNotExist:
             return Response(
-                {"error": "초대를 찾을 수 없습니다."},
+                {"error": "   ."},
                 status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
             logger.error(f"Respond to invitation error: {str(e)}")
             return Response(
-                {"error": "초대 응답 중 오류가 발생했습니다."},
+                {"error": "    ."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
 class CancelInvitation(APIView):
-    """초대 취소"""
+    """ """
     permission_classes = [IsAuthenticated]
     
     def patch(self, request, pk):
@@ -184,13 +184,13 @@ class CancelInvitation(APIView):
             
         except Invitation.DoesNotExist:
             return Response(
-                {"error": "초대를 찾을 수 없습니다."},
+                {"error": "   ."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
 
 class ResendInvitation(APIView):
-    """초대 재발송"""
+    """ """
     permission_classes = [IsAuthenticated]
     
     def post(self, request, pk):
@@ -200,11 +200,11 @@ class ResendInvitation(APIView):
                 sender=request.user
             )
             
-            # 만료 시간 갱신
+            #   
             invitation.expires_at = timezone.now() + timezone.timedelta(days=7)
             invitation.save()
             
-            # TODO: 이메일 재발송 로직
+            # TODO:   
             
             return Response(
                 InvitationSerializer(invitation).data,
@@ -213,13 +213,13 @@ class ResendInvitation(APIView):
             
         except Invitation.DoesNotExist:
             return Response(
-                {"error": "초대를 찾을 수 없습니다."},
+                {"error": "   ."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
 
 class TeamMemberList(generics.ListAPIView):
-    """팀 멤버 목록"""
+    """  """
     serializer_class = TeamMemberSerializer
     permission_classes = [IsAuthenticated]
     
@@ -236,7 +236,7 @@ class TeamMemberList(generics.ListAPIView):
 
 
 class RemoveTeamMember(APIView):
-    """팀 멤버 제거"""
+    """  """
     permission_classes = [IsAuthenticated]
     
     def delete(self, request, pk):
@@ -246,10 +246,10 @@ class RemoveTeamMember(APIView):
                 project__user=request.user
             )
             
-            # 소유자는 제거할 수 없음
+            #    
             if member.role == 'owner':
                 return Response(
-                    {"error": "소유자는 제거할 수 없습니다."},
+                    {"error": "   ."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
@@ -258,7 +258,7 @@ class RemoveTeamMember(APIView):
             
         except TeamMember.DoesNotExist:
             return Response(
-                {"error": "팀 멤버를 찾을 수 없습니다."},
+                {"error": "    ."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -269,7 +269,7 @@ class FriendList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return Friend.objects.filter(
+        return InvitationFriend.objects.filter(
             user=self.request.user
         ).select_related('friend')
     
@@ -281,11 +281,11 @@ class FriendList(generics.ListCreateAPIView):
             
             if friend_user == request.user:
                 return Response(
-                    {"error": "자기 자신을 친구로 추가할 수 없습니다."},
+                    {"error": "자신을 친구로 추가할 수 없습니다."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            friend, created = Friend.objects.get_or_create(
+            friend, created = InvitationFriend.objects.get_or_create(
                 user=request.user,
                 friend=friend_user
             )
@@ -307,10 +307,10 @@ class RemoveFriend(APIView):
     
     def delete(self, request, pk):
         try:
-            friend = Friend.objects.get(pk=pk, user=request.user)
+            friend = InvitationFriend.objects.get(pk=pk, user=request.user)
             friend.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Friend.DoesNotExist:
+        except InvitationFriend.DoesNotExist:
             return Response(
                 {"error": "친구를 찾을 수 없습니다."},
                 status=status.HTTP_404_NOT_FOUND
@@ -318,7 +318,7 @@ class RemoveFriend(APIView):
 
 
 class InvitationStats(APIView):
-    """초대 통계"""
+    """ """
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
@@ -353,6 +353,92 @@ class InvitationStats(APIView):
         return Response(serializer.data)
 
 
+class AcceptInvitation(APIView):
+    """Accept invitation endpoint - POST /api/invitations/{id}/accept/"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, pk):
+        try:
+            invitation = Invitation.objects.get(
+                pk=pk,
+                recipient_email=request.user.email,
+                status='pending'
+            )
+            
+            if invitation.is_expired():
+                return Response(
+                    {"error": "초대가 만료되었습니다."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            invitation.status = 'accepted'
+            invitation.save()
+            
+            # Add user to team if project exists
+            if invitation.project:
+                TeamMember.objects.get_or_create(
+                    user=request.user,
+                    project=invitation.project,
+                    defaults={'role': 'member'}
+                )
+            
+            return Response(
+                {"message": "초대를 수락했습니다.", "invitation": InvitationSerializer(invitation).data},
+                status=status.HTTP_200_OK
+            )
+            
+        except Invitation.DoesNotExist:
+            return Response(
+                {"error": "초대를 찾을 수 없습니다."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            logger.error(f"Accept invitation error: {str(e)}")
+            return Response(
+                {"error": "초대 수락 중 오류가 발생했습니다."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class DeclineInvitation(APIView):
+    """Decline invitation endpoint - POST /api/invitations/{id}/decline/"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, pk):
+        try:
+            invitation = Invitation.objects.get(
+                pk=pk,
+                recipient_email=request.user.email,
+                status='pending'
+            )
+            
+            if invitation.is_expired():
+                return Response(
+                    {"error": "초대가 만료되었습니다."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            invitation.status = 'declined'
+            invitation.save()
+            
+            return Response(
+                {"message": "초대를 거절했습니다.", "invitation": InvitationSerializer(invitation).data},
+                status=status.HTTP_200_OK
+            )
+            
+        except Invitation.DoesNotExist:
+            return Response(
+                {"error": "초대를 찾을 수 없습니다."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            logger.error(f"Decline invitation error: {str(e)}")
+            return Response(
+                {"error": "초대 거절 중 오류가 발생했습니다."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class SearchUserByEmail(APIView):
     """이메일로 사용자 검색"""
     permission_classes = [IsAuthenticated]
@@ -362,7 +448,7 @@ class SearchUserByEmail(APIView):
         
         if not email:
             return Response(
-                {"error": "이메일을 입력해주세요."},
+                {"error": "이메일을 입력하세요."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         

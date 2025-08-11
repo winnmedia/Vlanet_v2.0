@@ -41,12 +41,12 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
       <div
         ref={ref}
         role="status"
-        aria-label={label || '로딩 중'}
+        aria-label={label || ' '}
         className={cn('inline-block', className)}
         {...props}
       >
         <div className={cn(spinnerVariants({ size, color }))} />
-        <span className="sr-only">{label || '로딩 중'}</span>
+        <span className="sr-only">{label || ' '}</span>
       </div>
     );
   }

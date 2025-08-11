@@ -11,7 +11,7 @@ interface PromptVariable {
 
 const STYLE_CATEGORIES = {
   cinematography: {
-    name: '촬영 기법',
+    name: ' ',
     options: [
       'cinematic lighting',
       'dramatic shadows',
@@ -24,7 +24,7 @@ const STYLE_CATEGORIES = {
     ]
   },
   camera: {
-    name: '카메라 앵글',
+    name: ' ',
     options: [
       'close-up shot',
       'medium shot',
@@ -37,7 +37,7 @@ const STYLE_CATEGORIES = {
     ]
   },
   mood: {
-    name: '분위기',
+    name: '',
     options: [
       'peaceful',
       'energetic',
@@ -50,7 +50,7 @@ const STYLE_CATEGORIES = {
     ]
   },
   style: {
-    name: '비주얼 스타일',
+    name: ' ',
     options: [
       'realistic',
       'artistic',
@@ -159,7 +159,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">프롬프트 빌더</h2>
+        <h2 className="text-2xl font-bold text-gray-900"> </h2>
         
         {/* Mode Toggle */}
         <div className="flex items-center bg-gray-100 rounded-lg p-1">
@@ -171,7 +171,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            템플릿 모드
+             
           </button>
           <button
             onClick={() => setMode('custom')}
@@ -181,7 +181,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            커스텀 모드
+             
           </button>
         </div>
       </div>
@@ -192,7 +192,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
           <div className="space-y-6">
             {/* Template Categories */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">템플릿 선택</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4"> </h3>
               <div className="space-y-4">
                 {Object.entries(templateCategories).map(([category, categoryTemplates]) => (
                   <div key={category}>
@@ -212,7 +212,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
                         >
                           <div className="font-medium text-sm">{template.name}</div>
                           <div className="text-xs text-gray-500 mt-1 line-clamp-2">
-                            {template.template.replace(/\{([^}]+)\}/g, '[변수]')}
+                            {template.template.replace(/\{([^}]+)\}/g, '[]')}
                           </div>
                         </button>
                       ))}
@@ -225,7 +225,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
             {/* Template Variables */}
             {selectedTemplate && selectedTemplate.variables.length > 0 && (
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">변수 입력</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4"> </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {selectedTemplate.variables.map(variable => (
                     <div key={variable}>
@@ -237,7 +237,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
                         type="text"
                         value={promptVariables[variable] || ''}
                         onChange={(e) => handleVariableChange(variable, e.target.value)}
-                        placeholder={`${variable}을(를) 입력하세요`}
+                        placeholder={`${variable}() `}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -251,11 +251,11 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
         {/* Custom Mode */}
         {mode === 'custom' && (
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">커스텀 프롬프트</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4"> </h3>
             <textarea
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              placeholder="원하는 영상의 내용을 자세히 설명해주세요..."
+              placeholder="    ..."
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
             />
@@ -264,7 +264,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
 
         {/* Style Options */}
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">스타일 옵션</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4"> </h3>
           <div className="space-y-4">
             {Object.entries(STYLE_CATEGORIES).map(([categoryKey, category]) => (
               <div key={categoryKey}>
@@ -291,23 +291,23 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
 
         {/* Preview */}
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">프롬프트 미리보기</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4"> </h3>
           <div className="bg-gray-50 rounded-lg p-4">
             <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
-              {finalPrompt || '프롬프트를 작성하세요...'}
+              {finalPrompt || ' ...'}
             </pre>
           </div>
         </div>
 
         {/* Character Count */}
         <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>{finalPrompt.length} 글자</span>
+          <span>{finalPrompt.length} </span>
           <div className="flex items-center space-x-4">
             <span className={finalPrompt.length > 500 ? 'text-orange-500' : ''}>
-              권장: 500자 이하
+              : 500 
             </span>
             {finalPrompt.length > 1000 && (
-              <span className="text-red-500">너무 긴 프롬프트는 결과가 좋지 않을 수 있습니다</span>
+              <span className="text-red-500">       </span>
             )}
           </div>
         </div>
@@ -325,7 +325,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
             }}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
           >
-            초기화
+            
           </button>
 
           <button
@@ -336,7 +336,7 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
             disabled={!finalPrompt.trim()}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            복사
+            
           </button>
 
           <button
@@ -344,14 +344,14 @@ export const PromptBuilder: React.FC<PromptBuilderProps> = ({
             disabled={isGenerateDisabled}
             className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            영상 생성
+             
           </button>
         </div>
 
         {/* Help Text */}
         {isGenerateDisabled && selectedTemplate && (
           <p className="text-sm text-orange-600 bg-orange-50 rounded-lg p-3">
-            모든 필수 변수를 입력해야 영상을 생성할 수 있습니다.
+                   .
           </p>
         )}
       </div>

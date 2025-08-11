@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class ReplicateService:
     """
-    Replicate API를 사용한 이미지 생성 서비스
-    더 안정적이고 다양한 모델 지원
+    Replicate API    
+        
     """
     
     def __init__(self):
@@ -23,19 +23,19 @@ class ReplicateService:
     
     def generate_storyboard_image(self, frame_description):
         """
-        Replicate를 사용하여 스토리보드 이미지를 생성합니다.
+        Replicate    .
         """
         if not self.available:
             return {
                 "success": False,
-                "error": "Replicate API 토큰이 설정되지 않았습니다",
+                "error": "Replicate API   ",
                 "image_url": None
             }
         
         try:
             prompt = self._create_storyboard_prompt(frame_description)
             
-            # Stable Diffusion XL 모델 사용
+            # Stable Diffusion XL  
             headers = {
                 "Authorization": f"Token {self.api_key}",
                 "Content-Type": "application/json"
@@ -55,14 +55,14 @@ class ReplicateService:
                 }
             }
             
-            # 예측 생성
+            #  
             response = requests.post(self.api_url, headers=headers, json=data)
             
             if response.status_code == 201:
                 prediction = response.json()
                 prediction_id = prediction['id']
                 
-                # 결과 폴링
+                #  
                 result_url = f"{self.api_url}/{prediction_id}"
                 max_attempts = 30
                 
@@ -83,24 +83,24 @@ class ReplicateService:
                     elif result['status'] == 'failed':
                         return {
                             "success": False,
-                            "error": "이미지 생성 실패",
+                            "error": "  ",
                             "image_url": None
                         }
                 
                 return {
                     "success": False,
-                    "error": "시간 초과",
+                    "error": " ",
                     "image_url": None
                 }
             else:
                 return {
                     "success": False,
-                    "error": f"API 오류: {response.status_code}",
+                    "error": f"API : {response.status_code}",
                     "image_url": None
                 }
                 
         except Exception as e:
-            logger.error(f"Replicate 이미지 생성 오류: {str(e)}")
+            logger.error(f"Replicate   : {str(e)}")
             return {
                 "success": False,
                 "error": str(e),
@@ -109,14 +109,14 @@ class ReplicateService:
     
     def _create_storyboard_prompt(self, frame_data):
         """
-        프레임 데이터를 스토리보드 프롬프트로 변환합니다.
+            .
         """
         visual_desc = frame_data.get('visual_description', '')
         composition = frame_data.get('composition', '')
         camera_info = frame_data.get('camera_info', {})
         lighting = frame_data.get('lighting', '')
         
-        # SDXL에 최적화된 프롬프트
+        # SDXL  
         prompt = f"""
         professional storyboard illustration, pencil sketch style,
         {visual_desc},

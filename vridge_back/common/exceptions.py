@@ -4,59 +4,59 @@ import logging
 logger = logging.getLogger(__name__)
 
 class APIException:
-    """표준화된 API 에러 응답 클래스"""
+    """ API   """
     
     @staticmethod
-    def bad_request(message="잘못된 요청입니다.", details=None):
-        """400 Bad Request - 클라이언트 요청 오류"""
+    def bad_request(message=" .", details=None):
+        """400 Bad Request -   """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
         return JsonResponse(response_data, status=400)
     
     @staticmethod
-    def unauthorized(message="인증이 필요합니다.", details=None):
-        """401 Unauthorized - 인증 필요"""
+    def unauthorized(message=" .", details=None):
+        """401 Unauthorized -  """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
         return JsonResponse(response_data, status=401)
     
     @staticmethod
-    def forbidden(message="권한이 없습니다.", details=None):
-        """403 Forbidden - 권한 없음"""
+    def forbidden(message=" .", details=None):
+        """403 Forbidden -  """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
         return JsonResponse(response_data, status=403)
     
     @staticmethod
-    def not_found(message="리소스를 찾을 수 없습니다.", details=None):
-        """404 Not Found - 리소스 없음"""
+    def not_found(message="   .", details=None):
+        """404 Not Found -  """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
         return JsonResponse(response_data, status=404)
     
     @staticmethod
-    def conflict(message="리소스 충돌이 발생했습니다.", details=None):
-        """409 Conflict - 리소스 충돌"""
+    def conflict(message="  .", details=None):
+        """409 Conflict -  """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
         return JsonResponse(response_data, status=409)
     
     @staticmethod
-    def too_many_requests(message="너무 많은 요청입니다. 잠시 후 다시 시도해주세요.", details=None):
-        """429 Too Many Requests - Rate Limit 초과"""
+    def too_many_requests(message="  .    .", details=None):
+        """429 Too Many Requests - Rate Limit """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
         return JsonResponse(response_data, status=429)
     
     @staticmethod
-    def internal_server_error(message="서버 오류가 발생했습니다.", details=None):
-        """500 Internal Server Error - 서버 오류"""
+    def internal_server_error(message="  .", details=None):
+        """500 Internal Server Error -  """
         response_data = {"error": message}
         if details:
             response_data["details"] = details
@@ -65,15 +65,15 @@ class APIException:
     
     @staticmethod
     def success(message="success", data=None):
-        """200 OK - 성공 응답"""
+        """200 OK -  """
         response_data = {"message": message}
         if data:
             response_data.update(data)
         return JsonResponse(response_data, status=200)
     
     @staticmethod
-    def created(message="생성되었습니다.", data=None):
-        """201 Created - 리소스 생성 성공"""
+    def created(message=".", data=None):
+        """201 Created -   """
         response_data = {"message": message}
         if data:
             response_data.update(data)

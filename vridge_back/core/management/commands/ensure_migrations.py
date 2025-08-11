@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Checking database connection...")
         
-        # 데이터베이스 연결 확인
+        #   
         max_retries = 10
         for i in range(max_retries):
             try:
@@ -26,14 +26,14 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.ERROR("Database connection failed!"))
                     return
         
-        # 마이그레이션 상태 확인
+        #   
         try:
             self.stdout.write("Checking migration status...")
             call_command('showmigrations', verbosity=2)
         except Exception as e:
             self.stdout.write(self.style.WARNING(f"Error checking migrations: {e}"))
         
-        # 마이그레이션 적용
+        #  
         try:
             self.stdout.write("Applying migrations...")
             call_command('migrate', verbosity=2, interactive=False)
@@ -41,7 +41,7 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Migration error: {e}"))
             
-            # 특정 앱별로 마이그레이션 시도
+            #    
             apps_to_migrate = [
                 'contenttypes', 'auth', 'sessions', 'admin',
                 'users', 'projects', 'feedbacks', 'video_planning'
@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 except Exception as app_error:
                     self.stdout.write(self.style.WARNING(f"Failed to migrate {app}: {app_error}"))
         
-        # 캐시 테이블 생성
+        #   
         try:
             self.stdout.write("Creating cache table...")
             call_command('createcachetable')
@@ -63,7 +63,7 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(self.style.WARNING(f"Cache table creation skipped: {e}"))
         
-        # 최종 상태 확인
+        #   
         try:
             with connection.cursor() as cursor:
                 cursor.execute("""

@@ -64,7 +64,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
   const [pdfUrl, setPdfUrl] = useState<string>('');
   const [currentProject, setCurrentProject] = useState<ProjectSettings | null>(null);
 
-  // 프로젝트 설정 분석
+  //   
   const analyzeProject = async () => {
     setIsLoading(true);
     try {
@@ -82,13 +82,13 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
         setCurrentProject(data.current_settings);
       }
     } catch (error) {
-      console.error('프로젝트 분석 오류:', error);
+      console.error('  :', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 스토리 개요 생성
+  //   
   const generateStoryOutline = async () => {
     setIsLoading(true);
     try {
@@ -108,13 +108,13 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
         setActiveTab('story');
       }
     } catch (error) {
-      console.error('스토리 생성 오류:', error);
+      console.error('  :', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 스토리보드 생성
+  //  
   const generateStoryboard = async () => {
     setIsLoading(true);
     try {
@@ -135,13 +135,13 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
         setActiveTab('storyboard');
       }
     } catch (error) {
-      console.error('스토리보드 생성 오류:', error);
+      console.error('  :', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // PDF 기획안 생성
+  // PDF  
   const generatePDFBrief = async () => {
     setIsLoading(true);
     try {
@@ -156,7 +156,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
         setActiveTab('pdf');
       }
     } catch (error) {
-      console.error('PDF 생성 오류:', error);
+      console.error('PDF  :', error);
     } finally {
       setIsLoading(false);
     }
@@ -169,10 +169,10 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
   }, [projectId]);
 
   const getIntensityLabel = (intensity: number) => {
-    if (intensity <= 3) return '차분함';
-    if (intensity <= 6) return '보통';
-    if (intensity <= 8) return '활동적';
-    return '매우 역동적';
+    if (intensity <= 3) return '';
+    if (intensity <= 6) return '';
+    if (intensity <= 8) return '';
+    return ' ';
   };
 
   const getCompletenessColor = (percentage: number) => {
@@ -183,59 +183,59 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
-      {/* 헤더 */}
+      {/*  */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          AI 영상 기획 고도화
+          AI   
         </h1>
         <p className="text-gray-600">
-          프로젝트 설정에 기반한 지능형 스토리 개발, 콘티 생성, PDF 기획안 제작
+               ,  , PDF  
         </p>
       </div>
 
-      {/* 진행 단계 표시 */}
+      {/*    */}
       <div className="flex justify-center">
         <div className="flex items-center space-x-4">
           <div className={`flex items-center space-x-2 ${analysis ? 'text-green-600' : 'text-gray-400'}`}>
             <CheckCircle className="w-5 h-5" />
-            <span className="font-medium">프로젝트 분석</span>
+            <span className="font-medium"> </span>
           </div>
           <div className="w-8 h-px bg-gray-300" />
           <div className={`flex items-center space-x-2 ${storyStructure ? 'text-green-600' : 'text-gray-400'}`}>
             <Sparkles className="w-5 h-5" />
-            <span className="font-medium">스토리 개발</span>
+            <span className="font-medium"> </span>
           </div>
           <div className="w-8 h-px bg-gray-300" />
           <div className={`flex items-center space-x-2 ${Object.keys(storyboardUrls).length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
             <Image className="w-5 h-5" />
-            <span className="font-medium">콘티 생성</span>
+            <span className="font-medium"> </span>
           </div>
           <div className="w-8 h-px bg-gray-300" />
           <div className={`flex items-center space-x-2 ${pdfUrl ? 'text-green-600' : 'text-gray-400'}`}>
             <FileText className="w-5 h-5" />
-            <span className="font-medium">PDF 제작</span>
+            <span className="font-medium">PDF </span>
           </div>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="analysis">프로젝트 분석</TabsTrigger>
-          <TabsTrigger value="story">스토리 구조</TabsTrigger>
-          <TabsTrigger value="storyboard">콘티 생성</TabsTrigger>
-          <TabsTrigger value="pdf">PDF 기획안</TabsTrigger>
+          <TabsTrigger value="analysis"> </TabsTrigger>
+          <TabsTrigger value="story"> </TabsTrigger>
+          <TabsTrigger value="storyboard"> </TabsTrigger>
+          <TabsTrigger value="pdf">PDF </TabsTrigger>
         </TabsList>
 
-        {/* 프로젝트 분석 탭 */}
+        {/*    */}
         <TabsContent value="analysis" className="space-y-6">
           {analysis ? (
             <div className="grid gap-6 md:grid-cols-2">
-              {/* 프로젝트 완성도 */}
+              {/*   */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <CheckCircle className="w-5 h-5" />
-                    <span>프로젝트 완성도</span>
+                    <span> </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -247,12 +247,12 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                   </div>
                   
                   <Badge variant={analysis.story_readiness ? 'default' : 'secondary'} className="w-full justify-center">
-                    {analysis.story_readiness ? '스토리 개발 준비 완료' : '추가 설정 필요'}
+                    {analysis.story_readiness ? '   ' : '  '}
                   </Badge>
 
                   {analysis.missing_elements.length > 0 && (
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">누락된 설정</h4>
+                      <h4 className="font-medium text-gray-900 mb-2"> </h4>
                       <div className="flex flex-wrap gap-2">
                         {analysis.missing_elements.map((element) => (
                           <Badge key={element} variant="outline" className="text-red-600">
@@ -265,44 +265,44 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                 </CardContent>
               </Card>
 
-              {/* 현재 설정 */}
+              {/*   */}
               {currentProject && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>현재 프로젝트 설정</CardTitle>
+                    <CardTitle>  </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-600">장르:</span>
+                        <span className="text-gray-600">:</span>
                         <span className="ml-2 font-medium">{currentProject.genre}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">톤:</span>
+                        <span className="text-gray-600">:</span>
                         <span className="ml-2 font-medium">{currentProject.tone}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">강도:</span>
+                        <span className="text-gray-600">:</span>
                         <span className="ml-2 font-medium">
                           {currentProject.intensity} - {getIntensityLabel(currentProject.intensity)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">타겟:</span>
+                        <span className="text-gray-600">:</span>
                         <span className="ml-2 font-medium">{currentProject.target_audience}</span>
                       </div>
                     </div>
 
                     {currentProject.key_message && (
                       <div>
-                        <span className="text-gray-600 block text-sm">핵심 메시지:</span>
+                        <span className="text-gray-600 block text-sm"> :</span>
                         <p className="text-sm mt-1">{currentProject.key_message}</p>
                       </div>
                     )}
 
                     {currentProject.brand_values && currentProject.brand_values.length > 0 && (
                       <div>
-                        <span className="text-gray-600 block text-sm mb-2">브랜드 가치:</span>
+                        <span className="text-gray-600 block text-sm mb-2"> :</span>
                         <div className="flex flex-wrap gap-1">
                           {currentProject.brand_values.map((value) => (
                             <Badge key={value} variant="outline" className="text-xs">
@@ -316,13 +316,13 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                 </Card>
               )}
 
-              {/* 추천사항 */}
+              {/*  */}
               {analysis.recommendations.length > 0 && (
                 <Card className="md:col-span-2">
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <AlertCircle className="w-5 h-5 text-amber-500" />
-                      <span>추천사항</span>
+                      <span></span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -341,7 +341,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
           ) : (
             <div className="text-center py-12">
               <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-              <p>프로젝트를 분석 중입니다...</p>
+              <p>  ...</p>
             </div>
           )}
 
@@ -355,37 +355,37 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  생성 중...
+                   ...
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  스토리 개발 시작
+                    
                 </>
               )}
             </Button>
           </div>
         </TabsContent>
 
-        {/* 스토리 구조 탭 */}
+        {/*    */}
         <TabsContent value="story" className="space-y-6">
           {storyStructure ? (
             <div className="space-y-6">
-              {/* 전체 테마 */}
+              {/*   */}
               <Card>
                 <CardHeader>
-                  <CardTitle>전체 스토리 테마</CardTitle>
+                  <CardTitle>  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-700">{storyStructure.overall_theme}</p>
                 </CardContent>
               </Card>
 
-              {/* 4막 구조 */}
+              {/* 4  */}
               <div className="grid gap-4 md:grid-cols-2">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">1막: 오프닝</CardTitle>
+                    <CardTitle className="text-lg">1: </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">{storyStructure.act1_opening}</p>
@@ -394,7 +394,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">2막: 전개</CardTitle>
+                    <CardTitle className="text-lg">2: </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">{storyStructure.act2_development}</p>
@@ -403,7 +403,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">3막: 클라이맥스</CardTitle>
+                    <CardTitle className="text-lg">3: </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">{storyStructure.act3_climax}</p>
@@ -412,7 +412,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">4막: 결말</CardTitle>
+                    <CardTitle className="text-lg">4: </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">{storyStructure.act4_resolution}</p>
@@ -420,10 +420,10 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                 </Card>
               </div>
 
-              {/* 씬별 상세 */}
+              {/*   */}
               <Card>
                 <CardHeader>
-                  <CardTitle>씬별 상세 구성 (총 {scenePrompts.length}개)</CardTitle>
+                  <CardTitle>   ( {scenePrompts.length})</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -431,17 +431,17 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                       <div key={scene.scene_number} className="border rounded-lg p-4">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium">
-                            씬 {scene.scene_number}: {scene.title}
+                             {scene.scene_number}: {scene.title}
                           </h4>
                           <div className="flex items-center space-x-2">
                             <Badge variant="outline">{scene.act}</Badge>
                             <Badge variant="secondary">{scene.scene_type}</Badge>
-                            <span className="text-xs text-gray-500">{scene.duration}초</span>
+                            <span className="text-xs text-gray-500">{scene.duration}</span>
                           </div>
                         </div>
                         <p className="text-sm text-gray-600 mb-2">{scene.description}</p>
                         <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                          <strong>비주얼 프롬프트:</strong> {scene.visual_prompt}
+                          <strong> :</strong> {scene.visual_prompt}
                         </p>
                       </div>
                     ))}
@@ -459,12 +459,12 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      생성 중...
+                       ...
                     </>
                   ) : (
                     <>
                       <Image className="w-4 h-4 mr-2" />
-                      콘티 생성하기
+                       
                     </>
                   )}
                 </Button>
@@ -472,18 +472,18 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">스토리 개발을 먼저 진행해주세요.</p>
+              <p className="text-gray-500">   .</p>
             </div>
           )}
         </TabsContent>
 
-        {/* 스토리보드 탭 */}
+        {/*   */}
         <TabsContent value="storyboard" className="space-y-6">
           {Object.keys(storyboardUrls).length > 0 ? (
             <div className="space-y-6">
               <div className="text-center">
-                <h3 className="text-xl font-semibold mb-2">생성된 스토리보드</h3>
-                <p className="text-gray-600">총 {Object.keys(storyboardUrls).length}개의 씬 이미지가 생성되었습니다.</p>
+                <h3 className="text-xl font-semibold mb-2"> </h3>
+                <p className="text-gray-600"> {Object.keys(storyboardUrls).length}   .</p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -501,10 +501,10 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                         </div>
                         <div className="text-center">
                           <h4 className="font-medium text-sm">
-                            씬 {sceneNumber}: {scene?.title || '제목 없음'}
+                             {sceneNumber}: {scene?.title || ' '}
                           </h4>
                           <p className="text-xs text-gray-500 mt-1">
-                            {scene?.duration}초 • {scene?.act}
+                            {scene?.duration} • {scene?.act}
                           </p>
                         </div>
                       </CardContent>
@@ -523,12 +523,12 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      생성 중...
+                       ...
                     </>
                   ) : (
                     <>
                       <FileText className="w-4 h-4 mr-2" />
-                      PDF 기획안 제작
+                      PDF  
                     </>
                   )}
                 </Button>
@@ -536,20 +536,20 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">콘티 생성을 먼저 진행해주세요.</p>
+              <p className="text-gray-500">   .</p>
             </div>
           )}
         </TabsContent>
 
-        {/* PDF 기획안 탭 */}
+        {/* PDF   */}
         <TabsContent value="pdf" className="space-y-6">
           {pdfUrl ? (
             <div className="text-center space-y-6">
               <div>
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">PDF 기획안 제작 완료</h3>
+                <h3 className="text-xl font-semibold mb-2">PDF   </h3>
                 <p className="text-gray-600">
-                  프로젝트 설정, 스토리 구조, 콘티, 인서트샷을 포함한 완전한 기획안이 준비되었습니다.
+                   ,  , ,     .
                 </p>
               </div>
 
@@ -557,16 +557,16 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
                 <Card>
                   <CardContent className="p-6 text-center">
                     <FileText className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                    <h4 className="font-medium mb-2">VideoPlanet 프로젝트 기획안</h4>
+                    <h4 className="font-medium mb-2">VideoPlanet  </h4>
                     <p className="text-sm text-gray-500 mb-4">
-                      전체 {scenePrompts.length}페이지 • PDF 형식
+                       {scenePrompts.length} • PDF 
                     </p>
                     <Button
                       onClick={() => window.open(pdfUrl, '_blank')}
                       className="w-full"
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      기획안 다운로드
+                       
                     </Button>
                   </CardContent>
                 </Card>
@@ -574,7 +574,7 @@ export const StoryDevelopment: React.FC<StoryDevelopmentProps> = ({
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">PDF 기획안 제작을 먼저 진행해주세요.</p>
+              <p className="text-gray-500">PDF    .</p>
             </div>
           )}
         </TabsContent>

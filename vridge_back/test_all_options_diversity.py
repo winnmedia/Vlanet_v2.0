@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""모든 설정 옵션별 스토리 다양성 테스트"""
+"""     """
 import os
 import sys
 import django
@@ -8,7 +8,7 @@ from datetime import datetime
 import hashlib
 from itertools import product
 
-# Django 설정
+# Django 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings_base')
 django.setup()
@@ -16,80 +16,80 @@ django.setup()
 from video_planning.gemini_service import GeminiService
 
 print("=" * 80)
-print("VideoPlanet 전체 옵션 다양성 테스트")
+print("VideoPlanet    ")
 print("=" * 80)
 
-# 테스트할 모든 옵션들
+#   
 options = {
-    'tone': ['따뜻한', '유머러스한', '진지한', '긴장감 있는', '감동적인'],
-    'genre': ['로맨스', '액션', '코미디', '다큐멘터리', '교육'],
-    'concept': ['AI 디스토피아', '시간여행', '성장드라마', '미스터리', '판타지'],
-    'target': ['10대', '20-30대', '40-50대', '전연령', '어린이'],
-    'purpose': ['재미', '교육', '정보전달', '감동', '설득'],
-    'duration': ['1분', '3분', '5분', '10분', '30분'],
+    'tone': ['', '', '', ' ', ''],
+    'genre': ['', '', '', '', ''],
+    'concept': ['AI ', '', '', '', ''],
+    'target': ['10', '20-30', '40-50', '', ''],
+    'purpose': ['', '', '', '', ''],
+    'duration': ['1', '3', '5', '10', '30'],
     'story_framework': ['classic', 'hook_immersion', 'pixar', 'deductive', 'inductive', 'documentary'],
     'development_level': ['minimal', 'light', 'balanced', 'detailed']
 }
 
-# 고급 옵션들
+#  
 advanced_options = {
     'aspectRatio': ['16:9', '9:16', '1:1', '4:3', '21:9'],
-    'platform': ['YouTube', 'Instagram', 'TikTok', 'TV', '영화관'],
-    'colorTone': ['밝은', '어두운', '파스텔', '모노크롬', '고채도'],
-    'editingStyle': ['빠른 편집', '롱테이크', '몽타주', '점프컷', '클래식'],
-    'musicStyle': ['팝', '클래식', '앰비언트', '일렉트로닉', '무음']
+    'platform': ['YouTube', 'Instagram', 'TikTok', 'TV', ''],
+    'colorTone': ['', '', '', '', ''],
+    'editingStyle': [' ', '', '', '', ''],
+    'musicStyle': ['', '', '', '', '']
 }
 
-# 기본 기획안
+#  
 base_planning = """
-미래 도시에서 인공지능과 인간이 공존하는 사회를 배경으로,
-한 젊은 프로그래머가 AI의 숨겨진 진실을 발견하게 되는 이야기
+      ,
+   AI     
 """
 
-# GeminiService 초기화
-print("\n📌 서비스 초기화 중...")
+# GeminiService 
+print("\n   ...")
 try:
     service = GeminiService()
-    print("✅ GeminiService 초기화 성공")
+    print(" GeminiService  ")
 except Exception as e:
-    print(f"❌ 서비스 초기화 실패: {str(e)}")
+    print(f"   : {str(e)}")
     sys.exit(1)
 
-# 스토리 고유성 검증을 위한 함수
+#     
 def get_story_fingerprint(story):
-    """스토리의 핵심 요소로 지문 생성"""
+    """    """
     fingerprint = f"{story.get('title', '')}|{story.get('summary', '')}|{story.get('key_content', '')}"
     return hashlib.md5(fingerprint.encode()).hexdigest()[:8]
 
-# 결과 저장용
+#  
 all_results = {}
 unique_stories = set()
 total_tests = 0
 success_count = 0
 
-# 1. 기본 옵션별 테스트
+# 1.   
 print(f"\n{'='*80}")
-print("📊 기본 옵션별 다양성 테스트")
+print("    ")
 print("="*80)
 
 for option_name, option_values in options.items():
-    print(f"\n🔍 {option_name} 옵션 테스트 ({len(option_values)}개 값)")
+    print(f"\n {option_name}   ({len(option_values)} )")
     option_results = {}
     
     for value in option_values:
-        # 기본 컨텍스트 생성
+        #   
         context = {
-            'tone': '중립적',
-            'genre': '일반',
-            'concept': '기본',
-            'target': '일반 시청자',
-            'purpose': '정보 전달',
-            'duration': '5분',
+            'tone': '',
+            'genre': '',
+            'concept': '',
+            'target': ' ',
+            'purpose': ' ',
+            'duration': '5',
             'story_framework': 'classic',
             'development_level': 'balanced'
         }
         
-        # 테스트할 옵션만 변경
+        #   
         context[option_name] = value
         
         print(f"  - {value}: ", end="", flush=True)
@@ -109,87 +109,87 @@ for option_name, option_values in options.items():
                     'first_title': stories[0].get('title', 'N/A'),
                     'fingerprints': fingerprints
                 }
-                print(f"✅ {len(stories)}개 스토리 생성")
+                print(f" {len(stories)}  ")
                 success_count += 1
             else:
-                option_results[value] = {'success': False, 'error': '스토리 없음'}
-                print("❌ 실패")
+                option_results[value] = {'success': False, 'error': ' '}
+                print(" ")
                 
         except Exception as e:
             error_msg = str(e)
             if "403" in error_msg:
-                print("❌ 403 오류 (API 키 제한)")
+                print(" 403  (API  )")
             else:
-                print(f"❌ 오류: {error_msg[:50]}...")
+                print(f" : {error_msg[:50]}...")
             option_results[value] = {'success': False, 'error': error_msg}
     
     all_results[option_name] = option_results
 
-# 2. 조합 테스트 (몇 가지 대표적인 조합만)
+# 2.   (   )
 print(f"\n{'='*80}")
-print("🎭 옵션 조합 테스트")
+print("   ")
 print("="*80)
 
 test_combinations = [
     {
-        'name': '액션 영화 스타일',
+        'name': '  ',
         'context': {
-            'tone': '긴장감 있는',
-            'genre': '액션',
-            'concept': 'AI 디스토피아',
-            'target': '20-30대',
-            'purpose': '재미',
-            'duration': '10분',
+            'tone': ' ',
+            'genre': '',
+            'concept': 'AI ',
+            'target': '20-30',
+            'purpose': '',
+            'duration': '10',
             'story_framework': 'hook_immersion',
             'development_level': 'detailed',
             'aspectRatio': '21:9',
-            'platform': '영화관',
-            'colorTone': '어두운',
-            'editingStyle': '빠른 편집',
-            'musicStyle': '일렉트로닉'
+            'platform': '',
+            'colorTone': '',
+            'editingStyle': ' ',
+            'musicStyle': ''
         }
     },
     {
-        'name': '교육용 다큐멘터리',
+        'name': ' ',
         'context': {
-            'tone': '진지한',
-            'genre': '다큐멘터리',
-            'concept': '성장드라마',
-            'target': '전연령',
-            'purpose': '교육',
-            'duration': '30분',
+            'tone': '',
+            'genre': '',
+            'concept': '',
+            'target': '',
+            'purpose': '',
+            'duration': '30',
             'story_framework': 'documentary',
             'development_level': 'detailed',
             'aspectRatio': '16:9',
             'platform': 'YouTube',
-            'colorTone': '밝은',
-            'editingStyle': '클래식',
-            'musicStyle': '클래식'
+            'colorTone': '',
+            'editingStyle': '',
+            'musicStyle': ''
         }
     },
     {
-        'name': 'SNS 숏폼 콘텐츠',
+        'name': 'SNS  ',
         'context': {
-            'tone': '유머러스한',
-            'genre': '코미디',
-            'concept': '판타지',
-            'target': '10대',
-            'purpose': '재미',
-            'duration': '1분',
+            'tone': '',
+            'genre': '',
+            'concept': '',
+            'target': '10',
+            'purpose': '',
+            'duration': '1',
             'story_framework': 'pixar',
             'development_level': 'minimal',
             'aspectRatio': '9:16',
             'platform': 'TikTok',
-            'colorTone': '파스텔',
-            'editingStyle': '점프컷',
-            'musicStyle': '팝'
+            'colorTone': '',
+            'editingStyle': '',
+            'musicStyle': ''
         }
     }
 ]
 
 combination_results = {}
 for combo in test_combinations:
-    print(f"\n📽️ {combo['name']} 테스트")
+    print(f"\n {combo['name']} ")
     total_tests += 1
     
     try:
@@ -207,35 +207,35 @@ for combo in test_combinations:
                 'fingerprints': fingerprints
             }
             
-            print(f"✅ 성공! {len(stories)}개 스토리 생성")
-            for i, story in enumerate(stories[:2], 1):  # 처음 2개만 출력
-                print(f"   스토리 {i}: {story.get('title', 'N/A')}")
+            print(f" ! {len(stories)}  ")
+            for i, story in enumerate(stories[:2], 1):  #  2 
+                print(f"    {i}: {story.get('title', 'N/A')}")
             
             success_count += 1
         else:
-            print("❌ 스토리 생성 실패")
+            print("   ")
             combination_results[combo['name']] = {'success': False}
             
     except Exception as e:
-        print(f"❌ 오류: {str(e)[:100]}...")
+        print(f" : {str(e)[:100]}...")
         combination_results[combo['name']] = {'success': False, 'error': str(e)}
 
-# 3. 극단적 조합 테스트
+# 3.   
 print(f"\n{'='*80}")
-print("🚀 극단적 조합 테스트")
+print("   ")
 print("="*80)
 
 extreme_combos = [
     {
-        'name': '최소 설정',
+        'name': ' ',
         'context': {
             'development_level': 'minimal',
-            'duration': '1분',
+            'duration': '1',
             'story_framework': 'classic'
         }
     },
     {
-        'name': '최대 설정',
+        'name': ' ',
         'context': {
             **{k: v[-1] for k, v in options.items()},
             **{k: v[-1] for k, v in advanced_options.items()}
@@ -244,7 +244,7 @@ extreme_combos = [
 ]
 
 for combo in extreme_combos:
-    print(f"\n🔥 {combo['name']}")
+    print(f"\n {combo['name']}")
     total_tests += 1
     
     try:
@@ -252,38 +252,38 @@ for combo in extreme_combos:
         
         if result and 'stories' in result:
             stories = result['stories']
-            print(f"✅ {len(stories)}개 스토리 생성")
+            print(f" {len(stories)}  ")
             success_count += 1
         else:
-            print("❌ 실패")
+            print(" ")
             
     except Exception as e:
-        print(f"❌ 오류: {str(e)[:50]}...")
+        print(f" : {str(e)[:50]}...")
 
-# 결과 분석
+#  
 print(f"\n{'='*80}")
-print("📈 최종 분석 결과")
+print("   ")
 print("="*80)
 
-print(f"\n전체 테스트: {total_tests}개")
-print(f"성공: {success_count}개 ({success_count/total_tests*100:.1f}%)")
-print(f"생성된 고유 스토리: {len(unique_stories)}개")
+print(f"\n : {total_tests}")
+print(f": {success_count} ({success_count/total_tests*100:.1f}%)")
+print(f"  : {len(unique_stories)}")
 
-# 옵션별 성공률 분석
-print("\n📊 옵션별 성공률:")
+#   
+print("\n  :")
 for option_name, results in all_results.items():
     success = sum(1 for r in results.values() if r.get('success', False))
     total = len(results)
     print(f"- {option_name}: {success}/{total} ({success/total*100:.1f}%)")
 
-# 토큰 사용량
+#  
 token_usage = service.get_token_usage()
-print(f"\n💰 총 토큰 사용량:")
-print(f"- 전체: {token_usage['total']:,}")
-print(f"- 프롬프트: {token_usage['prompt']:,}")
-print(f"- 응답: {token_usage['response']:,}")
+print(f"\n   :")
+print(f"- : {token_usage['total']:,}")
+print(f"- : {token_usage['prompt']:,}")
+print(f"- : {token_usage['response']:,}")
 
-# 결과 파일 저장
+#   
 output_file = f"diversity_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 with open(output_file, 'w', encoding='utf-8') as f:
     json.dump({
@@ -298,16 +298,16 @@ with open(output_file, 'w', encoding='utf-8') as f:
         'token_usage': token_usage
     }, f, ensure_ascii=False, indent=2)
 
-print(f"\n💾 상세 결과가 {output_file}에 저장되었습니다.")
+print(f"\n   {output_file} .")
 
-# 403 오류 해결 제안
+# 403   
 if any('403' in str(r.get('error', '')) for results in all_results.values() for r in results.values()):
-    print("\n⚠️  403 오류 해결 방법:")
-    print("1. Google Cloud Console에서 API 키 설정 확인")
-    print("2. HTTP referer 제한 해제 또는 localhost 추가")
-    print("3. 또는 새로운 API 키 생성 (제한 없음)")
-    print("4. Railway 환경변수에도 동일하게 업데이트")
+    print("\n  403   :")
+    print("1. Google Cloud Console API   ")
+    print("2. HTTP referer    localhost ")
+    print("3.   API   ( )")
+    print("4. Railway   ")
 
 print("\n" + "="*80)
-print("테스트 완료!")
+print(" !")
 print("="*80)

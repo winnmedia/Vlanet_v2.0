@@ -11,13 +11,13 @@ User = get_user_model()
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateTestUsers(View):
     def post(self, request):
-        """테스트 사용자 생성 엔드포인트"""
+        """   """
         try:
-            # 보안을 위해 특정 키 확인
+            #     
             data = json.loads(request.body)
             secret_key = data.get("secret_key")
             
-            # 간단한 보안 체크
+            #   
             if secret_key != "create-test-users-2024":
                 return JsonResponse({"message": "Unauthorized"}, status=401)
             
@@ -28,14 +28,14 @@ class CreateTestUsers(View):
                     "password": "testpass123",
                     "first_name": "Test",
                     "last_name": "User",
-                    "nickname": "테스트유저"
+                    "nickname": ""
                 },
                 {
                     "email": "admin@example.com",
                     "password": "adminpass123", 
                     "first_name": "Admin",
                     "last_name": "User",
-                    "nickname": "관리자",
+                    "nickname": "",
                     "is_staff": True,
                     "is_superuser": True
                 },
@@ -44,7 +44,7 @@ class CreateTestUsers(View):
                     "password": "demopass123",
                     "first_name": "Demo",
                     "last_name": "User", 
-                    "nickname": "데모유저"
+                    "nickname": ""
                 }
             ]
             

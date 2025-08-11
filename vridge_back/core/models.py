@@ -8,7 +8,7 @@ class TimeStampedModel(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    objects = managers.CustomModelManager()  # manager추가 할때에는 model에 추가해야함
+    objects = managers.CustomModelManager()  # manager  model 
 
     class Meta:
         abstract = True

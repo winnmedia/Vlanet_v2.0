@@ -26,8 +26,8 @@ export interface PasswordResetFormProps {
 }
 
 /**
- * 비밀번호 재설정 폼 컴포넌트
- * 이메일 요청 → 토큰 검증 → 새 비밀번호 설정의 2단계 프로세스
+ *    
+ *   →   →    2 
  */
 export function PasswordResetForm({
   onSuccess,
@@ -51,7 +51,7 @@ export function PasswordResetForm({
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [resetToken, setResetToken] = useState<string | null>(null);
 
-  // URL에서 토큰 확인
+  // URL  
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {
@@ -60,7 +60,7 @@ export function PasswordResetForm({
     }
   }, [searchParams]);
 
-  // 이메일 요청 폼
+  //   
   const {
     register: registerRequest,
     handleSubmit: handleSubmitRequest,
@@ -72,7 +72,7 @@ export function PasswordResetForm({
     mode: 'onBlur',
   });
 
-  // 비밀번호 재설정 폼
+  //   
   const {
     register: registerReset,
     handleSubmit: handleSubmitReset,
@@ -87,7 +87,7 @@ export function PasswordResetForm({
 
   const password = watch('password');
 
-  // 이메일 요청 제출
+  //   
   const onSubmitRequest = async (data: PasswordResetRequestData) => {
     try {
       clearRequestErrors();
@@ -101,7 +101,7 @@ export function PasswordResetForm({
         onSuccess?.();
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '비밀번호 재설정 요청에 실패했습니다.';
+      const errorMessage = error instanceof Error ? error.message : '   .';
       
       setRequestError('root', {
         type: 'manual',
@@ -112,12 +112,12 @@ export function PasswordResetForm({
     }
   };
 
-  // 비밀번호 재설정 제출
+  //   
   const onSubmitReset = async (data: PasswordResetData) => {
     if (!resetToken) {
       setResetError('root', {
         type: 'manual',
-        message: '유효하지 않은 토큰입니다.',
+        message: '  .',
       });
       return;
     }
@@ -129,14 +129,14 @@ export function PasswordResetForm({
       const success = await resetPassword(resetToken, data.password);
 
       if (success) {
-        // 성공 시 로그인 페이지로 이동
+        //     
         setTimeout(() => {
           router.push('/login?message=password-reset-success');
         }, 2000);
         onSuccess?.();
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '비밀번호 재설정에 실패했습니다.';
+      const errorMessage = error instanceof Error ? error.message : '  .';
       
       setResetError('root', {
         type: 'manual',
@@ -147,7 +147,7 @@ export function PasswordResetForm({
     }
   };
 
-  // 비밀번호 강도 계산
+  //   
   const passwordStrength = React.useMemo(() => {
     if (!password) return 0;
     let strength = 0;
@@ -162,11 +162,11 @@ export function PasswordResetForm({
   const getPasswordStrengthText = (strength: number) => {
     switch (strength) {
       case 0:
-      case 1: return '매우 약함';
-      case 2: return '약함';
-      case 3: return '보통';
-      case 4: return '강함';
-      case 5: return '매우 강함';
+      case 1: return ' ';
+      case 2: return '';
+      case 3: return '';
+      case 4: return '';
+      case 5: return ' ';
       default: return '';
     }
   };
@@ -208,18 +208,18 @@ export function PasswordResetForm({
             className="space-y-6"
           >
             <div className="text-center space-y-3">
-              <h1 className="text-2xl font-bold text-gray-900">비밀번호 찾기</h1>
+              <h1 className="text-2xl font-bold text-gray-900"> </h1>
               <p className="text-gray-600">
-                가입하신 이메일 주소를 입력하시면<br />
-                비밀번호 재설정 링크를 보내드립니다.
+                   <br />
+                   .
               </p>
             </div>
 
             <form onSubmit={handleSubmitRequest(onSubmitRequest)} className="space-y-6">
-              {/* 이메일 입력 */}
+              {/*   */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  이메일 주소
+                   
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -259,7 +259,7 @@ export function PasswordResetForm({
                 </AnimatePresence>
               </div>
 
-              {/* 전체 폼 에러 */}
+              {/*    */}
               <AnimatePresence>
                 {(requestErrors.root || passwordResetError) && (
                   <motion.div
@@ -276,7 +276,7 @@ export function PasswordResetForm({
                 )}
               </AnimatePresence>
 
-              {/* 전송 버튼 */}
+              {/*   */}
               <Button
                 type="submit"
                 disabled={isRequestSubmitting || isPasswordResetLoading}
@@ -286,22 +286,22 @@ export function PasswordResetForm({
                 {isRequestSubmitting || isPasswordResetLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <Spinner size="sm" color="white" />
-                    전송 중...
+                     ...
                   </span>
                 ) : (
-                  '재설정 링크 전송'
+                  '  '
                 )}
               </Button>
             </form>
 
-            {/* 로그인 페이지로 돌아가기 */}
+            {/*    */}
             <div className="text-center">
               <a 
                 href="/login"
                 className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                로그인 페이지로 돌아가기
+                  
               </a>
             </div>
           </motion.div>
@@ -320,14 +320,14 @@ export function PasswordResetForm({
             </div>
             
             <div className="space-y-3">
-              <h1 className="text-2xl font-bold text-gray-900">이메일을 전송했습니다</h1>
+              <h1 className="text-2xl font-bold text-gray-900"> </h1>
               <div className="space-y-2">
                 <p className="text-gray-600">
-                  <span className="font-medium text-brand-primary">{email}</span>로<br />
-                  비밀번호 재설정 링크를 전송했습니다.
+                  <span className="font-medium text-brand-primary">{email}</span><br />
+                     .
                 </p>
                 <p className="text-sm text-gray-500">
-                  이메일이 오지 않았다면 스팸함을 확인해보세요.
+                      .
                 </p>
               </div>
             </div>
@@ -342,7 +342,7 @@ export function PasswordResetForm({
                 variant="outline"
                 className="w-full"
               >
-                다시 전송
+                 
               </Button>
               
               <a 
@@ -350,7 +350,7 @@ export function PasswordResetForm({
                 className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                로그인 페이지로 돌아가기
+                  
               </a>
             </div>
           </motion.div>
@@ -365,9 +365,9 @@ export function PasswordResetForm({
             className="space-y-6"
           >
             <div className="text-center space-y-3">
-              <h1 className="text-2xl font-bold text-gray-900">새 비밀번호 설정</h1>
+              <h1 className="text-2xl font-bold text-gray-900">  </h1>
               <p className="text-gray-600">
-                새로운 비밀번호를 설정해주세요.
+                  .
               </p>
             </div>
 
@@ -378,10 +378,10 @@ export function PasswordResetForm({
                 value={resetToken || ''}
               />
 
-              {/* 새 비밀번호 */}
+              {/*   */}
               <div className="space-y-2">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  새 비밀번호
+                   
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -398,7 +398,7 @@ export function PasswordResetForm({
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="8자 이상, 대소문자, 숫자, 특수문자 포함"
+                    placeholder="8 , , ,  "
                     autoComplete="new-password"
                   />
                   <button
@@ -410,7 +410,7 @@ export function PasswordResetForm({
                   </button>
                 </div>
 
-                {/* 비밀번호 강도 표시 */}
+                {/*    */}
                 {password && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -445,10 +445,10 @@ export function PasswordResetForm({
                 </AnimatePresence>
               </div>
 
-              {/* 비밀번호 확인 */}
+              {/*   */}
               <div className="space-y-2">
                 <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">
-                  비밀번호 확인
+                   
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -465,7 +465,7 @@ export function PasswordResetForm({
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-brand-primary'
                     )}
-                    placeholder="비밀번호를 다시 입력해주세요"
+                    placeholder="  "
                     autoComplete="new-password"
                   />
                   <button
@@ -491,7 +491,7 @@ export function PasswordResetForm({
                 </AnimatePresence>
               </div>
 
-              {/* 전체 폼 에러 */}
+              {/*    */}
               <AnimatePresence>
                 {(resetErrors.root || passwordResetError) && (
                   <motion.div
@@ -508,7 +508,7 @@ export function PasswordResetForm({
                 )}
               </AnimatePresence>
 
-              {/* 재설정 버튼 */}
+              {/*   */}
               <Button
                 type="submit"
                 disabled={isResetSubmitting || isPasswordResetLoading}
@@ -518,22 +518,22 @@ export function PasswordResetForm({
                 {isResetSubmitting || isPasswordResetLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <Spinner size="sm" color="white" />
-                    재설정 중...
+                     ...
                   </span>
                 ) : (
-                  '비밀번호 재설정'
+                  ' '
                 )}
               </Button>
             </form>
 
-            {/* 로그인 페이지로 돌아가기 */}
+            {/*    */}
             <div className="text-center">
               <a 
                 href="/login"
                 className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-brand-primary transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                로그인 페이지로 돌아가기
+                  
               </a>
             </div>
           </motion.div>

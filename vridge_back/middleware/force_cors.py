@@ -1,15 +1,15 @@
-"""강제 CORS 헤더 추가 미들웨어"""
+""" CORS   """
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class ForceCorsMiddleware:
-    """CORS 헤더를 강제로 추가하는 미들웨어"""
+    """CORS    """
     
     def __init__(self, get_response):
         self.get_response = get_response
-        # 허용할 origin 목록
+        #  origin 
         self.allowed_origins = [
             "https://vlanet.net",
             "https://www.vlanet.net",
@@ -23,22 +23,22 @@ class ForceCorsMiddleware:
         ]
 
     def __call__(self, request):
-        # 요청의 Origin 헤더 확인
+        #  Origin  
         origin = request.headers.get('Origin', '')
         
-        # 응답 생성
+        #  
         response = self.get_response(request)
         
-        # Origin이 허용 목록에 있거나, Vercel 도메인인 경우
+        # Origin   , Vercel  
         if origin in self.allowed_origins or '.vercel.app' in origin:
-            # CORS 헤더 강제 추가
+            # CORS   
             response['Access-Control-Allow-Origin'] = origin
             response['Access-Control-Allow-Credentials'] = 'true'
             response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
             response['Access-Control-Allow-Headers'] = 'Accept, Accept-Encoding, Authorization, Content-Type, Origin, X-Requested-With, X-CSRFToken, X-Idempotency-Key'
             response['Access-Control-Max-Age'] = '86400'
             
-            # OPTIONS 요청인 경우 (preflight)
+            # OPTIONS   (preflight)
             if request.method == 'OPTIONS':
                 response['Content-Length'] = '0'
                 response.status_code = 200

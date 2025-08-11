@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-응급 서버 - Django 시작 실패 시 최소한의 헬스체크 제공
+  - Django      
 """
 import os
 import json
 from wsgiref.simple_server import make_server
 
 def cors_headers(environ=None):
-    """CORS 헤더 반환"""
-    # 허용된 origin 목록
+    """CORS  """
+    #  origin 
     allowed_origins = [
         'https://vlanet.net',
         'https://www.vlanet.net',
@@ -16,12 +16,12 @@ def cors_headers(environ=None):
         'http://127.0.0.1:3000',
     ]
     
-    # Request에서 Origin 헤더 가져오기
+    # Request Origin  
     origin = None
     if environ:
         origin = environ.get('HTTP_ORIGIN', '')
     
-    # Origin이 허용된 목록에 있으면 해당 origin 반환, 아니면 첫 번째 허용된 origin 반환
+    # Origin     origin ,     origin 
     allowed_origin = origin if origin in allowed_origins else allowed_origins[0]
     
     return [
@@ -32,22 +32,22 @@ def cors_headers(environ=None):
     ]
 
 def application(environ, start_response):
-    """간단한 WSGI 애플리케이션"""
+    """ WSGI """
     path = environ.get('PATH_INFO', '/')
     method = environ.get('REQUEST_METHOD', 'GET')
     
-    # CORS preflight 처리
+    # CORS preflight 
     if method == 'OPTIONS':
         start_response('200 OK', [
             ('Content-Type', 'application/json'),
         ] + cors_headers(environ))
         return [b'{}']
     
-    # 헬스체크 엔드포인트들
+    #  
     if path in ['/health/', '/api/health/', '/']:
         response_data = {
             "status": "emergency_mode",
-            "message": "Django 앱이 시작되지 않아 응급 서버로 대체",
+            "message": "Django      ",
             "timestamp": os.environ.get('RAILWAY_DEPLOYMENT_ID', 'unknown'),
             "endpoints": {
                 "health": "/health/",
@@ -62,11 +62,11 @@ def application(environ, start_response):
         ] + cors_headers(environ))
         return [response_body]
     
-    # 프론트엔드 API 요청들에 대한 모형 응답
+    #  API    
     elif path == '/api/projects/project_list/' or path == '/api/projects/':
         mock_projects = {
             "results": [],
-            "message": "응급 모드: 프로젝트 데이터를 로드할 수 없습니다",
+            "message": " :     ",
             "emergency_mode": True
         }
         response_body = json.dumps(mock_projects, ensure_ascii=False).encode('utf-8')
@@ -79,7 +79,7 @@ def application(environ, start_response):
         mock_notifications = {
             "results": [],
             "count": 0,
-            "message": "응급 모드: 알림 데이터를 로드할 수 없습니다",
+            "message": " :     ",
             "emergency_mode": True
         }
         response_body = json.dumps(mock_notifications, ensure_ascii=False).encode('utf-8')
@@ -91,7 +91,7 @@ def application(environ, start_response):
     elif path == '/api/projects/invitations/' or path.startswith('/api/projects/') and 'invitations' in path:
         mock_invitations = {
             "results": [],
-            "message": "응급 모드: 초대 데이터를 로드할 수 없습니다",
+            "message": " :     ",
             "emergency_mode": True
         }
         response_body = json.dumps(mock_invitations, ensure_ascii=False).encode('utf-8')
@@ -104,9 +104,9 @@ def application(environ, start_response):
         mock_user = {
             "id": 0,
             "email": "emergency@mode.com",
-            "nickname": "응급모드",
+            "nickname": "",
             "profile_image": None,
-            "message": "응급 모드: 사용자 데이터를 로드할 수 없습니다",
+            "message": " :     ",
             "emergency_mode": True
         }
         response_body = json.dumps(mock_user, ensure_ascii=False).encode('utf-8')
@@ -116,9 +116,9 @@ def application(environ, start_response):
         return [response_body]
     
     elif path.startswith('/api/'):
-        # 모든 기타 API 요청에 대한 기본 응답
+        #   API    
         mock_response = {
-            "message": "응급 모드: 이 API는 현재 사용할 수 없습니다",
+            "message": " :  API    ",
             "path": path,
             "method": method,
             "emergency_mode": True,
@@ -130,7 +130,7 @@ def application(environ, start_response):
         ] + cors_headers(environ))
         return [response_body]
     
-    # 디버그 정보
+    #  
     elif path == '/debug/':
         debug_info = {
             "environment_variables": {
@@ -170,9 +170,9 @@ def application(environ, start_response):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
-    print(f"🚨 응급 서버 시작 - 포트 {port}")
-    print(f"헬스체크: http://localhost:{port}/health/")
-    print(f"디버그: http://localhost:{port}/debug/")
+    print(f"    -  {port}")
+    print(f": http://localhost:{port}/health/")
+    print(f": http://localhost:{port}/debug/")
     
     with make_server('', port, application) as httpd:
         httpd.serve_forever()

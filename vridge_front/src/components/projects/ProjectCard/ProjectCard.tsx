@@ -24,7 +24,7 @@ import { formatDate } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 // ========================================
-// 타입 정의
+//  
 // ========================================
 
 export interface ProjectCardProps {
@@ -41,7 +41,7 @@ export interface ProjectCardProps {
 }
 
 // ========================================
-// 스타일 유틸리티
+//  
 // ========================================
 
 const statusConfig: Record<ProjectStatus, { 
@@ -51,31 +51,31 @@ const statusConfig: Record<ProjectStatus, {
   icon: React.ComponentType<any>;
 }> = {
   planning: {
-    label: '기획 중',
+    label: ' ',
     color: 'text-blue-600',
     bgColor: 'bg-blue-50 border-blue-200',
     icon: Edit3,
   },
   production: {
-    label: '제작 중',
+    label: ' ',
     color: 'text-orange-600',
     bgColor: 'bg-orange-50 border-orange-200',
     icon: Play,
   },
   review: {
-    label: '검토 중',
+    label: ' ',
     color: 'text-purple-600',
     bgColor: 'bg-purple-50 border-purple-200',
     icon: Eye,
   },
   completed: {
-    label: '완료',
+    label: '',
     color: 'text-green-600',
     bgColor: 'bg-green-50 border-green-200',
     icon: CheckCircle,
   },
   archived: {
-    label: '보관됨',
+    label: '',
     color: 'text-gray-500',
     bgColor: 'bg-gray-50 border-gray-200',
     icon: Archive,
@@ -90,7 +90,7 @@ const getProgressColor = (progress?: number) => {
 };
 
 // ========================================
-// 메인 컴포넌트
+//  
 // ========================================
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -113,7 +113,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const statusInfo = statusConfig[project.status];
   const StatusIcon = statusInfo.icon;
 
-  // 드롭다운 외부 클릭 감지
+  //    
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -125,9 +125,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 카드 클릭 핸들러
+  //   
   const handleCardClick = (e: React.MouseEvent) => {
-    // 드롭다운이나 버튼 클릭은 무시
+    //    
     if (
       (e.target as Element).closest('.dropdown-trigger') ||
       (e.target as Element).closest('.project-action-button')
@@ -138,14 +138,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     onNavigate?.(project);
   };
 
-  // 선택 토글 (체크박스용)
+  //   ()
   const handleSelectionToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     toggleSelection(project.id);
   };
 
 
-  // 액션 핸들러들
+  //  
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     onEdit?.(project);
@@ -174,7 +174,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     window.open(`/projects/${project.id}`, '_blank');
   };
 
-  // 애니메이션 variants
+  //  variants
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
@@ -188,7 +188,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 
-  // 그리드 뷰 렌더링
+  //   
   if (viewMode === 'grid') {
     return (
       <motion.div
@@ -204,7 +204,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         )}
         onClick={handleCardClick}
       >
-        {/* 썸네일 섹션 */}
+        {/*   */}
         {showThumbnails && (
           <div className={cn(
             'relative overflow-hidden',
@@ -222,19 +222,19 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               </div>
             )}
             
-            {/* 오버레이 정보 */}
+            {/*   */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <div className="absolute bottom-3 left-3 right-3">
                 {project.progress !== undefined && (
                   <div className="flex items-center gap-2 text-white text-sm">
                     <Clock className="w-3 h-3" />
-                    <span>{project.progress}% 완료</span>
+                    <span>{project.progress}% </span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* 선택 체크박스 */}
+            {/*   */}
             <div className="absolute top-3 left-3">
               <input
                 type="checkbox"
@@ -245,7 +245,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               />
             </div>
 
-            {/* 즐겨찾기 버튼 */}
+            {/*   */}
             <button
               onClick={handleToggleFavorite}
               className="project-action-button absolute top-3 right-3 p-1 rounded-full bg-white/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-white"
@@ -255,9 +255,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
         )}
 
-        {/* 컨텐츠 섹션 */}
+        {/*   */}
         <div className={cn('p-4', compactMode && 'p-3')}>
-          {/* 헤더 */}
+          {/*  */}
           <div className="flex items-start justify-between gap-2 mb-3">
             <div className="flex-1 min-w-0">
               <h3 className={cn(
@@ -273,7 +273,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               )}
             </div>
             
-            {/* 액션 드롭다운 */}
+            {/*   */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={(e) => {
@@ -298,21 +298,21 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                       className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
                       <Edit3 className="w-4 h-4" />
-                      수정
+                      
                     </button>
                     <button
                       onClick={handleDuplicate}
                       className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
                       <Copy className="w-4 h-4" />
-                      복제
+                      
                     </button>
                     <button
                       onClick={handleExternalLink}
                       className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
                       <ExternalLink className="w-4 h-4" />
-                      새 탭에서 열기
+                        
                     </button>
                     <hr className="my-1" />
                     <button
@@ -320,7 +320,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                       className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                     >
                       <Trash2 className="w-4 h-4" />
-                      삭제
+                      
                     </button>
                   </div>
                 </motion.div>
@@ -328,7 +328,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </div>
           </div>
 
-          {/* 상태 및 진행률 */}
+          {/*    */}
           <div className="flex items-center gap-2 mb-3">
             <div className={cn(
               'inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-medium',
@@ -359,7 +359,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             )}
           </div>
 
-          {/* 메타 정보 */}
+          {/*   */}
           <div className="flex items-center justify-between text-xs text-gray-500">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
@@ -379,7 +379,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             </div>
           </div>
 
-          {/* 태그 (있다면) */}
+          {/*  () */}
           {project.tags && project.tags.length > 0 && !compactMode && (
             <div className="flex flex-wrap gap-1 mt-3">
               {project.tags.slice(0, 3).map((tag) => (
@@ -402,7 +402,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     );
   }
 
-  // 리스트 뷰 렌더링
+  //   
   return (
     <motion.div
       variants={cardVariants}
@@ -416,7 +416,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       )}
       onClick={handleCardClick}
     >
-      {/* 선택 체크박스 */}
+      {/*   */}
       <input
         type="checkbox"
         checked={selected}
@@ -425,7 +425,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         onClick={(e) => e.stopPropagation()}
       />
 
-      {/* 썸네일 */}
+      {/*  */}
       {showThumbnails && (
         <div className="flex-shrink-0 w-16 h-12 bg-gray-100 rounded-lg overflow-hidden">
           {project.thumbnail ? (
@@ -442,7 +442,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       )}
 
-      {/* 프로젝트 정보 */}
+      {/*   */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <h3 className="font-semibold text-gray-900 line-clamp-1">
@@ -479,7 +479,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </div>
 
-      {/* 진행률 */}
+      {/*  */}
       {project.progress !== undefined && (
         <div className="flex-shrink-0 w-24">
           <div className="flex items-center gap-2">
@@ -499,7 +499,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       )}
 
-      {/* 액션 버튼들 */}
+      {/*   */}
       <div className="flex-shrink-0 flex items-center gap-1">
         <button
           onClick={handleToggleFavorite}
@@ -508,7 +508,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           <Star className="w-4 h-4 text-gray-400 hover:text-yellow-500" />
         </button>
         
-        {/* 액션 드롭다운 */}
+        {/*   */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={(e) => {
@@ -533,21 +533,21 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <Edit3 className="w-4 h-4" />
-                  수정
+                  
                 </button>
                 <button
                   onClick={handleDuplicate}
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <Copy className="w-4 h-4" />
-                  복제
+                  
                 </button>
                 <button
                   onClick={handleExternalLink}
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  새 탭에서 열기
+                    
                 </button>
                 <hr className="my-1" />
                 <button
@@ -555,7 +555,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                 >
                   <Trash2 className="w-4 h-4" />
-                  삭제
+                  
                 </button>
               </div>
             </motion.div>

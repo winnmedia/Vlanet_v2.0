@@ -1,5 +1,5 @@
 """
-개선된 인증 뷰 - 401 오류 해결
+   - 401  
 """
 from rest_framework import status
 from rest_framework.views import APIView
@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 class ImprovedSignUp(APIView):
     """
-    개선된 회원가입 뷰
-    이메일 중복 체크 및 명확한 에러 메시지 제공
+      
+           
     """
     permission_classes = [AllowAny]
     
@@ -25,7 +25,7 @@ class ImprovedSignUp(APIView):
         try:
             data = request.data
             
-            # 필수 필드 검증
+            #   
             required_fields = ['username', 'email', 'password', 'nickname']
             for field in required_fields:
                 if field not in data:
@@ -35,7 +35,7 @@ class ImprovedSignUp(APIView):
                         'field': field
                     }, status=status.HTTP_400_BAD_REQUEST)
             
-            # 이메일/사용자명 중복 체크
+            # /  
             if User.objects.filter(username=data['username']).exists():
                 return Response({
                     'success': False,
@@ -50,7 +50,7 @@ class ImprovedSignUp(APIView):
                     'field': 'email'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
-            # 닉네임 중복 체크
+            #   
             if User.objects.filter(nickname=data['nickname']).exists():
                 return Response({
                     'success': False,
@@ -58,17 +58,17 @@ class ImprovedSignUp(APIView):
                     'field': 'nickname'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
-            # 사용자 생성
+            #  
             user = User.objects.create(
                 username=data['username'],
                 email=data['email'],
                 nickname=data['nickname'],
                 password=make_password(data['password']),
                 is_active=True,
-                email_verified=True  # 테스트를 위해 임시로 자동 인증
+                email_verified=True  #     
             )
             
-            # 토큰 생성
+            #  
             refresh = RefreshToken.for_user(user)
             
             return Response({
@@ -96,8 +96,8 @@ class ImprovedSignUp(APIView):
 
 class ImprovedSignIn(APIView):
     """
-    개선된 로그인 뷰
-    명확한 에러 메시지 및 401 오류 해결
+      
+        401  
     """
     permission_classes = [AllowAny]
     
@@ -105,7 +105,7 @@ class ImprovedSignIn(APIView):
         try:
             data = request.data
             
-            # 필수 필드 검증
+            #   
             if 'username' not in data or 'password' not in data:
                 return Response({
                     'success': False,
@@ -115,21 +115,21 @@ class ImprovedSignIn(APIView):
             username = data['username']
             password = data['password']
             
-            # 사용자 조회 (이메일 또는 사용자명)
+            #   (  )
             user = None
             if '@' in username:
-                # 이메일로 로그인
+                #  
                 try:
                     user = User.objects.get(email=username)
                     username = user.username
                 except User.DoesNotExist:
                     pass
             
-            # 인증 시도
+            #  
             user = authenticate(username=username, password=password)
             
             if user is None:
-                # 사용자가 존재하는지 확인
+                #   
                 if '@' in data['username']:
                     exists = User.objects.filter(email=data['username']).exists()
                 else:
@@ -155,7 +155,7 @@ class ImprovedSignIn(APIView):
                     'code': 'INACTIVE_ACCOUNT'
                 }, status=status.HTTP_403_FORBIDDEN)
             
-            # 토큰 생성
+            #  
             refresh = RefreshToken.for_user(user)
             
             return Response({
@@ -185,13 +185,13 @@ class ImprovedSignIn(APIView):
 
 class TestUserCreate(APIView):
     """
-    테스트 사용자 자동 생성
+       
     """
     permission_classes = [AllowAny]
     
     def post(self, request):
         """
-        테스트 사용자를 생성하거나 기존 사용자 정보 반환
+              
         """
         test_users = [
             {
@@ -223,19 +223,19 @@ class TestUserCreate(APIView):
             )
             
             if not created:
-                # 기존 사용자 비밀번호 업데이트
+                #    
                 user.set_password(user_data['password'])
                 user.is_active = True
                 user.email_verified = True
                 user.save()
             
-            # 토큰 생성
+            #  
             refresh = RefreshToken.for_user(user)
             
             created_users.append({
                 'username': user.username,
                 'email': user.email,
-                'password': user_data['password'],  # 테스트용이므로 비밀번호 포함
+                'password': user_data['password'],  #   
                 'nickname': user.nickname,
                 'created': created,
                 'tokens': {

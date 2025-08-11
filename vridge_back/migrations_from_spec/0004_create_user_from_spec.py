@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'user_from_spec',
-                'verbose_name': 'User (API 스펙)',
-                'verbose_name_plural': 'Users (API 스펙)',
+                'verbose_name': 'User (API )',
+                'verbose_name_plural': 'Users (API )',
                 'ordering': ['-id'],
             },
         ),

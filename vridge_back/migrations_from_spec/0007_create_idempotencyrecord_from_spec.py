@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'idempotencyrecord_from_spec',
-                'verbose_name': 'IdempotencyRecord (API 스펙)',
-                'verbose_name_plural': 'IdempotencyRecords (API 스펙)',
+                'verbose_name': 'IdempotencyRecord (API )',
+                'verbose_name_plural': 'IdempotencyRecords (API )',
                 'ordering': ['-id'],
             },
         ),

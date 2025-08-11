@@ -1,19 +1,19 @@
 /**
- * PDF 내보내기 유틸리티
- * 한글 폰트를 지원하는 jsPDF 기반 PDF 생성 기능
+ * PDF  
+ *    jsPDF  PDF  
  * 
- * 주요 기능:
- * - 한글 폰트 지원 (Noto Sans KR)
- * - 다양한 데이터 형식 지원 (텍스트, 테이블, 이미지)
- * - 반응형 레이아웃
- * - 워터마크 및 헤더/푸터 지원
+ *  :
+ * -    (Noto Sans KR)
+ * -     (, , )
+ * -  
+ * -   / 
  */
 
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
-// 한글 폰트 Base64 데이터 (Noto Sans KR Regular)
-// 실제 구현에서는 CDN이나 정적 파일에서 로드해야 합니다
+//   Base64  (Noto Sans KR Regular)
+//   CDN    
 const NOTO_SANS_KR_BASE64 = 'data:font/ttf;base64,AAEAAAALAIAAAwAwT1MvMgAAAA=='
 
 interface PDFExportOptions {
@@ -76,7 +76,7 @@ export class PDFExporter {
     this.lineHeight = lineHeight
     this.currentY = this.margin.top
 
-    // PDF 메타데이터 설정
+    // PDF  
     if (options.title) this.doc.setProperties({ title: options.title })
     if (options.author) this.doc.setProperties({ author: options.author })
     if (options.subject) this.doc.setProperties({ subject: options.subject })
@@ -86,27 +86,27 @@ export class PDFExporter {
   }
 
   /**
-   * 한글 폰트 설정
-   * jsPDF에 한글 폰트를 추가하고 설정합니다
+   *   
+   * jsPDF    
    */
   private setupKoreanFont(): void {
     try {
-      // Noto Sans KR 폰트 추가 (실제로는 외부에서 로드해야 함)
-      // 임시로 기본 폰트를 사용하되, 한글 지원을 위한 설정을 추가
+      // Noto Sans KR   (   )
+      //    ,     
       this.doc.setFont('helvetica')
       this.doc.setFontSize(this.fontSize)
-      this.doc.setCharSpace(0.1) // 글자 간격 조정으로 한글 가독성 향상
+      this.doc.setCharSpace(0.1) //      
     } catch (error) {
-      console.warn('한글 폰트 설정 중 오류 발생:', error)
-      // 기본 폰트 사용
+      console.warn('     :', error)
+      //   
       this.doc.setFont('helvetica')
       this.doc.setFontSize(this.fontSize)
     }
   }
 
   /**
-   * 텍스트 추가
-   * 한글을 포함한 긴 텍스트를 자동으로 줄바꿈하여 추가합니다
+   *  
+   *       
    */
   addText(text: string, options: {
     fontSize?: number
@@ -127,11 +127,11 @@ export class PDFExporter {
     if (bold) this.doc.setFont('helvetica', 'bold')
     else this.doc.setFont('helvetica', 'normal')
 
-    // 색상 설정
+    //  
     const rgb = this.hexToRgb(color)
     if (rgb) this.doc.setTextColor(rgb.r, rgb.g, rgb.b)
 
-    // 텍스트 줄바꿈 처리
+    //   
     const lines = this.splitTextToLines(text, maxWidth)
     
     lines.forEach((line, index) => {
@@ -149,14 +149,14 @@ export class PDFExporter {
       }
 
       this.doc.text(line, x, this.currentY)
-      this.currentY += fontSize * this.lineHeight * 0.35 // mm 단위 조정
+      this.currentY += fontSize * this.lineHeight * 0.35 // mm  
     })
 
-    this.currentY += fontSize * 0.5 // 단락 간격
+    this.currentY += fontSize * 0.5 //  
   }
 
   /**
-   * 제목 추가
+   *  
    */
   addTitle(title: string, level: 1 | 2 | 3 = 1): void {
     const fontSizes = { 1: 20, 2: 16, 3: 14 }
@@ -174,7 +174,7 @@ export class PDFExporter {
   }
 
   /**
-   * 테이블 추가
+   *  
    */
   addTable(tableData: PDFTableData): void {
     const { headers, rows, title } = tableData
@@ -188,7 +188,7 @@ export class PDFExporter {
     const colWidth = tableWidth / headers.length
     const rowHeight = 10
 
-    // 테이블 헤더
+    //  
     this.doc.setFillColor(240, 240, 240)
     this.doc.rect(startX, this.currentY, tableWidth, rowHeight, 'F')
 
@@ -202,7 +202,7 @@ export class PDFExporter {
 
     this.currentY += rowHeight
 
-    // 테이블 데이터
+    //  
     this.doc.setFont('helvetica', 'normal')
     
     rows.forEach((row, rowIndex) => {
@@ -210,7 +210,7 @@ export class PDFExporter {
         this.addPage()
       }
 
-      // 행 배경색 (짝수 행)
+      //   ( )
       if (rowIndex % 2 === 0) {
         this.doc.setFillColor(250, 250, 250)
         this.doc.rect(startX, this.currentY, tableWidth, rowHeight, 'F')
@@ -218,7 +218,7 @@ export class PDFExporter {
 
       row.forEach((cell, colIndex) => {
         const x = startX + (colIndex * colWidth) + 2
-        // 셀 텍스트가 너무 길면 자르기
+        //     
         const truncatedText = this.truncateText(cell, colWidth - 4)
         this.doc.text(truncatedText, x, this.currentY + 6)
       })
@@ -226,7 +226,7 @@ export class PDFExporter {
       this.currentY += rowHeight
     })
 
-    // 테이블 테두리
+    //  
     this.doc.setDrawColor(200, 200, 200)
     this.doc.rect(startX, this.currentY - (rows.length + 1) * rowHeight, tableWidth, (rows.length + 1) * rowHeight)
 
@@ -234,7 +234,7 @@ export class PDFExporter {
   }
 
   /**
-   * HTML 요소를 이미지로 변환하여 PDF에 추가
+   * HTML    PDF 
    */
   async addHtmlElement(element: HTMLElement, options: {
     scale?: number
@@ -259,11 +259,11 @@ export class PDFExporter {
 
       const imgData = canvas.toDataURL('image/png')
       
-      // 이미지 크기 계산
+      //   
       let imgWidth = width || (this.getPageWidth() - this.margin.left - this.margin.right)
       let imgHeight = height || (canvas.height * imgWidth) / canvas.width
 
-      // 페이지 높이를 초과하는 경우 조정
+      //     
       const maxHeight = this.getPageHeight() - this.margin.top - this.margin.bottom - 20
       if (imgHeight > maxHeight) {
         imgHeight = maxHeight
@@ -285,8 +285,8 @@ export class PDFExporter {
         })
       }
     } catch (error) {
-      console.error('HTML 요소를 PDF로 변환 중 오류 발생:', error)
-      this.addText(`[이미지 로드 실패: ${caption || 'HTML 요소'}]`, {
+      console.error('HTML  PDF    :', error)
+      this.addText(`[  : ${caption || 'HTML '}]`, {
         color: '#ff0000',
         fontSize: 10
       })
@@ -294,7 +294,7 @@ export class PDFExporter {
   }
 
   /**
-   * 새 페이지 추가
+   *   
    */
   addPage(): void {
     this.doc.addPage()
@@ -302,29 +302,29 @@ export class PDFExporter {
   }
 
   /**
-   * PDF 저장
+   * PDF 
    */
   save(filename: string = 'document.pdf'): void {
-    // 파일명에 한글이 포함된 경우를 위한 처리
+    //      
     const sanitizedFilename = filename.replace(/[^\w\-_\. ]/g, '_')
     this.doc.save(sanitizedFilename)
   }
 
   /**
-   * PDF 데이터 URL 반환
+   * PDF  URL 
    */
   getDataUrl(): string {
     return this.doc.output('dataurlstring')
   }
 
   /**
-   * PDF Blob 반환
+   * PDF Blob 
    */
   getBlob(): Blob {
     return this.doc.output('blob')
   }
 
-  // 유틸리티 메서드들
+  //  
 
   private getPageWidth(): number {
     return this.doc.internal.pageSize.getWidth()
@@ -386,7 +386,7 @@ export class PDFExporter {
 }
 
 /**
- * 편의 함수: 텍스트를 PDF로 내보내기
+ *  :  PDF 
  */
 export async function exportTextToPDF(
   content: string,
@@ -394,19 +394,19 @@ export async function exportTextToPDF(
   options: PDFExportOptions = {}
 ): Promise<void> {
   const exporter = new PDFExporter({
-    title: '문서',
+    title: '',
     author: 'VideoPlanet',
     creator: 'VideoPlanet PDF Exporter',
     ...options
   })
 
-  exporter.addTitle('문서', 1)
+  exporter.addTitle('', 1)
   exporter.addText(content)
   exporter.save(filename)
 }
 
 /**
- * 편의 함수: 테이블 데이터를 PDF로 내보내기
+ *  :   PDF 
  */
 export async function exportTableToPDF(
   tableData: PDFTableData,
@@ -414,7 +414,7 @@ export async function exportTableToPDF(
   options: PDFExportOptions = {}
 ): Promise<void> {
   const exporter = new PDFExporter({
-    title: tableData.title || '테이블',
+    title: tableData.title || '',
     author: 'VideoPlanet',
     creator: 'VideoPlanet PDF Exporter',
     ...options
@@ -429,7 +429,7 @@ export async function exportTableToPDF(
 }
 
 /**
- * 편의 함수: HTML 요소를 PDF로 내보내기
+ *  : HTML  PDF 
  */
 export async function exportHtmlToPDF(
   element: HTMLElement,
@@ -439,7 +439,7 @@ export async function exportHtmlToPDF(
   const { caption, ...pdfOptions } = options
   
   const exporter = new PDFExporter({
-    title: '웹 페이지',
+    title: ' ',
     author: 'VideoPlanet',
     creator: 'VideoPlanet PDF Exporter',
     ...pdfOptions
@@ -450,7 +450,7 @@ export async function exportHtmlToPDF(
 }
 
 /**
- * 프로젝트 리포트를 PDF로 내보내기
+ *   PDF 
  */
 export async function exportProjectReportToPDF(
   projectData: {
@@ -466,32 +466,32 @@ export async function exportProjectReportToPDF(
   filename: string = 'project-report.pdf'
 ): Promise<void> {
   const exporter = new PDFExporter({
-    title: `${projectData.title} - 프로젝트 리포트`,
+    title: `${projectData.title} -  `,
     author: 'VideoPlanet',
     creator: 'VideoPlanet PDF Exporter'
   })
 
-  // 프로젝트 개요
+  //  
   exporter.addTitle(projectData.title, 1)
-  exporter.addText(`상태: ${projectData.status}`)
-  exporter.addText(`생성일: ${new Date(projectData.createdAt).toLocaleDateString('ko-KR')}`)
-  exporter.addText(`수정일: ${new Date(projectData.updatedAt).toLocaleDateString('ko-KR')}`)
-  exporter.addText('') // 빈 줄
+  exporter.addText(`: ${projectData.status}`)
+  exporter.addText(`: ${new Date(projectData.createdAt).toLocaleDateString('ko-KR')}`)
+  exporter.addText(`: ${new Date(projectData.updatedAt).toLocaleDateString('ko-KR')}`)
+  exporter.addText('') //  
   
-  exporter.addTitle('프로젝트 설명', 2)
+  exporter.addTitle(' ', 2)
   exporter.addText(projectData.description)
 
-  // 팀원 정보
-  exporter.addTitle('팀원 정보', 2)
+  //  
+  exporter.addTitle(' ', 2)
   exporter.addTable({
-    headers: ['이름', '이메일', '역할'],
+    headers: ['', '', ''],
     rows: projectData.teamMembers.map(member => [member.name, member.email, member.role])
   })
 
-  // 작업 현황
-  exporter.addTitle('작업 현황', 2)
+  //  
+  exporter.addTitle(' ', 2)
   exporter.addTable({
-    headers: ['작업', '상태', '담당자', '마감일'],
+    headers: ['', '', '', ''],
     rows: projectData.tasks.map(task => [
       task.title,
       task.status,
@@ -500,11 +500,11 @@ export async function exportProjectReportToPDF(
     ])
   })
 
-  // 타임라인
+  // 
   if (projectData.timeline.length > 0) {
-    exporter.addTitle('프로젝트 타임라인', 2)
+    exporter.addTitle(' ', 2)
     exporter.addTable({
-      headers: ['날짜', '이벤트', '설명'],
+      headers: ['', '', ''],
       rows: projectData.timeline.map(item => [
         new Date(item.date).toLocaleDateString('ko-KR'),
         item.event,

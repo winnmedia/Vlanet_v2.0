@@ -1,0 +1,70 @@
+# Documentation files
+*.md
+docs/
+DEPLOYMENT_GUIDE.md
+QA_*.md
+VERCEL_*.md
+README.md
+
+# Test files and directories
+tests/
+test-*.js
+test-*.html
+*test*.json
+*.spec.ts
+*.spec.js
+*.test.tsx
+*.test.ts
+*.test.js
+__tests__/
+
+# Development files
+.env.example
+.env.local
+.env.development
+
+# Build artifacts and caches
+.next/
+node_modules/
+.cache/
+dist/
+tsconfig.tsbuildinfo
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
+monitoring.log
+
+# Scripts that aren't needed in production
+scripts/migration/
+scripts/analysis/
+
+# Test and development utilities
+deployment-test*.js
+*-test-results-*.json
+routing-test-report-*.json
+
+# Storybook files
+.storybook/
+storybook-static/
+
+# Development configuration
+prettier.config.js
+eslint.config.js
+vitest.config.ts

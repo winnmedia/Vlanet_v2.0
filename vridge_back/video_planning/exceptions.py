@@ -1,14 +1,14 @@
 """
-기획안 내보내기 관련 커스텀 예외 클래스
+     
 """
 
 class ProposalExportError(Exception):
-    """기획안 내보내기 관련 기본 예외"""
+    """    """
     pass
 
 
 class GeminiAPIError(ProposalExportError):
-    """Gemini API 관련 예외"""
+    """Gemini API  """
     
     def __init__(self, message, error_type=None, quota_exceeded=False):
         super().__init__(message)
@@ -17,7 +17,7 @@ class GeminiAPIError(ProposalExportError):
 
 
 class GoogleSlidesAPIError(ProposalExportError):
-    """Google Slides API 관련 예외"""
+    """Google Slides API  """
     
     def __init__(self, message, http_status=None):
         super().__init__(message)
@@ -25,24 +25,24 @@ class GoogleSlidesAPIError(ProposalExportError):
 
 
 class TextProcessingError(ProposalExportError):
-    """텍스트 처리 관련 예외"""
+    """   """
     pass
 
 
 class ServiceInitializationError(ProposalExportError):
-    """서비스 초기화 관련 예외"""
+    """   """
     pass
 
 
 class APIQuotaExceededError(ProposalExportError):
-    """API 할당량 초과 예외"""
+    """API   """
     
     def __init__(self, service_name, daily_limit=None, reset_time=None):
-        message = f"{service_name} API 할당량이 초과되었습니다."
+        message = f"{service_name} API  ."
         if daily_limit:
-            message += f" 일일 한도: {daily_limit}"
+            message += f"  : {daily_limit}"
         if reset_time:
-            message += f" 재설정 시간: {reset_time}"
+            message += f"  : {reset_time}"
         
         super().__init__(message)
         self.service_name = service_name
@@ -51,7 +51,7 @@ class APIQuotaExceededError(ProposalExportError):
 
 
 class InvalidInputError(ProposalExportError):
-    """잘못된 입력 데이터 예외"""
+    """   """
     
     def __init__(self, field_name, message):
         super().__init__(f"{field_name}: {message}")

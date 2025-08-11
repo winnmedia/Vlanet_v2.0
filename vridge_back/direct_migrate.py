@@ -1,39 +1,39 @@
 #!/usr/bin/env python3
 """
-Railway에서 직접 마이그레이션 실행하는 스크립트
+Railway    
 """
 import os
 import django
 
-# Django 설정
+# Django 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.railway_minimal')
 django.setup()
 
 from django.db import connection
 from django.core.management import call_command
 
-print("🔧 직접 마이그레이션 시작...")
+print("   ...")
 
 def execute_sql_safely(sql, description):
-    """SQL을 안전하게 실행"""
+    """SQL  """
     try:
         with connection.cursor() as cursor:
             cursor.execute(sql)
-            print(f"✅ {description}")
+            print(f" {description}")
             return True
     except Exception as e:
-        print(f"⚠️ {description} - 이미 존재하거나 오류: {e}")
+        print(f" {description} -   : {e}")
         return False
 
 def is_postgresql():
-    """PostgreSQL인지 확인"""
+    """PostgreSQL """
     return connection.vendor == 'postgresql'
 
-# PostgreSQL에서만 직접 SQL 실행
+# PostgreSQL  SQL 
 if is_postgresql():
-    print("📊 PostgreSQL 감지 - 직접 SQL 실행...")
+    print(" PostgreSQL  -  SQL ...")
     
-    # 1. users_notification 테이블 생성
+    # 1. users_notification  
     execute_sql_safely("""
         CREATE TABLE IF NOT EXISTS users_notification (
             id SERIAL PRIMARY KEY,
@@ -49,40 +49,40 @@ if is_postgresql():
             read_at TIMESTAMP WITH TIME ZONE,
             extra_data JSONB DEFAULT '{}'::jsonb
         );
-    """, "users_notification 테이블 생성")
+    """, "users_notification  ")
 
-    # 2. 인덱스 추가
+    # 2.  
     execute_sql_safely(
         "CREATE INDEX IF NOT EXISTS users_notification_recipient_created ON users_notification(recipient_id, created DESC);",
-        "users_notification 인덱스 생성"
+        "users_notification  "
     )
 
-    # 3. email_verified 컬럼 추가
+    # 3. email_verified  
     execute_sql_safely(
         "ALTER TABLE users_user ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT FALSE;",
-        "email_verified 컬럼 추가"
+        "email_verified  "
     )
 
-    # 4. email_verified_at 컬럼 추가
+    # 4. email_verified_at  
     execute_sql_safely(
         "ALTER TABLE users_user ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMP WITH TIME ZONE;",
-        "email_verified_at 컬럼 추가"
+        "email_verified_at  "
     )
 
-    # 5. friend_code 컬럼 추가
+    # 5. friend_code  
     execute_sql_safely(
         "ALTER TABLE users_user ADD COLUMN IF NOT EXISTS friend_code VARCHAR(20) UNIQUE;",
-        "friend_code 컬럼 추가"
+        "friend_code  "
     )
 else:
-    print("📊 SQLite 감지 - 직접 SQL 건너뛰고 정규 마이그레이션만 실행...")
+    print(" SQLite  -  SQL    ...")
 
-# 6. 정규 마이그레이션 실행
-print("\n📋 정규 마이그레이션 실행...")
+# 6.   
+print("\n   ...")
 try:
     call_command('migrate', '--noinput')
-    print("✅ 정규 마이그레이션 완료")
+    print("   ")
 except Exception as e:
-    print(f"⚠️ 정규 마이그레이션 오류: {e}")
+    print(f"   : {e}")
 
-print("\n✅ 직접 마이그레이션 완료!")
+print("\n   !")

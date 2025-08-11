@@ -18,7 +18,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const [processingIds, setProcessingIds] = useState<Set<number>>(new Set())
 
-  // 초대장 목록 로드
+  //   
   const loadInvitations = async () => {
     try {
       const result = type === 'received' 
@@ -32,7 +32,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
       }
     } catch (error) {
       console.error('Error loading invitations:', error)
-      error('초대장을 불러오는데 실패했습니다.')
+      error('  .')
     } finally {
       setIsLoading(false)
     }
@@ -42,7 +42,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
     loadInvitations()
   }, [type])
 
-  // 초대장 응답 (수락/거절)
+  //   (/)
   const handleResponse = async (invitationId: number, response: 'accepted' | 'declined') => {
     if (processingIds.has(invitationId)) return
 
@@ -53,7 +53,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
       })
 
       if (result.success) {
-        success(response === 'accepted' ? '초대를 수락했습니다.' : '초대를 거절했습니다.')
+        success(response === 'accepted' ? ' .' : ' .')
         await loadInvitations()
         if (onInvitationUpdate) {
           onInvitationUpdate()
@@ -63,7 +63,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
       }
     } catch (error) {
       console.error('Error responding to invitation:', error)
-      error('초대 응답에 실패했습니다.')
+      error('  .')
     } finally {
       setProcessingIds(prev => {
         const newSet = new Set(prev)
@@ -73,18 +73,18 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
     }
   }
 
-  // 초대장 취소
+  //  
   const handleCancel = async (invitationId: number) => {
     if (processingIds.has(invitationId)) return
 
-    if (!window.confirm('초대를 취소하시겠습니까?')) return
+    if (!window.confirm(' ?')) return
 
     setProcessingIds(prev => new Set([...prev, invitationId]))
     try {
       const result = await invitationService.cancelInvitation(invitationId)
 
       if (result.success) {
-        success('초대를 취소했습니다.')
+        success(' .')
         await loadInvitations()
         if (onInvitationUpdate) {
           onInvitationUpdate()
@@ -94,7 +94,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
       }
     } catch (error) {
       console.error('Error cancelling invitation:', error)
-      error('초대 취소에 실패했습니다.')
+      error('  .')
     } finally {
       setProcessingIds(prev => {
         const newSet = new Set(prev)
@@ -104,7 +104,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
     }
   }
 
-  // 초대장 재발송
+  //  
   const handleResend = async (invitationId: number) => {
     if (processingIds.has(invitationId)) return
 
@@ -113,14 +113,14 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
       const result = await invitationService.resendInvitation(invitationId)
 
       if (result.success) {
-        success('초대장을 재발송했습니다.')
+        success(' .')
         await loadInvitations()
       } else {
         throw new Error(result.error?.message || 'Failed to resend invitation')
       }
     } catch (error) {
       console.error('Error resending invitation:', error)
-      error('초대장 재발송에 실패했습니다.')
+      error('  .')
     } finally {
       setProcessingIds(prev => {
         const newSet = new Set(prev)
@@ -130,7 +130,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
     }
   }
 
-  // 상태별 스타일 및 텍스트
+  //    
   const getStatusInfo = (invitation: Invitation) => {
     const isExpired = new Date(invitation.expires_at) < new Date()
     
@@ -138,7 +138,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
       case 'pending':
         if (isExpired) {
           return {
-            text: '만료됨',
+            text: '',
             className: 'bg-gray-100 text-gray-600',
             canRespond: false,
             canCancel: false,
@@ -146,7 +146,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
           }
         }
         return {
-          text: '대기중',
+          text: '',
           className: 'bg-yellow-100 text-yellow-800',
           canRespond: type === 'received',
           canCancel: type === 'sent',
@@ -154,7 +154,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
         }
       case 'accepted':
         return {
-          text: '수락됨',
+          text: '',
           className: 'bg-green-100 text-green-800',
           canRespond: false,
           canCancel: false,
@@ -162,7 +162,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
         }
       case 'declined':
         return {
-          text: '거절됨',
+          text: '',
           className: 'bg-red-100 text-red-800',
           canRespond: false,
           canCancel: false,
@@ -170,7 +170,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
         }
       case 'cancelled':
         return {
-          text: '취소됨',
+          text: '',
           className: 'bg-gray-100 text-gray-600',
           canRespond: false,
           canCancel: false,
@@ -198,7 +198,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
   if (invitations.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        {type === 'received' ? '받은 초대가 없습니다.' : '보낸 초대가 없습니다.'}
+        {type === 'received' ? '  .' : '  .'}
       </div>
     )
   }
@@ -227,14 +227,14 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                       {type === 'received' ? (
                         <>
                           <span>{invitation.sender_name || invitation.sender_email}</span>
-                          <span className="text-sm text-gray-500 ml-2">님이 초대했습니다</span>
+                          <span className="text-sm text-gray-500 ml-2"> </span>
                         </>
                       ) : (
                         invitation.recipient_email
                       )}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {invitation.project_title || '일반 초대'}
+                      {invitation.project_title || ' '}
                     </div>
                   </div>
                 </div>
@@ -254,7 +254,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                   </span>
                   <span>•</span>
                   <span>
-                    만료: {formatDistanceToNow(new Date(invitation.expires_at), { 
+                    : {formatDistanceToNow(new Date(invitation.expires_at), { 
                       addSuffix: true, 
                       locale: ko 
                     })}
@@ -267,7 +267,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                   {statusInfo.text}
                 </span>
 
-                {/* 액션 버튼들 */}
+                {/*   */}
                 <div className="flex space-x-2">
                   {statusInfo.canRespond && (
                     <>
@@ -276,7 +276,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                         disabled={isProcessing}
                         className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-sm"
                       >
-                        수락
+                        
                       </Button>
                       <Button
                         onClick={() => handleResponse(invitation.id, 'declined')}
@@ -284,7 +284,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                         variant="ghost"
                         className="border border-gray-300 hover:bg-gray-50 px-3 py-1 text-sm"
                       >
-                        거절
+                        
                       </Button>
                     </>
                   )}
@@ -296,7 +296,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                       variant="ghost"
                       className="text-red-600 hover:bg-red-50 px-3 py-1 text-sm"
                     >
-                      취소
+                      
                     </Button>
                   )}
 
@@ -307,7 +307,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
                       variant="ghost"
                       className="text-blue-600 hover:bg-blue-50 px-3 py-1 text-sm"
                     >
-                      재발송
+                      
                     </Button>
                   )}
                 </div>
@@ -317,7 +317,7 @@ const InvitationList = ({ type, onInvitationUpdate }: InvitationListProps) => {
             {isProcessing && (
               <div className="mt-3 flex items-center space-x-2 text-sm text-gray-500">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                <span>처리 중...</span>
+                <span> ...</span>
               </div>
             )}
           </div>

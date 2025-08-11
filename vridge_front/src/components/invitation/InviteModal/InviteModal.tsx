@@ -30,7 +30,7 @@ const InviteModal = ({
   const [customEmail, setCustomEmail] = useState('')
   const [message, setMessage] = useState('')
 
-  // 친구 목록 로드
+  //   
   const loadFriends = async () => {
     try {
       const result = await invitationService.getFriends()
@@ -48,13 +48,13 @@ const InviteModal = ({
     }
   }, [isOpen])
 
-  // 친구 목록 필터링
+  //   
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     friend.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  // 이메일 선택/해제
+  //  /
   const toggleEmailSelection = (email: string) => {
     setSelectedEmails(prev => 
       prev.includes(email)
@@ -63,18 +63,18 @@ const InviteModal = ({
     )
   }
 
-  // 커스텀 이메일 추가
+  //   
   const addCustomEmail = () => {
     if (!customEmail.trim()) return
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(customEmail)) {
-      error('올바른 이메일 형식이 아닙니다.')
+      error('   .')
       return
     }
 
     if (selectedEmails.includes(customEmail)) {
-      error('이미 선택된 이메일입니다.')
+      error('  .')
       return
     }
 
@@ -82,10 +82,10 @@ const InviteModal = ({
     setCustomEmail('')
   }
 
-  // 초대장 발송
+  //  
   const handleSendInvitations = async () => {
     if (selectedEmails.length === 0) {
-      error('초대할 이메일을 선택해주세요.')
+      error('  .')
       return
     }
 
@@ -105,10 +105,10 @@ const InviteModal = ({
       const failCount = results.length - successCount
 
       if (successCount > 0) {
-        success(`${successCount}명에게 초대장을 발송했습니다.`)
+        success(`${successCount}  .`)
       }
       if (failCount > 0) {
-        error(`${failCount}명에게 초대장 발송에 실패했습니다.`)
+        error(`${failCount}   .`)
       }
 
       if (onInviteSent) {
@@ -118,13 +118,13 @@ const InviteModal = ({
       handleClose()
     } catch (error) {
       console.error('Error sending invitations:', error)
-      error('초대장 발송에 실패했습니다.')
+      error('  .')
     } finally {
       setIsLoading(false)
     }
   }
 
-  // 모달 닫기 및 초기화
+  //    
   const handleClose = () => {
     setSelectedEmails([])
     setCustomEmail('')
@@ -137,40 +137,40 @@ const InviteModal = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={projectTitle ? `${projectTitle}에 초대하기` : '팀원 초대하기'}
+      title={projectTitle ? `${projectTitle} ` : ' '}
       className="max-w-2xl"
     >
       <div className="space-y-6">
-        {/* 프로젝트 정보 */}
+        {/*   */}
         {projectTitle && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <span className="text-sm font-medium text-blue-800">
-                프로젝트: {projectTitle}
+                : {projectTitle}
               </span>
             </div>
           </div>
         )}
 
-        {/* 이메일 검색 */}
+        {/*   */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            팀원 검색
+             
           </label>
           <Input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="이름이나 이메일로 검색..."
+            placeholder="  ..."
             className="w-full"
           />
         </div>
 
-        {/* 친구 목록 */}
+        {/*   */}
         {filteredFriends.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">최근 협업한 팀원</h3>
+            <h3 className="text-sm font-medium text-gray-700 mb-3">  </h3>
             <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg">
               {filteredFriends.map((friend) => (
                 <div
@@ -214,10 +214,10 @@ const InviteModal = ({
           </div>
         )}
 
-        {/* 새 이메일 추가 */}
+        {/*    */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            새 이메일 추가
+              
           </label>
           <div className="flex space-x-2">
             <Input
@@ -238,16 +238,16 @@ const InviteModal = ({
               variant="ghost"
               className="border border-gray-300 hover:bg-gray-50"
             >
-              추가
+              
             </Button>
           </div>
         </div>
 
-        {/* 선택된 이메일 목록 */}
+        {/*    */}
         {selectedEmails.length > 0 && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              선택된 이메일 ({selectedEmails.length}명)
+                ({selectedEmails.length})
             </label>
             <div className="flex flex-wrap gap-2">
               {selectedEmails.map((email) => (
@@ -268,21 +268,21 @@ const InviteModal = ({
           </div>
         )}
 
-        {/* 초대 메시지 */}
+        {/*   */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            초대 메시지 (선택사항)
+              ()
           </label>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             rows={3}
-            placeholder="함께 작업하고 싶어서 초대드립니다!"
+            placeholder="   !"
           />
         </div>
 
-        {/* 버튼 */}
+        {/*  */}
         <div className="flex space-x-3 pt-4">
           <Button
             onClick={handleSendInvitations}
@@ -292,10 +292,10 @@ const InviteModal = ({
             {isLoading ? (
               <div className="flex items-center justify-center space-x-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span>발송 중...</span>
+                <span> ...</span>
               </div>
             ) : (
-              `초대장 발송 (${selectedEmails.length}명)`
+              `  (${selectedEmails.length})`
             )}
           </Button>
           <Button
@@ -303,7 +303,7 @@ const InviteModal = ({
             variant="ghost"
             className="flex-1 border border-gray-300 hover:bg-gray-50 py-2 rounded-lg"
           >
-            취소
+            
           </Button>
         </div>
       </div>

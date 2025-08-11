@@ -1,11 +1,11 @@
-# 최종 CORS 수정 설정
+#  CORS  
 from .sendgrid_config import *
 
-# CORS 설정 완전 재정의
+# CORS   
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
-# 모든 가능한 프론트엔드 도메인 포함
+#     
 CORS_ALLOWED_ORIGINS = [
     "https://vlanet.net",
     "https://www.vlanet.net",
@@ -18,7 +18,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://vlanet-v1-0.vercel.app",
 ]
 
-# 환경변수에서 추가 origin 가져오기
+#   origin 
 import os
 additional_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
 if additional_origins:
@@ -27,14 +27,14 @@ if additional_origins:
         if origin and origin not in CORS_ALLOWED_ORIGINS:
             CORS_ALLOWED_ORIGINS.append(origin)
 
-# CORS 정규식 패턴
+# CORS  
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.vercel\.app$",
     r"^https://vlanet.*\.vercel\.app$",
     r"^https://.*-winnmedia\.vercel\.app$",
 ]
 
-# 모든 HTTP 메서드 허용
+#  HTTP  
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -44,7 +44,7 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-# 모든 필요한 헤더 허용
+#    
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -58,16 +58,16 @@ CORS_ALLOW_HEADERS = [
     'cache-control',
 ]
 
-# 노출할 헤더
+#  
 CORS_EXPOSE_HEADERS = [
     'Content-Type',
     'X-CSRFToken',
 ]
 
-# Preflight 캐시
+# Preflight 
 CORS_PREFLIGHT_MAX_AGE = 86400
 
-# CSRF 신뢰할 수 있는 도메인
+# CSRF    
 CSRF_TRUSTED_ORIGINS = [
     'https://vlanet.net',
     'https://www.vlanet.net',
@@ -78,12 +78,12 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
 ]
 
-# 미들웨어 순서 재확인 (CORS가 최상단에)
+#    (CORS )
 MIDDLEWARE = [
-    'middleware.force_cors.ForceCorsMiddleware',  # 강제 CORS 헤더 추가
+    'middleware.force_cors.ForceCorsMiddleware',  #  CORS  
     'corsheaders.middleware.CorsMiddleware',  # django-cors-headers
     'django.middleware.security.SecurityMiddleware',
-    'middleware.cors_debug.CorsDebugMiddleware',  # CORS 디버깅
+    'middleware.cors_debug.CorsDebugMiddleware',  # CORS 
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -93,7 +93,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# 디버깅 출력
+#  
 print("=" * 80)
 print("[CORS Final Fix] Settings loaded")
 print(f"CORS_ALLOWED_ORIGINS ({len(CORS_ALLOWED_ORIGINS)} origins):")

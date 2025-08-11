@@ -1,1 +1,1 @@
-web: python3 server_django_proxy_v2.py
+web: ./start.sh

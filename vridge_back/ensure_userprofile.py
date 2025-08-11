@@ -38,9 +38,9 @@ def main():
             for user in users_without_profile:
                 try:
                     profile = UserProfile.objects.create(user=user)
-                    print(f"✓ Created profile for user: {user.username}")
+                    print(f" Created profile for user: {user.username}")
                 except Exception as e:
-                    print(f"✗ Error creating profile for {user.username}: {e}")
+                    print(f" Error creating profile for {user.username}: {e}")
     else:
         print("All users already have profiles.")
     
@@ -52,7 +52,7 @@ def main():
     if total_users != total_profiles:
         print("WARNING: User count doesn't match profile count!")
     else:
-        print("✓ All users have profiles!")
+        print(" All users have profiles!")
 
 if __name__ == "__main__":
     main()

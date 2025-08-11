@@ -3,7 +3,7 @@ from .models import VideoAnalysisResult, AIFeedbackItem, AIAnalysisSettings
 
 
 class AIFeedbackItemSerializer(serializers.ModelSerializer):
-    """AI 피드백 항목 시리얼라이저"""
+    """AI   """
     
     class Meta:
         model = AIFeedbackItem
@@ -26,7 +26,7 @@ class AIFeedbackItemSerializer(serializers.ModelSerializer):
 
 
 class VideoAnalysisResultSerializer(serializers.ModelSerializer):
-    """비디오 분석 결과 시리얼라이저"""
+    """   """
     
     feedback_items = AIFeedbackItemSerializer(many=True, read_only=True)
     created_by_email = serializers.EmailField(source='created_by.email', read_only=True)
@@ -66,7 +66,7 @@ class VideoAnalysisResultSerializer(serializers.ModelSerializer):
 
 
 class VideoAnalysisCreateSerializer(serializers.Serializer):
-    """비디오 분석 생성 시리얼라이저"""
+    """   """
     
     feedback_id = serializers.IntegerField(required=True)
     analysis_type = serializers.ChoiceField(
@@ -80,12 +80,12 @@ class VideoAnalysisCreateSerializer(serializers.Serializer):
         try:
             FeedBack.objects.get(id=value)
         except FeedBack.DoesNotExist:
-            raise serializers.ValidationError("존재하지 않는 피드백 ID입니다.")
+            raise serializers.ValidationError("   ID.")
         return value
 
 
 class VideoSearchSerializer(serializers.Serializer):
-    """비디오 검색 시리얼라이저"""
+    """  """
     
     query = serializers.CharField(required=True, min_length=1, max_length=500)
     options = serializers.ListField(
@@ -95,15 +95,15 @@ class VideoSearchSerializer(serializers.Serializer):
     limit = serializers.IntegerField(default=10, min_value=1, max_value=100)
     
     def validate_query(self, value):
-        # 검색어 정제
+        #  
         value = value.strip()
         if not value:
-            raise serializers.ValidationError("검색어를 입력해주세요.")
+            raise serializers.ValidationError(" .")
         return value
 
 
 class AIAnalysisSettingsSerializer(serializers.ModelSerializer):
-    """AI 분석 설정 시리얼라이저"""
+    """AI   """
     
     class Meta:
         model = AIAnalysisSettings

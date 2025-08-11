@@ -42,7 +42,7 @@ const Calendar = ({
   const [syncStatus, setSyncStatus] = useState<'connected' | 'disconnected' | 'syncing'>('disconnected')
   const calendarRef = useRef<FullCalendar>(null)
 
-  // 실시간 동기화 효과
+  //   
   useEffect(() => {
     if (!enableRealTimeSync) return;
 
@@ -61,7 +61,7 @@ const Calendar = ({
               }
               return prev;
             });
-            success(`새 일정이 추가되었습니다: ${update.event.title}`);
+            success(`  : ${update.event.title}`);
           }
           break;
 
@@ -74,7 +74,7 @@ const Calendar = ({
               onEventsUpdated?.(newEvents);
               return newEvents;
             });
-            success(`일정이 수정되었습니다: ${update.event.title}`);
+            success(` : ${update.event.title}`);
           }
           break;
 
@@ -85,7 +85,7 @@ const Calendar = ({
               const newEvents = prev.filter(e => e.id !== update.eventId);
               onEventsUpdated?.(newEvents);
               if (deletedEvent) {
-                success(`일정이 삭제되었습니다: ${deletedEvent.title}`);
+                success(` : ${deletedEvent.title}`);
               }
               return newEvents;
             });
@@ -96,16 +96,16 @@ const Calendar = ({
           if (update.events) {
             setLocalEvents(update.events);
             onEventsUpdated?.(update.events);
-            success('여러 일정이 업데이트되었습니다.');
+            success('  .');
           }
           break;
       }
 
-      // 동기화 상태를 잠시 후 연결됨으로 변경
+      //      
       setTimeout(() => setSyncStatus('connected'), 500);
     };
 
-    // 동기화 리스너 등록
+    //   
     calendarService.addSyncListener(handleSyncUpdate);
     setSyncStatus('connected');
 
@@ -115,15 +115,15 @@ const Calendar = ({
     };
   }, [enableRealTimeSync, onEventsUpdated, success]);
 
-  // 외부에서 전달받은 이벤트와 로컬 이벤트 동기화
+  //      
   useEffect(() => {
     setLocalEvents(events);
   }, [events]);
 
-  // 표시할 이벤트 결정 (실시간 동기화가 활성화된 경우 로컬 이벤트 사용)
+  //    (      )
   const displayEvents = enableRealTimeSync ? localEvents : events;
 
-  // 캘린더 이벤트 형식으로 변환
+  //    
   const calendarEvents: EventInput[] = displayEvents.map((event) => ({
     id: event.id.toString(),
     title: event.title,
@@ -136,33 +136,33 @@ const Calendar = ({
     borderColor: getEventColor(event)
   }))
 
-  // 이벤트 색상 결정 (프로젝트 상태나 중요도에 따라)
+  //    (   )
   function getEventColor(event: CalendarEvent): string {
-    // 날짜가 오늘보다 이전인지 확인
+    //    
     const eventDate = new Date(`${event.date}T${event.time}`)
     const today = new Date()
     
     if (eventDate < today) {
-      return '#ef4444' // 지연된 일정 (빨간색)
+      return '#ef4444' //   ()
     }
     
-    // 임박한 일정 (24시간 이내)
+    //   (24 )
     const diffHours = (eventDate.getTime() - today.getTime()) / (1000 * 60 * 60)
     if (diffHours <= 24 && diffHours > 0) {
-      return '#f59e0b' // 임박한 일정 (주황색)
+      return '#f59e0b' //   ()
     }
     
-    return '#3b82f6' // 일반 일정 (파란색)
+    return '#3b82f6' //   ()
   }
 
-  // 날짜 선택 시 새 이벤트 생성
+  //      
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
     if (onEventCreate) {
       onEventCreate(selectInfo)
     }
   }, [onEventCreate])
 
-  // 이벤트 클릭 시 수정
+  //    
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
     const originalEvent = clickInfo.event.extendedProps.originalEvent as CalendarEvent
     if (onEventEdit) {
@@ -170,7 +170,7 @@ const Calendar = ({
     }
   }, [onEventEdit])
 
-  // 이벤트 드래그 앤 드롭으로 날짜/시간 변경
+  //     / 
   const handleEventDrop = useCallback((dropInfo: EventDropArg) => {
     if (onEventUpdate) {
       const eventId = parseInt(dropInfo.event.id)
@@ -178,7 +178,7 @@ const Calendar = ({
     }
   }, [onEventUpdate])
 
-  // 뷰 변경 핸들러
+  //   
   const handleViewChange = (view: 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay') => {
     setCurrentView(view)
     const calendarApi = calendarRef.current?.getApi()
@@ -187,7 +187,7 @@ const Calendar = ({
     }
   }
 
-  // 오늘로 이동
+  //  
   const goToToday = () => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
@@ -195,7 +195,7 @@ const Calendar = ({
     }
   }
 
-  // 이전/다음 버튼
+  // / 
   const goToPrev = () => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
@@ -220,34 +220,34 @@ const Calendar = ({
 
   return (
     <div className="bg-white rounded-lg shadow-lg">
-      {/* 캘린더 컨트롤 */}
+      {/*   */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          {/* 네비게이션 버튼 */}
+          {/*   */}
           <div className="flex items-center space-x-2">
             <Button 
               onClick={goToPrev}
               variant="ghost"
               className="p-2 hover:bg-gray-100"
             >
-              ◀
+              
             </Button>
             <Button 
               onClick={goToToday}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm"
             >
-              오늘
+              
             </Button>
             <Button 
               onClick={goToNext}
               variant="ghost"
               className="p-2 hover:bg-gray-100"
             >
-              ▶
+              
             </Button>
           </div>
 
-          {/* 뷰 변경 버튼 */}
+          {/*    */}
           <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
             <Button
               onClick={() => handleViewChange('dayGridMonth')}
@@ -258,7 +258,7 @@ const Calendar = ({
               }`}
               variant="ghost"
             >
-              월
+              
             </Button>
             <Button
               onClick={() => handleViewChange('timeGridWeek')}
@@ -269,7 +269,7 @@ const Calendar = ({
               }`}
               variant="ghost"
             >
-              주
+              
             </Button>
             <Button
               onClick={() => handleViewChange('timeGridDay')}
@@ -280,29 +280,29 @@ const Calendar = ({
               }`}
               variant="ghost"
             >
-              일
+              
             </Button>
           </div>
         </div>
 
-        {/* 범례 및 동기화 상태 */}
+        {/*     */}
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-center space-x-4 text-sm">
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-blue-500 rounded"></div>
-              <span className="text-gray-600">일반</span>
+              <span className="text-gray-600"></span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-orange-500 rounded"></div>
-              <span className="text-gray-600">임박</span>
+              <span className="text-gray-600"></span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-red-500 rounded"></div>
-              <span className="text-gray-600">지연</span>
+              <span className="text-gray-600"></span>
             </div>
           </div>
 
-          {/* 실시간 동기화 상태 표시기 */}
+          {/*     */}
           {enableRealTimeSync && (
             <div className="flex items-center space-x-2 text-sm">
               <div className={`w-2 h-2 rounded-full ${
@@ -315,9 +315,9 @@ const Calendar = ({
                 syncStatus === 'syncing' ? 'text-yellow-600' :
                 'text-red-600'
               }`}>
-                {syncStatus === 'connected' ? '실시간 동기화' :
-                 syncStatus === 'syncing' ? '동기화 중...' :
-                 '연결 끊김'}
+                {syncStatus === 'connected' ? ' ' :
+                 syncStatus === 'syncing' ? ' ...' :
+                 ' '}
               </span>
             </div>
           )}
@@ -357,12 +357,12 @@ const Calendar = ({
             meridiem: false
           }}
           buttonText={{
-            today: '오늘',
-            month: '월',
-            week: '주',
-            day: '일'
+            today: '',
+            month: '',
+            week: '',
+            day: ''
           }}
-          noEventsText="등록된 일정이 없습니다"
+          noEventsText="  "
         />
       </div>
     </div>

@@ -24,9 +24,9 @@ export interface LoginFormProps {
 }
 
 /**
- * 로그인 폼 컴포넌트
- * React Hook Form + Zod를 사용한 타입 안전한 폼 검증
- * 애니메이션과 접근성을 고려한 사용자 친화적 UI
+ *   
+ * React Hook Form + Zod     
+ *      UI
  */
 export function LoginForm({
   onSuccess,
@@ -66,7 +66,7 @@ export function LoginForm({
         router.push(redirectTo);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '로그인에 실패했습니다.';
+      const errorMessage = error instanceof Error ? error.message : ' .';
       
       setError('root', {
         type: 'manual',
@@ -82,7 +82,7 @@ export function LoginForm({
   };
 
   const handleSocialLogin = (provider: 'google' | 'kakao') => {
-    // 소셜 로그인 구현 예정
+    //    
     console.log(`${provider} login clicked`);
   };
 
@@ -94,13 +94,13 @@ export function LoginForm({
       className={cn('w-full max-w-md mx-auto', className)}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* 이메일 입력 필드 */}
+        {/*    */}
         <div className="space-y-2">
           <label 
             htmlFor="email" 
             className="block text-sm font-medium text-gray-700"
           >
-            이메일
+            
             <span className="text-red-500 ml-1">*</span>
           </label>
           
@@ -146,13 +146,13 @@ export function LoginForm({
           </AnimatePresence>
         </div>
 
-        {/* 비밀번호 입력 필드 */}
+        {/*    */}
         <div className="space-y-2">
           <label 
             htmlFor="password" 
             className="block text-sm font-medium text-gray-700"
           >
-            비밀번호
+            
             <span className="text-red-500 ml-1">*</span>
           </label>
           
@@ -183,7 +183,7 @@ export function LoginForm({
               type="button"
               onClick={togglePasswordVisibility}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+              aria-label={showPassword ? ' ' : ' '}
             >
               {showPassword ? (
                 <EyeOff className="w-5 h-5" />
@@ -209,7 +209,7 @@ export function LoginForm({
           </AnimatePresence>
         </div>
 
-        {/* 기억하기 & 비밀번호 찾기 */}
+        {/*  &   */}
         {showRememberMe && (
           <div className="flex items-center justify-between">
             <label className="flex items-center">
@@ -218,19 +218,19 @@ export function LoginForm({
                 type="checkbox"
                 className="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary focus:ring-2"
               />
-              <span className="ml-2 text-sm text-gray-600">로그인 상태 유지</span>
+              <span className="ml-2 text-sm text-gray-600">  </span>
             </label>
             
             <a 
               href="/reset-password" 
               className="text-sm text-brand-primary hover:text-brand-primary-dark transition-colors"
             >
-              비밀번호 찾기
+               
             </a>
           </div>
         )}
 
-        {/* 전체 폼 에러 */}
+        {/*    */}
         <AnimatePresence mode="wait">
           {(errors.root || loginError) && (
             <motion.div
@@ -247,7 +247,7 @@ export function LoginForm({
           )}
         </AnimatePresence>
 
-        {/* 로그인 버튼 */}
+        {/*   */}
         <Button
           type="submit"
           disabled={isSubmitting || isLoginLoading}
@@ -257,14 +257,14 @@ export function LoginForm({
           {isSubmitting || isLoginLoading ? (
             <span className="flex items-center justify-center gap-2">
               <Spinner size="sm" color="white" />
-              로그인 중...
+               ...
             </span>
           ) : (
-            '로그인'
+            ''
           )}
         </Button>
 
-        {/* 소셜 로그인 */}
+        {/*   */}
         {showSocialLogin && (
           <>
             <div className="relative">
@@ -272,7 +272,7 @@ export function LoginForm({
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">또는</span>
+                <span className="px-4 bg-white text-gray-500"></span>
               </div>
             </div>
             
@@ -324,14 +324,14 @@ export function LoginForm({
           </>
         )}
 
-        {/* 회원가입 링크 */}
+        {/*   */}
         <p className="text-center text-sm text-gray-600">
-          아직 계정이 없으신가요?{' '}
+            ?{' '}
           <a 
             href="/signup" 
             className="font-medium text-brand-primary hover:text-brand-primary-dark transition-colors"
           >
-            회원가입
+            
           </a>
         </p>
       </form>
