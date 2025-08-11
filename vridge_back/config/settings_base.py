@@ -112,6 +112,7 @@ PROJECT_APPS = [
     "ai_video",
     "admin_dashboard",
     "documents",
+    "analytics",
 ]
 
 THIRD_PARTY_APPS = [
