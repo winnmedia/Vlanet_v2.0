@@ -46,6 +46,10 @@ class GlobalErrorHandlingMiddleware(MiddlewareMixin):
         # 에러 타입별 처리
         error_response = self._get_error_response(exception, is_debug)
         
+        # 모든 에러 응답에 CORS 헤더 추가
+        if error_response:
+            self._add_cors_headers(error_response)
+        
         # 로깅 레벨 결정
         log_level = self._get_log_level(exception)
         
@@ -173,6 +177,17 @@ class GlobalErrorHandlingMiddleware(MiddlewareMixin):
                 'message': '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
                 'status_code': 500
             }, status=500)
+    
+    def _add_cors_headers(self, response):
+        """
+        Add CORS headers to error responses to prevent CORS errors
+        """
+        # CORS 헤더 추가 (vlanet.net 포함)
+        response['Access-Control-Allow-Origin'] = 'https://vlanet.net'
+        response['Access-Control-Allow-Credentials'] = 'true'
+        response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+        response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-CSRFToken, X-Requested-With'
+        return response
     
     def _get_log_level(self, exception):
         """
