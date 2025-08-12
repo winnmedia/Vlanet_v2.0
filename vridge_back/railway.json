@@ -4,11 +4,11 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "bash railway_start_unified.sh",
+    "startCommand": "bash railway_start_safe.sh",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10,
     "healthcheckPath": "/health/",
-    "healthcheckTimeout": 120,
+    "healthcheckTimeout": 180,
     "replicas": 1
   },
   "environments": {

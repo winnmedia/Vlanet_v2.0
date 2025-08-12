@@ -1,1 +1,1 @@
-web: bash railway_start_unified.sh
+web: bash railway_start_safe.sh
