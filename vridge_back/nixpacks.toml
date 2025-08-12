@@ -1,20 +1,8 @@
-# Nixpacks 빌드 구성
-# Railway에서 Python 앱을 빌드하기 위한 세밀한 제어
-
 [phases.setup]
-nixPkgs = ["python311", "postgresql15", "gcc"]
+nixPkgs = ["python311", "gcc"]
 
 [phases.install]
-cmds = [
-    "pip install --upgrade pip",
-    "pip install -r requirements.txt",
-    "pip install gunicorn psycopg2-binary"
-]
-
-[phases.build]
-cmds = [
-    "python manage.py collectstatic --noinput || true"
-]
+cmds = ["pip install --upgrade pip", "pip install -r requirements.txt"]
 
 [start]
-cmd = "bash railway_start.sh"
+cmd = "gunicorn health_server:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
