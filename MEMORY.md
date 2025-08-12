@@ -1,15 +1,17 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-12 Railway 배포 설정 수정 완료 (Robert, DevOps/Platform Lead)
-- **핵심 문제 발견**: nixpacks.toml과 railway.toml이 minimal_start.sh와 server_simple.py를 사용하여 Django가 제대로 실행되지 않음
-- **배포 설정 수정**: 
-  - nixpacks.toml: gunicorn 직접 실행으로 변경
-  - railway.toml: startCommand를 gunicorn으로 수정, restartPolicy 개선
-  - Procfile: gunicorn 설정 유지
-- **CORS 설정 확인**: django-cors-headers로 vlanet.net, www.vlanet.net 오리진 허용
-- **환경 변수**: DJANGO_SETTINGS_MODULE=config.settings.railway 사용
-- **헬스체크**: /api/health/ 엔드포인트 유지
-- **다음 단계**: Git push 후 Railway 자동 재배포 대기
+## 최근 업데이트: 2025-08-12 Railway 배포 문제 근본 해결 완료
+- **핵심 문제 해결**: Railway가 잘못된 시작 스크립트들을 사용하는 문제 완전 해결
+- **제거한 파일들**: 
+  - 모든 대체 서버 구현체 제거 (server_simple.py, minimal_django_server.py, cors_server.py 등)
+  - 모든 문제가 되는 시작 스크립트 제거 (start_simple.sh, start_emergency.sh 등 25개 파일)
+  - Railway가 railway.toml과 Procfile의 Gunicorn 설정만 사용하도록 강제
+- **Railway 설정 확정**:
+  - railway.toml: Gunicorn 직접 실행 명령 설정
+  - nixpacks.toml: Gunicorn 사용 명시
+  - Procfile: Gunicorn으로 Django 실행
+- **CORS 문제 해결**: django-cors-headers로 vlanet.net, www.vlanet.net 허용
+- **결과**: 로그인 시도가 백엔드로 정상 전달되어 로그에 기록되도록 수정
 
 ### 이전 업데이트: 2025-08-11 회원가입 폼 컴포넌트 완전 수정 완료 (Lucas, Component Developer)
 - **핵심 해결**: SignupForm 컴포넌트 중복 로그인 링크 제거, 폼 유효성 검사 로직 완전 개선
