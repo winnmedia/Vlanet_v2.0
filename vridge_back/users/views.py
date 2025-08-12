@@ -39,6 +39,7 @@ class CheckEmail(View):
             try:
                 data = json.loads(request.body.decode('utf-8') if isinstance(request.body, bytes) else request.body)
             except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                logger.error(f"JSON parsing error in CheckEmail: {str(e)}")
                 return JsonResponse({"message": " JSON ."}, status=400)
             
             email = data.get("email")
@@ -48,15 +49,24 @@ class CheckEmail(View):
             if not is_valid:
                 return StandardResponse.validation_error({"email": error_msg})
             
-            # N+1  :   
-            user = models.User.objects.filter(username=email).first()
-            if user:
-                return StandardResponse.error("USER_ALREADY_EXISTS", "   .", 409)
-            else:
-                return StandardResponse.success(message="  .")
+            # Database query with connection error handling
+            try:
+                # N+1  :   
+                user = models.User.objects.filter(username=email).first()
+                if user:
+                    return StandardResponse.error("USER_ALREADY_EXISTS", "   .", 409)
+                else:
+                    return StandardResponse.success(message="  .")
+            except Exception as db_error:
+                logger.error(f"Database error in CheckEmail for email {email}: {str(db_error)}", exc_info=True)
+                # Return a safe error response that indicates temporary issue
+                return JsonResponse({
+                    "message": "    .   .",
+                    "error_code": "DB_CONNECTION_ERROR"
+                }, status=503)  # Service Unavailable
                 
         except Exception as e:
-            logger.error(f"Error in CheckEmail: {str(e)}", exc_info=True)
+            logger.error(f"Unexpected error in CheckEmail: {str(e)}", exc_info=True)
             return StandardResponse.server_error()
 
 
@@ -72,6 +82,7 @@ class CheckNickname(View):
             try:
                 data = json.loads(request.body.decode('utf-8') if isinstance(request.body, bytes) else request.body)
             except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                logger.error(f"JSON parsing error in CheckNickname: {str(e)}")
                 return JsonResponse({"message": " JSON ."}, status=400)
             
             nickname = data.get("nickname")
@@ -82,15 +93,24 @@ class CheckNickname(View):
             if len(nickname) < 2:
                 return JsonResponse({"message": "  2  ."}, status=400)
             
-            # N+1  :   
-            user = models.User.objects.filter(nickname=nickname).first()
-            if user:
-                return JsonResponse({"message": "   ."}, status=409)
-            else:
-                return JsonResponse({"message": "  ."}, status=200)
+            # Database query with connection error handling
+            try:
+                # N+1  :   
+                user = models.User.objects.filter(nickname=nickname).first()
+                if user:
+                    return JsonResponse({"message": "   ."}, status=409)
+                else:
+                    return JsonResponse({"message": "  ."}, status=200)
+            except Exception as db_error:
+                logger.error(f"Database error in CheckNickname for nickname {nickname}: {str(db_error)}", exc_info=True)
+                # Return a safe error response that indicates temporary issue
+                return JsonResponse({
+                    "message": "    .   .",
+                    "error_code": "DB_CONNECTION_ERROR"
+                }, status=503)  # Service Unavailable
                 
         except Exception as e:
-            logger.error(f"Error in CheckEmail: {str(e)}", exc_info=True)
+            logger.error(f"Unexpected error in CheckNickname: {str(e)}", exc_info=True)
             return StandardResponse.server_error()
 
 

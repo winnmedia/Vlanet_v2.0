@@ -37,7 +37,7 @@ def custom_500_handler(request, *args, **kwargs):
                   if k.lower() not in ['authorization', 'cookie']}
         logger.error(f"Request headers: {headers}")
     
-    #   DEBUG True    
+    # Create response based on debug mode
     if settings.DEBUG or (hasattr(settings, 'IS_RAILWAY') and settings.IS_RAILWAY and os.environ.get('ENABLE_DEBUG_TOOLBAR', 'False').lower() == 'true'):
         error_details = {
             'error': 'Internal Server Error',
@@ -53,14 +53,45 @@ def custom_500_handler(request, *args, **kwargs):
                 'traceback': traceback.format_tb(exc_traceback)
             })
         
-        return JsonResponse(error_details, status=500)
+        response = JsonResponse(error_details, status=500)
+    else:
+        #      
+        response = JsonResponse({
+            'error': 'Internal Server Error',
+            'message': 'An error occurred while processing your request.',
+            'status_code': 500
+        }, status=500)
     
-    #      
-    return JsonResponse({
-        'error': 'Internal Server Error',
-        'message': 'An error occurred while processing your request.',
-        'status_code': 500
-    }, status=500)
+    # Add CORS headers to error responses
+    origin = request.META.get('HTTP_ORIGIN', '')
+    if origin:
+        # Check if origin is allowed
+        allowed_origins = getattr(settings, 'CORS_ALLOWED_ORIGINS', [])
+        allowed_regexes = getattr(settings, 'CORS_ALLOWED_ORIGIN_REGEXES', [])
+        
+        is_allowed = False
+        
+        # Check exact match
+        if origin in allowed_origins:
+            is_allowed = True
+        
+        # Check regex patterns
+        if not is_allowed and allowed_regexes:
+            import re
+            for pattern_str in allowed_regexes:
+                if re.match(pattern_str, origin):
+                    is_allowed = True
+                    break
+        
+        # Add CORS headers if origin is allowed
+        if is_allowed:
+            response['Access-Control-Allow-Origin'] = origin
+            response['Access-Control-Allow-Credentials'] = 'true'
+            response['Access-Control-Expose-Headers'] = 'Content-Type, X-CSRFToken, X-Request-ID'
+            response['Vary'] = 'Origin'
+            logger.info(f"Added CORS headers to 500 error response for origin: {origin}")
+    
+    return response
 
 def custom_404_handler(request, exception):
     """
@@ -68,11 +99,15 @@ def custom_404_handler(request, exception):
     """
     logger.warning(f"404 Error - Path not found: {request.path}")
     
-    return JsonResponse({
+    response = JsonResponse({
         'error': 'Not Found',
         'message': f'The requested path {request.path} was not found.',
         'status_code': 404
     }, status=404)
+    
+    # Add CORS headers
+    _add_cors_headers_to_response(request, response)
+    return response
 
 def custom_403_handler(request, exception):
     """
@@ -83,11 +118,15 @@ def custom_403_handler(request, exception):
         f"for user: {request.user if hasattr(request, 'user') else 'Anonymous'}"
     )
     
-    return JsonResponse({
+    response = JsonResponse({
         'error': 'Forbidden',
         'message': 'You do not have permission to access this resource.',
         'status_code': 403
     }, status=403)
+    
+    # Add CORS headers
+    _add_cors_headers_to_response(request, response)
+    return response
 
 def custom_400_handler(request, exception):
     """
@@ -95,8 +134,46 @@ def custom_400_handler(request, exception):
     """
     logger.warning(f"400 Error - Bad request: {request.path}")
     
-    return JsonResponse({
+    response = JsonResponse({
         'error': 'Bad Request',
         'message': 'The request could not be understood or was missing required parameters.',
         'status_code': 400
     }, status=400)
+    
+    # Add CORS headers
+    _add_cors_headers_to_response(request, response)
+    return response
+
+
+def _add_cors_headers_to_response(request, response):
+    """
+    Helper function to add CORS headers to error responses.
+    This ensures CORS headers are present even when errors occur.
+    """
+    origin = request.META.get('HTTP_ORIGIN', '')
+    if origin:
+        # Check if origin is allowed
+        allowed_origins = getattr(settings, 'CORS_ALLOWED_ORIGINS', [])
+        allowed_regexes = getattr(settings, 'CORS_ALLOWED_ORIGIN_REGEXES', [])
+        
+        is_allowed = False
+        
+        # Check exact match
+        if origin in allowed_origins:
+            is_allowed = True
+        
+        # Check regex patterns
+        if not is_allowed and allowed_regexes:
+            import re
+            for pattern_str in allowed_regexes:
+                if re.match(pattern_str, origin):
+                    is_allowed = True
+                    break
+        
+        # Add CORS headers if origin is allowed
+        if is_allowed:
+            response['Access-Control-Allow-Origin'] = origin
+            response['Access-Control-Allow-Credentials'] = 'true'
+            response['Access-Control-Expose-Headers'] = 'Content-Type, X-CSRFToken, X-Request-ID'
+            response['Vary'] = 'Origin'
+            logger.debug(f"Added CORS headers to error response for origin: {origin}")

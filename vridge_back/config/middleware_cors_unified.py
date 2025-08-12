@@ -18,6 +18,7 @@ Design Principles:
 
 import logging
 import uuid
+import json
 from typing import Optional, Set, List
 from django.http import HttpResponse, HttpRequest
 from django.conf import settings
@@ -139,17 +140,35 @@ class UnifiedCORSMiddleware(MiddlewareMixin):
         
         return response
     
-    def process_exception(self, request: HttpRequest, exception: Exception) -> None:
+    def process_exception(self, request: HttpRequest, exception: Exception) -> Optional[HttpResponse]:
         """
-        Log exceptions but don't handle them - let Django's error handling
-        create the response, then we'll add CORS headers in process_response.
+        Handle exceptions and ensure CORS headers are added to error responses.
+        Create an error response with CORS headers for unhandled exceptions.
         """
         logger.error(
             f"[{getattr(request, 'id', 'unknown')}] "
             f"Exception in view: {exception.__class__.__name__}: {exception}",
             exc_info=True
         )
-        # Return None to let other middleware and Django handle the exception
+        
+        # For database connection errors, create immediate response with CORS
+        from django.db import OperationalError
+        if isinstance(exception, OperationalError):
+            response = HttpResponse(
+                json.dumps({
+                    'error': 'Database Connection Error',
+                    'message': 'Temporary database connection issue. Please try again.',
+                    'status_code': 503
+                }),
+                content_type='application/json',
+                status=503
+            )
+            self._add_cors_headers(request, response)
+            logger.warning(f"[{getattr(request, 'id', 'unknown')}] Database error handled with CORS headers")
+            return response
+        
+        # For other exceptions, return None to let Django's error handlers work
+        # The error handlers have been updated to add CORS headers
         return None
     
     def _is_origin_allowed(self, origin: str) -> bool:

@@ -46,11 +46,15 @@ if DATABASE_URL:
     db_config.update({
         'OPTIONS': {
             'sslmode': 'require',  # Railway는 SSL 필수
-            'connect_timeout': 60,
-            'options': '-c default_transaction_isolation=read committed'
+            'connect_timeout': 10,  # Reduced from 60 to fail faster
+            'options': '-c default_transaction_isolation=read committed',
+            'keepalives': 1,
+            'keepalives_idle': 30,
+            'keepalives_interval': 10,
+            'keepalives_count': 5,
         },
         'CONN_MAX_AGE': 0,  # Railway에서 긴 연결은 문제를 일으킬 수 있음
-        'ATOMIC_REQUESTS': True,  # 트랜잭션 안전성 보장
+        'ATOMIC_REQUESTS': False,  # Changed from True to avoid long transactions
         'AUTOCOMMIT': True,
         'TIME_ZONE': None,  # PostgreSQL 시간대 설정
     })
