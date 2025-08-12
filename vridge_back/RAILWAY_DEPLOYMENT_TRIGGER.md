@@ -1,2 +1,4 @@
-# Railway Deployment Trigger - Fri Aug  1 08:31:52 KST 2025
+# Railway Deployment Trigger - Mon Aug 12 2025
 Fixed Django settings path: config.settings.railway
+CORS enabled for vlanet.net and www.vlanet.net
+Using gunicorn instead of cors_server.py

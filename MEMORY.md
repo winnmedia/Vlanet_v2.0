@@ -1,13 +1,15 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-12 CORS 문제 완전 해결 및 한글 인코딩 수정 완료
-- **핵심 해결**: Vercel(vlanet.net)과 Railway 백엔드 간 CORS 정책 위반 문제 근본적 해결
-- **아키텍처 개선**: cors_server.py 프록시 제거, Django + Gunicorn 직접 실행으로 전환
-- **CORS 설정**: django-cors-headers로 vlanet.net, www.vlanet.net 오리진 허용
-- **한글 수정**: 프론트엔드 validation 스키마 및 메시지의 모든 한글 텍스트 복원
-- **배포 설정**: Procfile과 railway.json을 Gunicorn 사용하도록 업데이트
-- **헬스체크**: /api/health/ 엔드포인트 추가로 모니터링 강화
-- **테스트 완료**: 로그인 기능 정상 작동, JWT 인증 헤더 지원 확인
+## 최근 업데이트: 2025-08-12 Railway 배포 설정 수정 완료 (Robert, DevOps/Platform Lead)
+- **핵심 문제 발견**: nixpacks.toml과 railway.toml이 minimal_start.sh와 server_simple.py를 사용하여 Django가 제대로 실행되지 않음
+- **배포 설정 수정**: 
+  - nixpacks.toml: gunicorn 직접 실행으로 변경
+  - railway.toml: startCommand를 gunicorn으로 수정, restartPolicy 개선
+  - Procfile: gunicorn 설정 유지
+- **CORS 설정 확인**: django-cors-headers로 vlanet.net, www.vlanet.net 오리진 허용
+- **환경 변수**: DJANGO_SETTINGS_MODULE=config.settings.railway 사용
+- **헬스체크**: /api/health/ 엔드포인트 유지
+- **다음 단계**: Git push 후 Railway 자동 재배포 대기
 
 ### 이전 업데이트: 2025-08-11 회원가입 폼 컴포넌트 완전 수정 완료 (Lucas, Component Developer)
 - **핵심 해결**: SignupForm 컴포넌트 중복 로그인 링크 제거, 폼 유효성 검사 로직 완전 개선
