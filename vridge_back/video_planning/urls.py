@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
-from . import workflow_views
+# Conditional import to prevent import errors in Railway
+try:
+    from . import workflow_views
+    has_workflow_views = True
+except ImportError:
+    has_workflow_views = False
 # from . import views_debug
 # from . import views_jwt_test
 # from . import views_proxy
@@ -47,9 +52,7 @@ urlpatterns = [
     #    API
     path('recent/', views.get_recent_plannings, name='get_recent_plannings'),
     
-    # 통합 워크플로우 API
-    path('workflow/complete/', workflow_views.complete_workflow, name='complete_workflow'),
-    path('workflow/status/<int:planning_id>/', workflow_views.get_workflow_status, name='workflow_status'),
+    # 통합 워크플로우 API (조건부 추가)
     
     #  API (  )
     path('library/', views.planning_library_view, name='planning_library'),
@@ -87,3 +90,10 @@ urlpatterns = [
     #   API
     path('complete/', views.complete_project, name='complete_project'),
 ]
+
+# 조건부로 workflow URLs 추가
+if has_workflow_views:
+    urlpatterns.extend([
+        path('workflow/complete/', workflow_views.complete_workflow, name='complete_workflow'),
+        path('workflow/status/<int:planning_id>/', workflow_views.get_workflow_status, name='workflow_status'),
+    ])
