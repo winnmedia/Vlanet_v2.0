@@ -48,7 +48,7 @@ class GlobalErrorHandlingMiddleware(MiddlewareMixin):
         
         # 모든 에러 응답에 CORS 헤더 추가
         if error_response:
-            self._add_cors_headers(error_response)
+            self._add_cors_headers(request, error_response)
         
         # 로깅 레벨 결정
         log_level = self._get_log_level(exception)
@@ -178,12 +178,26 @@ class GlobalErrorHandlingMiddleware(MiddlewareMixin):
                 'status_code': 500
             }, status=500)
     
-    def _add_cors_headers(self, response):
+    def _add_cors_headers(self, request, response):
         """
         Add CORS headers to error responses to prevent CORS errors
         """
         # CORS 헤더 추가 (vlanet.net 포함)
-        response['Access-Control-Allow-Origin'] = 'https://vlanet.net'
+        origin = request.META.get('HTTP_ORIGIN', '')
+        allowed_origins = [
+            'https://vlanet.net',
+            'https://www.vlanet.net',
+            'http://localhost:3000',
+            'http://localhost:3001',
+        ]
+        
+        # 개발 환경이거나 허용된 오리진인 경우
+        from django.conf import settings
+        if origin in allowed_origins or settings.DEBUG:
+            response['Access-Control-Allow-Origin'] = origin if origin else '*'
+        else:
+            response['Access-Control-Allow-Origin'] = 'https://vlanet.net'
+            
         response['Access-Control-Allow-Credentials'] = 'true'
         response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
         response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-CSRFToken, X-Requested-With'
