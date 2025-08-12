@@ -12,10 +12,15 @@ export DJANGO_SETTINGS_MODULE=config.settings.railway
 export PYTHONUNBUFFERED=1
 export PYTHONDONTWRITEBYTECODE=1
 
+# CORS 관련 환경 변수 강제 설정
+export CORS_ALLOW_CREDENTIALS=true
+export CORS_ALLOWED_ORIGINS="https://vlanet.net,https://www.vlanet.net"
+
 echo "[INFO] 환경 변수 설정 완료"
 echo "  - DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE"
 echo "  - PORT: $PORT"
 echo "  - DATABASE_URL: ${DATABASE_URL:0:30}..."
+echo "  - CORS_ALLOW_CREDENTIALS: $CORS_ALLOW_CREDENTIALS"
 
 # 1. Python 패키지 확인
 echo "[STEP 1/6] Python 패키지 확인..."
@@ -153,7 +158,7 @@ echo "  - Timeout: 300초"
 echo "  - Bind: 0.0.0.0:$PORT"
 echo "================================================"
 
-# Gunicorn 실행 (최적화된 설정)
+# Gunicorn 실행 (최적화된 설정 + CORS 헤더 보장)
 exec gunicorn config.wsgi:application \
     --bind 0.0.0.0:$PORT \
     --workers 2 \
@@ -170,4 +175,7 @@ exec gunicorn config.wsgi:application \
     --log-level info \
     --capture-output \
     --enable-stdio-inheritance \
-    --preload
+    --preload \
+    --forwarded-allow-ips="*" \
+    --proxy-protocol \
+    --proxy-allow-from="*"

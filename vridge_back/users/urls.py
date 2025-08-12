@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import views_api  # Import enhanced API views
+from . import views_api_unified  # Import unified API views (no CORS logic)
 from . import views_railway_login_fix  # Railway 전용 로그인 뷰
 from .create_users_endpoint import CreateTestUsers
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -27,10 +28,10 @@ urlpatterns = api_patterns + [
     path("railway/status/", views_railway_login_fix.railway_status_check, name='railway_status'),
     path("railway/test-login/", views_railway_login_fix.railway_test_login, name='railway_test_login'),
     
-    # Enhanced API endpoints with improved error handling and CORS
-    path("login/", views_api.LoginAPIView.as_view(), name='login'),
-    path("signup/", views_api.SignupAPIView.as_view(), name='signup'),
-    path("me/", views_api.UserMeAPIView.as_view(), name='user_me'),
+    # Unified API endpoints (CORS handled by middleware only)
+    path("login/", views_api_unified.UnifiedLoginAPIView.as_view(), name='login'),
+    path("signup/", views_api_unified.UnifiedSignupAPIView.as_view(), name='signup'),
+    path("me/", views_api_unified.UserMeAPIView.as_view(), name='user_me'),
     path("refresh/", TokenRefreshView.as_view(), name='token_refresh'),  # JWT refresh
     
     # Legacy endpoints (fallback)
@@ -42,9 +43,9 @@ urlpatterns = api_patterns + [
     # path("signup/verify/", views_signup_with_email.SignUpVerify.as_view()),     # Step 2:  
     # path("signup/complete/", views_signup_with_email.SignUpComplete.as_view()),  # Step 3:  
     
-    # Enhanced validation endpoints
-    path("check-email/", views_api.CheckEmailAPIView.as_view(), name='check_email'),
-    path("check-nickname/", views_api.CheckNicknameAPIView.as_view(), name='check_nickname'),
+    # Unified validation endpoints (CORS handled by middleware only)
+    path("check-email/", views_api_unified.CheckEmailAPIView.as_view(), name='check_email'),
+    path("check-nickname/", views_api_unified.CheckNicknameAPIView.as_view(), name='check_nickname'),
     
     # Legacy validation endpoints (fallback)
     path("check-email-legacy/", views.CheckEmail.as_view()),

@@ -90,6 +90,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3001",
 ]
 
+# CORS URL patterns for Vercel dynamic deployments
+CORS_URLS_REGEX = r'^/api/.*$'  # Apply CORS to all API routes
+
 #  
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -125,6 +128,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://vlanet-v2-0-.*\.vercel\.app$",
     r"^https://.*-vlanets-projects\.vercel\.app$",
     r"^https://vlanet-.*\.vercel\.app$",
+    r"^https://.*\.vercel\.app$",  # All Vercel deployments
 ]
 
 #  
@@ -132,7 +136,12 @@ CORS_EXPOSE_HEADERS = [
     'Content-Type',
     'X-CSRFToken',
     'Content-Length',
+    'X-Request-ID',
+    'Authorization',
 ]
+
+# CORS Replace existing headers (important for Railway)
+CORS_REPLACE_HTTPS_REFERER = True
 
 #   
 STATIC_URL = '/static/'

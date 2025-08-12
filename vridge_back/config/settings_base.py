@@ -128,20 +128,28 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "config.middleware.RailwayHealthCheckMiddleware",  #  -  
-    "config.middleware.GlobalErrorHandlingMiddleware",  # 글로벌 에러 핸들링 (500 에러 방지)
-    "corsheaders.middleware.CorsMiddleware",  # CORS   (!)
+    # Unified CORS middleware - MUST be first to handle all responses
+    "config.middleware_cors_unified.UnifiedCORSMiddleware",  # Single source of CORS truth
+    
+    # Django security and session middleware
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    
+    # Django standard middleware
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "config.middleware.CORSDebugMiddleware",  # CORS headers with error handling
+    
+    # Monitoring and performance middleware
     "config.middleware.PerformanceMonitoringMiddleware",  # Performance monitoring
     "config.middleware.SecurityHeadersMiddleware",  # Security headers
+    
+    # Debug middleware (only in DEBUG mode)
+    # "config.middleware_cors_unified.CORSDebugMiddleware",  # Enable for CORS debugging
+    
     # Rate limiting and audit middleware (disabled for Railway stability)
     # "config.rate_limit_middleware.RateLimitMiddleware",
     # "config.rate_limit_middleware.SecurityAuditMiddleware",
