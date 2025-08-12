@@ -253,7 +253,8 @@ REST_FRAMEWORK = {
         'login': '5/min',  # Login rate limiting
         'signup': '3/hour',  # Signup rate limiting
     },
-    'EXCEPTION_HANDLER': 'core.error_handling.custom_exception_handler',
+    # EXCEPTION_HANDLER는 제거 - 미들웨어에서 처리
+    # 'EXCEPTION_HANDLER': 'core.error_handling.custom_exception_handler',
 }
 
 # JWT 
@@ -273,6 +274,14 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-#    - 
+# 설정 검증
 import sys
-print(f"Railway settings loaded - DEBUG={DEBUG}", file=sys.stderr)
+import logging
+
+# 로깅 설정 검증
+logger = logging.getLogger('django')
+logger.info(f"Railway settings loaded - DEBUG={DEBUG}")
+logger.info(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+logger.info(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS[:3]}...")
+logger.info(f"Database configured: {'DATABASE_URL' in os.environ}")
+logger.info(f"Redis configured: {'REDIS_URL' in os.environ}")

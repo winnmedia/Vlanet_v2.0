@@ -17,6 +17,8 @@ try:
 except ImportError:
     api_patterns = []
 
+app_name = 'users'
+
 urlpatterns = api_patterns + [
     # Enhanced API endpoints with improved error handling and CORS
     path("login/", views_api.LoginAPIView.as_view(), name='login'),

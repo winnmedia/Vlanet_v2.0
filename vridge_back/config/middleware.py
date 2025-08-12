@@ -326,14 +326,47 @@ class RailwayHealthCheckMiddleware(MiddlewareMixin):
     """Handle Railway health checks without host validation"""
     
     def process_request(self, request):
-        # Railway    -   
+        # Railway 헬스체크 경로 - 통합 관리
         health_paths = ['/', '/health', '/health/', '/api/health/', '/api/health']
         
-        #    OK  (Railway  User-Agent   )
-        if request.path in health_paths and request.method == 'GET':
-            return JsonResponse({
-                'status': 'ok'
-            }, status=200)
+        # 헬스체크 요청 처리
+        if request.path in health_paths and request.method in ['GET', 'HEAD']:
+            # 상세한 헬스체크 응답
+            from django.db import connection
+            import time
+            
+            health_status = {
+                'status': 'healthy',
+                'timestamp': int(time.time()),
+                'service': 'videoplanet-backend',
+                'checks': {
+                    'database': 'unknown',
+                    'cache': 'unknown'
+                }
+            }
+            
+            # 데이터베이스 체크
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT 1')
+                health_status['checks']['database'] = 'healthy'
+            except:
+                health_status['checks']['database'] = 'unhealthy'
+                health_status['status'] = 'degraded'
+            
+            # 캐시 체크
+            try:
+                from django.core.cache import cache
+                cache.set('health_check', True, 10)
+                if cache.get('health_check'):
+                    health_status['checks']['cache'] = 'healthy'
+                else:
+                    health_status['checks']['cache'] = 'unhealthy'
+            except:
+                health_status['checks']['cache'] = 'unhealthy'
+            
+            return JsonResponse(health_status, status=200)
+        
         return None
 
 
@@ -476,25 +509,5 @@ class PerformanceMonitoringMiddleware(MiddlewareMixin):
             if request.path.startswith('/api/'):
                 logger = logging.getLogger('api.performance')
                 logger.info(f"API {request.method} {request.path} - {response.status_code} - {response_time_ms}ms")
-        
-        return response
-        # Permissions Policy ( Feature Policy)
-        response['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
-        
-        # Content Security Policy
-        csp_directives = [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://accounts.google.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-            "img-src 'self' data: https: blob:",
-            "font-src 'self' data: https://fonts.gstatic.com",
-            "connect-src 'self' https://api.vlanet.net https://videoplanet.up.railway.app wss://videoplanet.up.railway.app",
-            "media-src 'self' blob: data:",
-            "object-src 'none'",
-            "frame-ancestors 'none'",
-            "base-uri 'self'",
-            "form-action 'self'"
-        ]
-        response['Content-Security-Policy'] = '; '.join(csp_directives)
         
         return response

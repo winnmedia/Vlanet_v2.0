@@ -1,6 +1,27 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-12 Railway 배포 문제 근본 해결 완료
+## 최근 업데이트: 2025-08-12 Railway 500 에러 완전 박멸 (Robert, DevOps/Platform Lead)
+- **핵심 문제 해결**: Railway 배포 환경의 500 Internal Server Error 근본 원인 파악 및 해결
+- **문제 원인**:
+  - 시작 스크립트 충돌 (railway.json vs Procfile)
+  - 미들웨어 스택 중복 response 처리 버그
+  - 헬스체크 경로 불일치
+- **해결 방안 구현**:
+  - railway_start_unified.sh: 통합 시작 스크립트 생성
+  - 미들웨어 스택 최적화 (GlobalErrorHandlingMiddleware 우선 배치)
+  - RailwayHealthCheckMiddleware 개선 (상세 헬스 상태 반환)
+  - CORS 설정 검증 및 수정
+- **생성한 도구**:
+  - railway_debug_500.py: 500 에러 진단 스크립트
+  - railway_fix_500.py: 500 에러 자동 수정 스크립트
+  - config/test_view.py: 테스트 엔드포인트
+- **Gunicorn 최적화 설정**:
+  - Workers: 2, Threads: 4
+  - Timeout: 300초 (기존 120초에서 증가)
+  - Preload 활성화로 메모리 효율성 증대
+- **결과**: 모든 진단 테스트 통과, Railway 배포 준비 완료
+
+## 이전 업데이트: 2025-08-12 Railway 배포 문제 근본 해결 완료
 - **핵심 문제 해결**: Railway가 잘못된 시작 스크립트들을 사용하는 문제 완전 해결
 - **제거한 파일들**: 
   - 모든 대체 서버 구현체 제거 (server_simple.py, minimal_django_server.py, cors_server.py 등)
