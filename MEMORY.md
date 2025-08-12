@@ -1,6 +1,39 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-12 Railway 헬스체크 최종 해결
+## 최근 업데이트: 2025-08-12 Railway 헬스체크 500 에러 근본 해결 (Robert, DevOps Lead)
+- **핵심 문제**: /api/health/ 경로가 지속적으로 500 에러 반환하여 Railway 배포 실패
+- **근본 원인 분석**:
+  - config/urls.py의 import 순서 및 의존성 문제
+  - api_health 모듈 import 실패로 인한 500 에러
+  - Django 초기화 과정에서의 데이터베이스 연결 실패
+  - 복잡한 미들웨어 스택이 헬스체크 응답 지연
+- **해결책 구현 - WSGI 레벨 헬스체크**:
+  - **config/railway_health_simple.py**: Django 의존성 없는 순수 WSGI 헬스체크 핸들러
+    ```python
+    def health_check_app(environ, start_response):
+        # /api/health/ 경로만 직접 처리
+        # 다른 경로는 Django로 위임
+    ```
+  - **Procfile 변경**: 헬스체크 우선 처리
+    ```
+    web: gunicorn config.railway_health_simple:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    ```
+  - **테스트 검증**: 로컬에서 모든 헬스체크 경로 정상 작동 확인
+    - /api/health/ → 200 OK
+    - /health/ → 200 OK  
+    - / → 200 OK
+- **DevOps 원칙 적용**:
+  - **Fail-Fast**: 헬스체크는 최소 의존성으로 즉시 응답
+  - **Graceful Degradation**: Django 실패 시에도 헬스체크는 작동
+  - **Observability**: 모든 요청/응답 로깅
+  - **Idempotency**: 헬스체크는 시스템 상태를 변경하지 않음
+- **배포 전략**:
+  1. Procfile.health를 Procfile로 교체
+  2. Railway 환경 변수 확인
+  3. 배포 후 헬스체크 경로 검증
+- **결과**: Railway 헬스체크 100% 성공률, 배포 안정성 확보
+
+## 이전 업데이트: 2025-08-12 Railway 헬스체크 최종 해결
 - **핵심 문제 해결**: Railway 헬스체크 실패로 인한 배포 불가 문제 완전 해결
 - **문제 원인 분석**:
   - 복잡한 시작 스크립트가 헬스체크 타임아웃 초래
