@@ -143,7 +143,7 @@ CORS_EXPOSE_HEADERS = [
 ]
 
 # CORS Replace existing headers (important for Railway)
-CORS_REPLACE_HTTPS_REFERER = True
+# CORS_REPLACE_HTTPS_REFERER removed - deprecated in newer django-cors-headers
 
 #   
 STATIC_URL = '/static/'
