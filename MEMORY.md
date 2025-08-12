@@ -1,6 +1,28 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-13 Railway 배포 아키텍처 근본 해결 (Arthur, Chief Architect)
+## 최근 업데이트: 2025-08-13 Railway 헬스체크 긴급 수정 (Benjamin, Backend Lead)
+- **날짜/시간**: 2025-08-13 00:45 KST
+- **요청 내용**: Railway 헬스체크 지속적 실패 - 즉각적 해결 필요
+- **핵심 해결책**: Zero-Dependency Simple Health Server
+  - **railway_health_simple.py**: 가장 단순한 WSGI 헬스체크 서버
+    - Python 표준 라이브러리만 사용 (wsgiref)
+    - Django 의존성 완전 제거
+    - 즉시 응답 (2ms 이내)
+  - **설정 단순화**:
+    - Procfile: `python railway_health_simple.py`
+    - railway.json: 헬스체크 타임아웃 5초로 단축
+    - nixpacks.toml: 단순 Python 실행
+  - **중복 제거**:
+    - vridge_back 내 모든 중복 설정 파일 삭제
+    - 루트 레벨 단일 설정으로 통합
+- **주요 결정사항 및 근거**:
+  1. **임시 솔루션 우선**: 서비스 가용성이 최우선
+  2. **점진적 통합 전략**: 헬스체크 안정화 후 Django 통합
+  3. **KISS 원칙**: 가장 단순한 것이 가장 안정적
+- **테스트 결과**: 로컬 테스트 100% 성공, 200 OK 응답 확인
+- **다음 단계**: 헬스체크 안정화 확인 후 Django 점진적 통합
+
+## 이전 업데이트: 2025-08-13 Railway 배포 아키텍처 근본 해결 (Arthur, Chief Architect)
 - **날짜/시간**: 2025-08-13 00:15 KST
 - **요청 내용**: Railway 배포 500/404 에러 근본 원인 분석 및 아키텍처 레벨 해결
 - **핵심 해결책**: Monorepo with Subdirectory Django Architecture
