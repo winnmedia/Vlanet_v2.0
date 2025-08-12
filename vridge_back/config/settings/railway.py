@@ -36,12 +36,34 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3001',
 ]
 
-#   (Railway PostgreSQL)
+# Railway PostgreSQL 연결 설정 (최적화된 설정)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    # Railway PostgreSQL 연결 최적화
+    db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=0)  # 연결 풀링 비활성화로 500 에러 방지
+    
+    # Railway PostgreSQL 전용 옵션 설정
+    db_config.update({
+        'OPTIONS': {
+            'sslmode': 'require',  # Railway는 SSL 필수
+            'connect_timeout': 60,
+            'options': '-c default_transaction_isolation=read committed'
+        },
+        'CONN_MAX_AGE': 0,  # Railway에서 긴 연결은 문제를 일으킬 수 있음
+        'ATOMIC_REQUESTS': True,  # 트랜잭션 안전성 보장
+        'AUTOCOMMIT': True,
+        'TIME_ZONE': None,  # PostgreSQL 시간대 설정
+    })
+    
+    DATABASES = {'default': db_config}
+    
+    # 추가 데이터베이스 최적화 설정
+    DATABASE_ENGINE_OPTIONS = {
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        'charset': 'utf8mb4',
+        'use_unicode': True,
     }
+    
 else:
     # Fallback to SQLite for local testing
     DATABASES = {

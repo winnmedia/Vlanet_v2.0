@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import views_api  # Import enhanced API views
+from . import views_railway_login_fix  # Railway 전용 로그인 뷰
 from .create_users_endpoint import CreateTestUsers
 from rest_framework_simplejwt.views import TokenRefreshView
 #     
@@ -20,6 +21,12 @@ except ImportError:
 app_name = 'users'
 
 urlpatterns = api_patterns + [
+    # Railway 전용 최적화된 로그인 엔드포인트
+    path("railway/login/", views_railway_login_fix.railway_login_view, name='railway_login'),
+    path("railway/health/", views_railway_login_fix.railway_health_check, name='railway_health'),
+    path("railway/status/", views_railway_login_fix.railway_status_check, name='railway_status'),
+    path("railway/test-login/", views_railway_login_fix.railway_test_login, name='railway_test_login'),
+    
     # Enhanced API endpoints with improved error handling and CORS
     path("login/", views_api.LoginAPIView.as_view(), name='login'),
     path("signup/", views_api.SignupAPIView.as_view(), name='signup'),

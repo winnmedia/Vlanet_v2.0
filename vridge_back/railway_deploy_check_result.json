@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-12T20:32:13.914640",
+  "environment": "railway",
+  "checks_passed": [
+    "Django 설정",
+    "사용자 모델",
+    "인증 시스템",
+    "마이그레이션",
+    "성능 벤치마크"
+  ],
+  "checks_failed": [
+    "환경 변수",
+    "데이터베이스 연결"
+  ],
+  "warnings": []
+}
