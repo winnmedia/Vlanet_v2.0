@@ -97,8 +97,7 @@ class LoginAPIView(APIView):
             if not serializer.is_valid():
                 return StandardResponse.validation_error(
                     errors=serializer.errors,
-                    message="Invalid login credentials format",
-                    request=request
+                    message="Invalid login credentials format"
                 )
             
             validated_data = serializer.validated_data
@@ -284,8 +283,7 @@ class SignupAPIView(APIView):
             if not serializer.is_valid():
                 return StandardResponse.validation_error(
                     errors=serializer.errors,
-                    message="Invalid registration data",
-                    request=request
+                    message="Invalid registration data"
                 )
             
             # Create user
@@ -334,7 +332,7 @@ class CheckEmailAPIView(APIView):
             if not serializer.is_valid():
                 return StandardResponse.validation_error(
                     errors=serializer.errors,
-                    request=request
+                    message="Invalid email format"
                 )
             
             email = serializer.validated_data['email']
@@ -376,7 +374,7 @@ class CheckNicknameAPIView(APIView):
             if not serializer.is_valid():
                 return StandardResponse.validation_error(
                     errors=serializer.errors,
-                    request=request
+                    message="Invalid nickname format"
                 )
             
             nickname = serializer.validated_data['nickname']
