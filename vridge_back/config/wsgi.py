@@ -1,9 +1,4 @@
 """
-RAILWAY DEPLOYMENT NOTE:
-This file is not directly used by Railway deployment.
-Railway uses /railway_wsgi.py wrapper for proper path resolution.
-
-For local development, this file works as standard Django WSGI.
 WSGI config for config project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
@@ -11,11 +6,6 @@ It exposes the WSGI callable as a module-level variable named ``application``.
 For more information on this file, see
 https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
-RAILWAY DEPLOYMENT NOTE:
-This file is not directly used by Railway deployment.
-Railway uses /railway_wsgi.py wrapper for proper path resolution.
-
-For local development, this file works as standard Django WSGI.
 
 import os
 
