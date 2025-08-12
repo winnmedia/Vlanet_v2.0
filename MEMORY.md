@@ -1,6 +1,15 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-11 회원가입 폼 컴포넌트 완전 수정 완료 (Lucas, Component Developer)
+## 최근 업데이트: 2025-08-12 CORS 문제 완전 해결 및 한글 인코딩 수정 완료
+- **핵심 해결**: Vercel(vlanet.net)과 Railway 백엔드 간 CORS 정책 위반 문제 근본적 해결
+- **아키텍처 개선**: cors_server.py 프록시 제거, Django + Gunicorn 직접 실행으로 전환
+- **CORS 설정**: django-cors-headers로 vlanet.net, www.vlanet.net 오리진 허용
+- **한글 수정**: 프론트엔드 validation 스키마 및 메시지의 모든 한글 텍스트 복원
+- **배포 설정**: Procfile과 railway.json을 Gunicorn 사용하도록 업데이트
+- **헬스체크**: /api/health/ 엔드포인트 추가로 모니터링 강화
+- **테스트 완료**: 로그인 기능 정상 작동, JWT 인증 헤더 지원 확인
+
+### 이전 업데이트: 2025-08-11 회원가입 폼 컴포넌트 완전 수정 완료 (Lucas, Component Developer)
 - **핵심 해결**: SignupForm 컴포넌트 중복 로그인 링크 제거, 폼 유효성 검사 로직 완전 개선
 - **Validation 개선**: 하드코딩된 한글 메시지를 VALIDATION_MESSAGES 상수로 통일, 전화번호 필드 선택사항으로 변경
 - **UX 향상**: 플레이스홀더 텍스트 개선, handleNextStep 함수 에러 처리 강화, 자동 포커스 및 스크롤 기능 추가
