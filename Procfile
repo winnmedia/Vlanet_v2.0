@@ -1,1 +1,1 @@
-web: python3 basic_health.py
+web: gunicorn railway_router:application --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 --preload --log-level info

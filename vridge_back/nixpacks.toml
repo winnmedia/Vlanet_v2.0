@@ -1,20 +1,2 @@
-[phases.setup]
-nixPkgs = ["python311", "gcc", "postgresql"]
-
-[phases.install]
-cmds = [
-    "cd vridge_back",
-    "pip install --upgrade pip",
-    "pip install -r requirements.txt",
-    "pip install psutil",
-    "python manage.py collectstatic --noinput || true"
-]
-
-[phases.build]
-cmds = [
-    "cd vridge_back",
-    "python manage.py migrate --noinput || true"
-]
-
-[start]
-cmd = "gunicorn vridge_back.health_server:application --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 --preload --log-level info --access-logfile - --error-logfile -"
+# This file is deprecated - using root level nixpacks.toml instead
+# Railway configuration moved to /nixpacks.toml

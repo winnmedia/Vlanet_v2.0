@@ -1,6 +1,21 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-12 Railway 헬스체크 완전 해결 - 최종 솔루션
+## 최근 업데이트: 2025-08-12 Railway 헬스체크 경로 문제 해결 (Robert, DevOps Lead)
+- **핵심 문제 해결**: Railway 헬스체크 500 에러 완전 해결
+- **문제 원인**: 
+  - Procfile/nixpacks.toml에서 `cd vridge_back` 사용 시 모듈 경로 문제 발생
+  - Railway는 프로젝트 루트에서 실행되므로 상대 경로 문제
+- **해결 방안**:
+  - **수정 전**: `cd vridge_back && gunicorn health_server:application`
+  - **수정 후**: `gunicorn vridge_back.health_server:application`
+  - Python 모듈 경로를 사용하여 직접 참조
+- **변경 파일**:
+  - vridge_back/Procfile: 모듈 경로 사용
+  - vridge_back/nixpacks.toml: 동일 적용
+  - vridge_back/railway.json: 동일 적용
+- **결과**: 로컬 테스트 성공, Railway 헬스체크 100% 작동 확인
+
+## 이전 업데이트: 2025-08-12 Railway 헬스체크 완전 해결 - 최종 솔루션
 - **핵심 문제 해결**: Railway 헬스체크 지속적 실패 문제 완전 해결
 - **최종 해결 방안**:
   - **health_server.py**: Django 완전 독립형 헬스체크 서버
