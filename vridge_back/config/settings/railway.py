@@ -47,7 +47,7 @@ if DATABASE_URL:
         'OPTIONS': {
             'sslmode': 'require',  # Railway는 SSL 필수
             'connect_timeout': 10,  # Reduced from 60 to fail faster
-            'options': "-c default_transaction_isolation='read committed'",
+            'isolation_level': 2,  # READ COMMITTED (PostgreSQL default)
             'keepalives': 1,
             'keepalives_idle': 30,
             'keepalives_interval': 10,
