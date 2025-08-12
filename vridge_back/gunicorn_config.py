@@ -18,7 +18,7 @@ keepalive = 2
 #  
 daemon = False
 raw_env = [
-    'DJANGO_SETTINGS_MODULE=config.settings_railway_simple',
+    'DJANGO_SETTINGS_MODULE=config.settings.railway',
 ]
 pidfile = None
 umask = 0

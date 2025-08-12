@@ -2,20 +2,20 @@ import { z } from 'zod';
 import { VALIDATION_MESSAGES } from '@/utils/constants/messages';
 
 // ========================================
-//   
+// 기본 스키마 정의
 // ========================================
 
 /**
- *    
+ * 한국어 이름 스키마
  */
 export const koreanNameSchema = z.string().regex(
-  /^[-]{2,10}$/,
+  /^[가-힣]{2,10}$/,
   VALIDATION_MESSAGES.KOREAN_NAME_INVALID
 );
 
 /**
- *     
- * 010, 011, 016, 017, 018, 019  
+ * 전화번호 스키마
+ * 010, 011, 016, 017, 018, 019 시작 번호만 허용
  */
 export const phoneNumberSchema = z.string().regex(
   /^(010|011|016|017|018|019)-\d{4}-\d{4}$/,
@@ -23,7 +23,7 @@ export const phoneNumberSchema = z.string().regex(
 );
 
 /**
- *   
+ * 강력한 비밀번호 스키마
  */
 export const strongPasswordSchema = z.string()
   .min(8, VALIDATION_MESSAGES.PASSWORD_TOO_SHORT)
@@ -34,23 +34,23 @@ export const strongPasswordSchema = z.string()
   .regex(/[!@#$%^&*(),.?":{}|<>]/, VALIDATION_MESSAGES.PASSWORD_SPECIAL_CHAR_REQUIRED);
 
 /**
- *   
+ * 닉네임 스키마
  */
 export const nicknameSchema = z.string()
   .min(2, VALIDATION_MESSAGES.NICKNAME_TOO_SHORT)
   .max(20, VALIDATION_MESSAGES.NICKNAME_TOO_LONG)
-  .regex(/^[-a-zA-Z0-9_-]+$/, VALIDATION_MESSAGES.NICKNAME_INVALID_CHARS)
+  .regex(/^[가-힣a-zA-Z0-9_-]+$/, VALIDATION_MESSAGES.NICKNAME_INVALID_CHARS)
   .refine(
     (value) => !['admin', 'administrator', '', 'root', 'system'].includes(value.toLowerCase()),
     VALIDATION_MESSAGES.NICKNAME_FORBIDDEN
   );
 
 // ========================================
-//   
+// 인증 관련 스키마
 // ========================================
 
 /**
- *   
+ * 로그인 스키마
  */
 export const loginSchema = z.object({
   email: z.string()

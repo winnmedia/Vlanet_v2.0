@@ -12,7 +12,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework_simplejwt.tokens import RefreshToken
-from drf_yasg.utils import swagger_auto_schema
+# from drf_yasg.utils import swagger_auto_schema  # Commented out - not installed
 import time
 import logging
 import json
@@ -25,10 +25,11 @@ from .serializers import (
 )
 from core.response_handler import StandardResponse
 from .security_utils import PasswordResetSecurity
-from .api_docs import (
-    login_swagger_schema, signup_swagger_schema, check_email_swagger_schema,
-    check_nickname_swagger_schema, user_me_swagger_schema
-)
+# Commented out - drf_yasg not installed
+# from .api_docs import (
+#     login_swagger_schema, signup_swagger_schema, check_email_swagger_schema,
+#     check_nickname_swagger_schema, user_me_swagger_schema
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class LoginAPIView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [LoginRateThrottle]
     
-    @login_swagger_schema
+    # @login_swagger_schema  # Commented out - drf_yasg not installed
     def post(self, request):
         """
         Authenticate user and return JWT tokens
@@ -262,7 +263,7 @@ class SignupAPIView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [AnonRateThrottle]
     
-    @signup_swagger_schema
+    # @signup_swagger_schema  # Commented out - drf_yasg not installed
     def post(self, request):
         """
         Register new user account
@@ -323,7 +324,7 @@ class CheckEmailAPIView(APIView):
     
     permission_classes = [AllowAny]
     
-    @check_email_swagger_schema
+    # @check_email_swagger_schema  # Commented out - drf_yasg not installed
     def post(self, request):
         """Check if email is available for registration"""
         PerformanceMiddleware.add_timing(request)
@@ -365,7 +366,7 @@ class CheckNicknameAPIView(APIView):
     
     permission_classes = [AllowAny]
     
-    @check_nickname_swagger_schema
+    # @check_nickname_swagger_schema  # Commented out - drf_yasg not installed
     def post(self, request):
         """Check if nickname is available"""
         PerformanceMiddleware.add_timing(request)
@@ -404,7 +405,7 @@ class CheckNicknameAPIView(APIView):
 class UserMeAPIView(APIView):
     """Get current user information"""
     
-    @user_me_swagger_schema
+    # @user_me_swagger_schema  # Commented out - drf_yasg not installed
     def get(self, request):
         """Get current authenticated user data"""
         PerformanceMiddleware.add_timing(request)
