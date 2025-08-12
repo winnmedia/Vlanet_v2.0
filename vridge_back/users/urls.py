@@ -1,5 +1,3 @@
-from .api_urls import urlpatterns as api_patterns
-
 from django.urls import path
 from . import views
 from . import views_api  # Import enhanced API views
@@ -12,6 +10,12 @@ from . import views_mypage
 from . import views_profile_upload
 from . import views_email_monitor
 from . import views_account_management
+
+# Import api_urls patterns safely
+try:
+    from .api_urls import urlpatterns as api_patterns
+except ImportError:
+    api_patterns = []
 
 urlpatterns = api_patterns + [
     # Enhanced API endpoints with improved error handling and CORS
