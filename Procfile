@@ -1,1 +1,1 @@
-web: cd vridge_back && python manage.py migrate && gunicorn config.wsgi --bind 0.0.0.0:$PORT
+web: python railway_wsgi.py migrate && gunicorn railway_wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --preload
