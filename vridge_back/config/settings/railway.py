@@ -61,12 +61,10 @@ if DATABASE_URL:
     
     DATABASES = {'default': db_config}
     
-    # 추가 데이터베이스 최적화 설정
-    DATABASE_ENGINE_OPTIONS = {
-        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        'charset': 'utf8mb4',
-        'use_unicode': True,
-    }
+    # PostgreSQL 연결 안정성 로깅
+    print(f"[DATABASE] PostgreSQL 연결 설정 완료: {db_config['HOST']}:{db_config['PORT']}")
+    print(f"[DATABASE] 데이터베이스: {db_config['NAME']}, 사용자: {db_config['USER']}")
+    print(f"[DATABASE] CONN_MAX_AGE: {db_config['CONN_MAX_AGE']}, SSL: {db_config['OPTIONS']['sslmode']}")
     
 else:
     # Fallback to SQLite for local testing
