@@ -186,20 +186,41 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Static files  (Railway)
+# Static files configuration for Railway
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# STATICFILES_DIRS  - Railway    
+# STATICFILES_DIRS - Railway environment specific paths
 STATICFILES_DIRS = []
+
+# Check for local static directory
 static_dir = os.path.join(BASE_DIR, 'static')
 if os.path.exists(static_dir):
     STATICFILES_DIRS.append(static_dir)
+    print(f"[STATIC] Added local static directory: {static_dir}")
 
-# Railway        
+# Railway environment - frontend build might be in different locations
+# Try multiple possible locations for frontend build
+frontend_paths = [
+    os.path.join(BASE_DIR, '../vridge_front/build/static'),  # Local dev path
+    os.path.join(BASE_DIR, '../frontend/build/static'),      # Alternative path
+    '/app/vridge_front/build/static',                        # Railway absolute path
+    '/app/frontend/build/static',                            # Alternative Railway path
+]
 
-# WhiteNoise 
+for frontend_path in frontend_paths:
+    if os.path.exists(frontend_path):
+        STATICFILES_DIRS.append(frontend_path)
+        print(f"[STATIC] Found frontend static files at: {frontend_path}")
+        break
+else:
+    print("[STATIC] Warning: No frontend build directory found")
+
+# WhiteNoise configuration for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_AUTOREFRESH = DEBUG  # Enable auto-refresh in debug mode
+WHITENOISE_USE_FINDERS = True   # Use Django's static file finders
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']
 
 #   (   )
 LOGGING = {

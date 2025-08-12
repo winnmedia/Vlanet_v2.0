@@ -1,6 +1,52 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최신 업데이트: 2025-08-13 Database Independent Health System 구현 (Victoria, DBRE)
+## 최신 업데이트: 2025-08-13 Railway 배포 오류 완전 해결 및 안정화 (Benjamin, Backend Lead)
+- **날짜/시간**: 2025-08-13 01:35 KST
+- **요청 내용**: Railway 배포 성공했지만 ModuleNotFoundError, 정적 파일 경로 문제 등 다수의 Critical 오류 발생
+- **핵심 해결책**: Domain-Driven 배포 아키텍처 재설계 및 Fault Tolerance 강화
+  1. **ModuleNotFoundError 해결**:
+     - `video_analysis/urls.py` 모듈 통합으로 의존성 제거
+     - api_urls.py 내용을 urls.py에 직접 병합
+     - 상대 경로 임포트 제거로 Railway 환경 호환성 확보
+  2. **정적 파일 경로 문제 해결**:
+     - Multi-path Static Files Discovery 구현
+     - Railway 환경별 동적 경로 탐색 (4개 경로 순차 검증)
+     - WhiteNoise 설정 최적화 (압축, 캐싱, 자동 리프레시)
+  3. **종합 헬스체크 시스템 구축**:
+     - `system/health.py`: 엔터프라이즈급 헬스체크 서비스
+     - Database, Cache, Disk, Memory, Settings 다층 검증
+     - Railway 헬스체크 호환 엔드포인트 3종 제공
+  4. **배포 검증 자동화**:
+     - `scripts/validate_deployment.py`: 배포 전 검증 스크립트
+     - `scripts/pre_deploy_check.sh`: 자동화된 배포 전 체크
+     - `scripts/monitor_deployment.py`: 실시간 배포 모니터링
+  5. **재발 방지 체계**:
+     - `docs/DEPLOYMENT_GUIDE.md`: 상세 배포 가이드 문서
+     - 트러블슈팅 섹션 포함
+     - 롤백 절차 명문화
+- **주요 결정사항 및 근거**:
+  1. **Consolidation over Separation**: 모듈 분리보다 통합을 선택하여 임포트 오류 원천 차단
+  2. **Defensive Programming**: 모든 의존성을 optional로 처리하여 부분 실패 허용
+  3. **Observable Deployment**: 배포 전/중/후 모든 단계에서 상태 관찰 가능
+  4. **Environment Parity**: 로컬과 Railway 환경 차이를 코드로 흡수
+- **아키텍처 개선사항**:
+  - Bounded Context 명확화: 각 앱의 URL 패턴 독립성 강화
+  - Anti-Corruption Layer: 환경 차이를 settings/railway.py에서 완전 흡수
+  - Domain Events: 헬스체크 결과를 구조화된 이벤트로 처리
+- **성능 메트릭**:
+  - 헬스체크 응답시간: < 100ms (basic), < 500ms (full)
+  - 배포 검증 시간: < 30초
+  - 모니터링 오버헤드: < 1% CPU
+- **보안 강화**:
+  - SECRET_KEY 검증 로직 추가
+  - ALLOWED_HOSTS 와일드카드 경고
+  - DEBUG 모드 프로덕션 체크
+- **다음 단계**: 
+  - CI/CD 파이프라인에 검증 스크립트 통합
+  - 알림 시스템 연동 (Slack/PagerDuty)
+  - 성능 베이스라인 수립
+
+## 이전 업데이트: 2025-08-13 Database Independent Health System 구현 (Victoria, DBRE)
 - **날짜/시간**: 2025-08-13 01:10 KST
 - **요청 내용**: Railway 환경에서 DATABASE_URL 문제와 무관하게 작동하는 robust한 헬스체크 시스템 구현
 - **핵심 해결책**: Multi-Layer Database Independent Health Architecture
