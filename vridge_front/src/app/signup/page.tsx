@@ -9,23 +9,23 @@ import { Spinner } from '@/components/ui/Spinner';
 import { Logo } from '@/components/ui/Logo';
 
 /**
- *  
+ * 회원가입 페이지 컴포넌트
  */
 function SignupPageContent() {
   const handleSignupSuccess = (user: any) => {
-    console.log(' :', user);
+    console.log('회원가입 성공:', user);
   };
 
   const handleSignupError = (error: Error) => {
-    console.error(' :', error);
+    console.error('회원가입 오류:', error);
   };
 
   const _handleSocialSignupSuccess = (provider: 'google' | 'kakao') => {
-    console.log(`${provider}  `);
+    console.log(`${provider} 회원가입 성공`);
   };
 
   const _handleSocialSignupError = (error: Error) => {
-    console.error('  :', error);
+    console.error('소셜 회원가입 오류:', error);
   };
 
   return (
@@ -36,7 +36,7 @@ function SignupPageContent() {
         transition={{ duration: 0.6 }}
         className="sm:mx-auto sm:w-full sm:max-w-lg"
       >
-        {/*  */}
+        {/* 로고 및 헤더 */}
         <div className="text-center mb-8">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -50,7 +50,7 @@ function SignupPageContent() {
           <p className="mt-2 text-gray-600">계정을 생성하여 영상 기획 여정을 시작하세요</p>
         </div>
 
-        {/*   */}
+        {/* 회원가입 폼 */}
         <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10">
           <SignupForm
             onSuccess={handleSignupSuccess}
@@ -60,7 +60,7 @@ function SignupPageContent() {
             className="mb-6"
           />
 
-          {/*   -   */}
+          {/* 소셜 로그인 - 현재 비활성화 */}
           <div className="mt-8">
             {/* <SocialLoginButtons
               mode="signup"
@@ -72,7 +72,7 @@ function SignupPageContent() {
           {/* 로그인 링크는 SignupForm 컴포넌트에서 처리하므로 여기서는 제거 */}
         </div>
 
-        {/*   */}
+        {/* 약관 및 네비게이션 */}
         <div className="mt-6 text-center space-y-4">
           <div className="text-xs text-gray-500 max-w-md mx-auto">
             <p>

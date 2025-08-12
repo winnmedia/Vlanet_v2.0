@@ -51,56 +51,56 @@ function LoginContent() {
   };
 
   const handleLogin = async () => {
-    console.log('[LoginPage]   ');
-    console.log('[LoginPage] :', inputs);
+    console.log('[LoginPage] 로그인 시도');
+    console.log('[LoginPage] 입력값:', inputs);
     
     if (!inputs.email || !inputs.password) {
       if (!inputs.email) {
-        setLoginMessage(' .');
+        setLoginMessage('이메일을 입력해주세요.');
       } else {
-        setLoginMessage(' .');
+        setLoginMessage('비밀번호를 입력해주세요.');
       }
       return;
     }
 
     if (isLoggingIn) {
-      console.log('[LoginPage]   ...');
+      console.log('[LoginPage] 이미 로그인 처리 중...');
       return;
     }
 
     setIsLoggingIn(true);
     setLoginMessage('');
-    console.log('[LoginPage]  API  ');
+    console.log('[LoginPage] 로그인 API 호출 시작');
     console.log('[LoginPage] API URL:', process.env.NEXT_PUBLIC_API_URL);
 
     try {
       const success = await login({ email: inputs.email, password: inputs.password });
-      console.log('[LoginPage]  :', success);
+      console.log('[LoginPage] 로그인 결과:', success);
       
       if (success) {
-        toast.success(' !');
+        toast.success('로그인되었습니다!');
         
         //  
         const redirectUrl = uid && token 
           ? `/EmailCheck?uid=${uid}&token=${token}`
           : returnUrl || fromPage || '/cmshome';
         
-        console.log('[LoginPage] :', redirectUrl);
+        console.log('[LoginPage] 리다이렉트:', redirectUrl);
         router.push(redirectUrl);
       } else {
-        setLoginMessage('    .');
+        setLoginMessage('이메일 또는 비밀번호가 올바르지 않습니다.');
       }
     } catch (error: any) {
-      console.error('[LoginPage]  :', error);
+      console.error('[LoginPage] 로그인 오류:', error);
       
       if (error.response?.status === 401) {
-        setLoginMessage('    .');
+        setLoginMessage('이메일 또는 비밀번호가 올바르지 않습니다.');
       } else if (error.response?.status === 403 && error.response?.data?.error_code === 'EMAIL_NOT_VERIFIED') {
-        setLoginMessage(error.response.data.message || '  .');
+        setLoginMessage(error.response.data.message || '이메일 인증이 필요합니다.');
       } else if (error.response?.data?.message) {
         setLoginMessage(error.response.data.message);
       } else {
-        setLoginMessage('  .    .');
+        setLoginMessage('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       }
     } finally {
       setIsLoggingIn(false);
@@ -109,14 +109,14 @@ function LoginContent() {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      console.log('[LoginPage] Enter  ');
+      console.log('[LoginPage] Enter 키 눌림');
       e.preventDefault();
       handleLogin();
     }
   };
 
   const handleSocialLogin = (provider: string) => {
-    toast.info(`${provider}  .`);
+    toast.info(`${provider} 로그인 준비 중입니다.`);
   };
 
   return (
@@ -137,10 +137,10 @@ function LoginContent() {
             </Link>
           </h1>
           <div className={styles.slogun}>
-             
+            영상 피드백의 새로운 기준
             <br />
-              <br />
-            <span>  </span>
+            빠르고 정확한 협업을 경험하세요<br />
+            <span>브이라넷과 함께</span>
           </div>
           <div className={styles.etc}>
             <ul>
@@ -168,7 +168,7 @@ function LoginContent() {
       {/*    */}
       <div className={styles.form}>
         <div className={styles.form_wrap}>
-          <div className={styles.title}></div>
+          <div className={styles.title}>로그인</div>
           
           {/*    */}
           {message && (
@@ -195,7 +195,7 @@ function LoginContent() {
           <input
             type="email"
             name="email"
-            placeholder=""
+            placeholder="이메일을 입력하세요"
             className={`${styles.ty01} ${styles.mt50}`}
             value={inputs.email}
             onChange={handleChange}
@@ -206,7 +206,7 @@ function LoginContent() {
           <input
             type="password"
             name="password"
-            placeholder=""
+            placeholder="비밀번호를 입력하세요"
             className={`${styles.ty01} ${styles.mt10}`}
             value={inputs.password}
             onChange={handleChange}
@@ -222,7 +222,7 @@ function LoginContent() {
             className={styles.find_link}
             onClick={() => router.push('/resetpw')}
           >
-             
+            비밀번호를 잊으셨나요?
           </div>
           
           <button 
@@ -230,17 +230,17 @@ function LoginContent() {
             className={`${styles.submit} ${styles.mt20}`}
             onClick={(e) => {
               e.preventDefault();
-              console.log('[LoginPage]    ');
+              console.log('[LoginPage] 로그인 버튼 클릭');
               handleLogin();
             }}
             disabled={isLoggingIn || !inputs.email || !inputs.password}
           >
-            {isLoggingIn ? ' ...' : ''}
+            {isLoggingIn ? '로그인 중...' : '로그인'}
           </button>
           
           <div className={styles.signup_link}>
-             ?
-            <span onClick={() => router.push('/signup')}> </span>
+            계정이 없으신가요?
+            <span onClick={() => router.push('/signup')}>회원가입</span>
           </div>
 
           <div className={styles.line}></div>
@@ -282,7 +282,7 @@ export default function LoginPage() {
           <div className={styles.form_wrap}>
             <div className={styles.title}></div>
             <div style={{ textAlign: 'center', marginTop: '50px', color: '#999' }}>
-               ...
+              로딩 중...
             </div>
           </div>
         </div>
