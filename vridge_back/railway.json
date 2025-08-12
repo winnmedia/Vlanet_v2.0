@@ -15,7 +15,7 @@
       "variables": {
         "DJANGO_SETTINGS_MODULE": "config.settings.railway",
         "RAILWAY_ENVIRONMENT": "production",
-        "PYTHONPATH": "/app",
+        "PYTHONPATH": "/app/vridge_back:/app",
         "PYTHONUNBUFFERED": "1"
       }
     }
