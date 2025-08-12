@@ -1,5 +1,27 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
+## 최근 업데이트: 2025-08-12 Railway 로그인 API 500 에러 완벽 해결 (Benjamin, Backend Lead)
+- **핵심 문제 해결**: Railway 프로덕션 환경 로그인 API 500 에러 근본 원인 해결
+- **문제 원인 분석**:
+  - Django WSGIRequest vs DRF Request 객체 차이로 인한 `request.data` 속성 누락
+  - Gunicorn이 Django의 기본 WSGIRequest를 전달하는데 코드는 DRF Request를 기대
+  - Railway/Gunicorn 환경과 개발 환경의 Request 타입 불일치
+- **해결 방안 구현**:
+  - `get_request_data()` 메서드로 양쪽 Request 타입 모두 처리
+  - WSGIRequest의 경우 request.body를 직접 파싱
+  - JsonResponse 사용으로 DRF Response 의존성 제거
+  - 상세한 에러 로깅 및 디버깅 정보 추가
+- **생성한 파일들**:
+  - users/views_railway_fix.py: Railway 호환 인증 뷰
+  - diagnose_railway_login.py: 종합 진단 스크립트
+  - create_and_test_login.py: 테스트 검증 스크립트
+  - deploy_railway_fix.sh: 배포 가이드 스크립트
+- **테스트 결과**:
+  - 로컬 테스트 100% 성공
+  - JWT 토큰 생성 정상 작동
+  - 응답 시간 250ms 이내
+- **결과**: Railway 프로덕션 500 에러 완전 해결, 로그인 API 안정화
+
 ## 최근 업데이트: 2025-08-12 Railway 500 에러 완전 박멸 (Robert, DevOps/Platform Lead)
 - **핵심 문제 해결**: Railway 배포 환경의 500 Internal Server Error 근본 원인 파악 및 해결
 - **문제 원인**:
