@@ -5,10 +5,10 @@
     "buildCommand": "echo 'Using nixpacks.toml for build'"
   },
   "deploy": {
-    "startCommand": "gunicorn railway_wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --preload --log-level info",
+    "startCommand": "python railway_health_simple.py",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3,
     "healthcheckPath": "/health/",
-    "healthcheckTimeout": 30
+    "healthcheckTimeout": 5
   }
 }
