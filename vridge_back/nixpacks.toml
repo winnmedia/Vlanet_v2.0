@@ -1,2 +1,8 @@
-# This file is deprecated - using root level nixpacks.toml instead
-# Railway configuration moved to /nixpacks.toml
+[phases.setup]
+nixPkgs = ["python39", "gcc", "postgresql"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
+
+[start]
+cmd = "python manage.py migrate && gunicorn config.wsgi --bind 0.0.0.0:$PORT"

@@ -3,108 +3,44 @@ URL configuration for config project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.models import Group
-from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.generic import TemplateView
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Health check imports with fallbacks
-try:
-    from .views import health_check, root_view
-except ImportError:
-    def health_check(request):
-        return JsonResponse({"status": "healthy"})
-    def root_view(request):
-        return JsonResponse({"status": "ok"})
+# ============================================================================
+# HEALTH CHECK VIEW - Simple and Standard
+# ============================================================================
+def health_check(request):
+    """
+    Standard health check endpoint for Railway.
+    Returns 200 OK with JSON response.
+    """
+    return JsonResponse({
+        "status": "healthy",
+        "service": "videoplanet-backend"
+    }, status=200)
 
-try:
-    from .simple_health import simple_health_check
-except ImportError:
-    def simple_health_check(request):
-        return JsonResponse({"status": "healthy"})
-
-try:
-    from .fast_health import ultra_fast_health, root_health
-except ImportError:
-    def ultra_fast_health(request):
-        return JsonResponse({"status": "healthy"})
-    def root_health(request):
-        return JsonResponse({"status": "healthy"})
-# Railway 헬스체크를 위한 간단한 inline 함수
-def railway_health_check(request):
-    """Railway 전용 헬스체크 - 최소한의 의존성"""
-    return JsonResponse({"status": "healthy", "service": "videoplanet-backend"}, status=200)
-
-def simple_root_health(request):
-    """루트 경로 헬스체크"""
-    return JsonResponse({"status": "ok"}, status=200)
-
-# CSRF 토큰 뷰
+# ============================================================================
+# CSRF TOKEN VIEW
+# ============================================================================
 def csrf_token_view(request):
-    """CSRF 토큰 반환"""
+    """CSRF token endpoint"""
     from django.middleware.csrf import get_token
     return JsonResponse({"csrfToken": get_token(request)})
-from users import views as user_views
-from users.views_signup_safe import SafeSignUp, SafeSignIn
-from users.views_test import TestSignUp, TestCreate
-from rest_framework_simplejwt.views import TokenRefreshView
 
-# CORS   
-try:
-    from .cors_debug import CORSDebugView
-    cors_debug_view = CORSDebugView.as_view()
-except ImportError:
-    def cors_debug_view(request):
-        return JsonResponse({"error": "CORS debug view not available"}, status=500)
-
-# Fallback      
-from .auth_fallback import get_auth_views
-
-auth_views = get_auth_views()
-login_view = auth_views['login']
-signup_view = auth_views['signup'] 
-refresh_view = auth_views['refresh']
-verify_view = auth_views['verify']
-
-#    
-HAS_IMPROVED_AUTH = (login_view.__name__ == 'ImprovedSignIn')
-# from .debug_views import debug_info, test_error  #  
-
-# token_blacklist import 
-try:
-    from rest_framework_simplejwt import token_blacklist
-    HAS_TOKEN_BLACKLIST = True
-except ImportError:
-    HAS_TOKEN_BLACKLIST = False
-    token_blacklist = None
-
-#   
-def simple_health(request):
-    return JsonResponse({"status": "ok"})
-
-# API version is now handled by system.views.version_info
-# Removed duplicate api_version function to avoid confusion
-
-# CORS  
+# ============================================================================
+# CORS TEST VIEW
+# ============================================================================
 def cors_test_view(request):
+    """CORS test endpoint"""
     return JsonResponse({
         "status": "ok",
         "message": "CORS test successful",
@@ -115,154 +51,143 @@ def cors_test_view(request):
         }
     })
 
-#   
-try:
-    from .urls_debug import URLDebugView, AuthTestView, auth_endpoint_status
-    HAS_DEBUG_VIEWS = True
-except ImportError:
-    HAS_DEBUG_VIEWS = False
-
-# Railway   
-try:
-    from .debug_views import debug_status, debug_echo, test_signup_debug
-    HAS_RAILWAY_DEBUG = True
-except ImportError:
-    HAS_RAILWAY_DEBUG = False
-
-#     ()
+# ============================================================================
+# PUBLIC PROJECT VIEW (Placeholder)
+# ============================================================================
 from django.views import View
 class PublicProjectListView(View):
     def get(self, request):
         return JsonResponse({"projects": []})
 
-# SPA 
+# ============================================================================
+# SPA VIEW
+# ============================================================================
 class SPAView(TemplateView):
     template_name = "index.html"
     
     def get_template_names(self):
-        #      
         return ["index.html"]
     
     def get(self, request, *args, **kwargs):
-        #     
         try:
             return super().get(request, *args, **kwargs)
         except:
             return JsonResponse({"message": "React app should be served here"})
 
-#    
-try:
-    from users.views_auth_improved import ImprovedSignUp, ImprovedSignIn, TestUserCreate
-    HAS_IMPROVED_AUTH_V2 = True
-except ImportError:
-    HAS_IMPROVED_AUTH_V2 = False
+# ============================================================================
+# AUTHENTICATION IMPORTS
+# ============================================================================
+from users import views as user_views
+from users.views_signup_safe import SafeSignUp, SafeSignIn
+from users.views_test import TestSignUp, TestCreate
+from rest_framework_simplejwt.views import TokenRefreshView
 
-#    - Fallback  
+# Import auth fallback views
+from .auth_fallback import get_auth_views
+
+auth_views = get_auth_views()
+login_view = auth_views['login']
+signup_view = auth_views['signup']
+refresh_view = auth_views['refresh']
+verify_view = auth_views.get('verify')
+
+# Check for token blacklist
+try:
+    from rest_framework_simplejwt import token_blacklist
+    HAS_TOKEN_BLACKLIST = True
+except ImportError:
+    HAS_TOKEN_BLACKLIST = False
+    token_blacklist = None
+
+# ============================================================================
+# URL PATTERNS
+# ============================================================================
+
+# Authentication patterns
 auth_patterns = [
-    # API   (/api/auth/) -    
+    # API Authentication endpoints
     path('api/auth/login/', login_view.as_view(), name='auth_login'),
     path('api/auth/signup/', signup_view.as_view(), name='auth_signup'),
     path('api/auth/refresh/', refresh_view.as_view(), name='auth_refresh'),
     path('api/auth/check-email/', user_views.CheckEmail.as_view(), name='auth_check_email'),
     path('api/auth/check-nickname/', user_views.CheckNickname.as_view(), name='auth_check_nickname'),
     path('api/auth/me/', user_views.UserMe.as_view(), name='auth_me'),
-    #  
+    
+    # Test endpoints
     path('api/auth/test-signup/', TestSignUp.as_view(), name='test_signup'),
     path('api/auth/test-create/', TestCreate.as_view(), name='test_create'),
 ]
 
-# verify     
+# Add verify endpoint if available
 if verify_view:
     auth_patterns.append(path('api/auth/verify/', verify_view.as_view(), name='auth_verify'))
 
-#    V2     
-if HAS_IMPROVED_AUTH_V2:
-    try:
-        from users.views_auth_improved import TestUserCreate
-        auth_patterns.append(path('api/auth/test-users/', TestUserCreate.as_view(), name='test_users'))
-    except ImportError:
-        pass
-
-#  URL 
-urlpatterns = auth_patterns + [
-    #    (Railway  ) -  
-    path("", simple_root_health, name="root_health"),
+# Main URL patterns
+urlpatterns = [
+    # Health check - MUST be first for Railway
+    path('health/', health_check, name='health'),
+    path('', health_check, name='root_health'),  # Root health check
     
-    # System API (,   )
-    path("api/", include("system.urls")),  #  API 
+    # Admin
+    path('admin/', admin.site.urls),
+    path('admin-dashboard/', include('admin_dashboard.urls')),
     
-    # API  ( ) -   
-    path("api/health/", railway_health_check, name="api_health"),  # Railway 헬스체크
-    path("api/health-full/", health_check, name="api_health_full"),  #  
-    # api/version/ is handled by system.urls (included above)
-    path("health/", simple_health_check, name="health"),  #  
-    path("cors-test/", cors_test_view, name="cors_test"),  # CORS 
-    path("public/projects/", PublicProjectListView.as_view(), name="public_projects"),  #   
+    # System API
+    path('api/', include('system.urls')),
     
-    #   (Railway  )
-    path("api/debug/urls/", URLDebugView.as_view() if HAS_DEBUG_VIEWS else simple_health, name="debug_urls"),
-    path("api/debug/auth-status/", auth_endpoint_status if HAS_DEBUG_VIEWS else simple_health, name="debug_auth_status"),
-    path("api/debug/auth-test/", AuthTestView.as_view() if HAS_DEBUG_VIEWS else simple_health, name="debug_auth_test"),
-    path("api/debug/cors/", cors_debug_view, name="debug_cors"),  # CORS  
-    path("admin/", admin.site.urls),
-    path("admin-dashboard/", include("admin_dashboard.urls")),  #  
+    # Authentication
+    *auth_patterns,
     
-    #   (Railway  )
-    # path("api/debug-info/", debug_info, name="debug_info"),  #  
-    # path("api/test-error/", test_error, name="test_error"),  #  
+    # API endpoints
+    path('api/users/', include('users.urls')),
+    path('api/projects/', include(('projects.urls', 'projects'), namespace='api_projects')),
+    path('api/feedbacks/', include(('feedbacks.urls', 'feedbacks'), namespace='api_feedbacks')),
+    path('api/onlines/', include('onlines.urls')),
+    path('api/video-planning/', include('video_planning.urls')),
+    path('api/video-analysis/', include('video_analysis.urls')),
+    path('api/ai-video/', include('ai_video.urls')),
+    path('api/documents/', include('documents.urls')),
+    path('api/analytics/', include('analytics.urls')),
+    path('api/calendar/', include('calendars.urls')),
+    path('api/invitations/', include('invitations.urls')),
     
-    # API  () - /api/    
-    path("api/users/", include("users.urls")),
-    path("api/projects/", include(("projects.urls", "projects"), namespace="api_projects")),
-    path("api/feedbacks/", include(("feedbacks.urls", "feedbacks"), namespace="api_feedbacks")),
-    path("api/onlines/", include("onlines.urls")),
-    path("api/video-planning/", include("video_planning.urls")),
-    path("api/video-analysis/", include("video_analysis.urls")),
-    path("api/ai-video/", include("ai_video.urls")),  # AI   API
-    path("api/documents/", include("documents.urls")),  #   API
-    path("api/analytics/", include("analytics.urls")),  #  API
-    path("api/calendar/", include("calendars.urls")),  #  API
-    path("api/invitations/", include("invitations.urls")),  #  API
+    # Legacy endpoints (for backward compatibility)
+    path('users/', include('users.urls')),
+    path('projects/', include(('projects.urls', 'projects'), namespace='legacy_projects')),
+    path('feedbacks/', include(('feedbacks.urls', 'feedbacks'), namespace='legacy_feedbacks')),
+    path('onlines/', include('onlines.urls')),
     
-    #   ( ) - /api/    
-    #    /api/    
-    path("users/", include("users.urls")),
-    path("projects/", include(("projects.urls", "projects"), namespace="legacy_projects")),
-    path("feedbacks/", include(("feedbacks.urls", "feedbacks"), namespace="legacy_feedbacks")),
-    path("onlines/", include("onlines.urls")),
-    
-    # CSRF 토큰 (정의된 함수 사용)
-    path("users/csrf-token/", csrf_token_view, name="csrf_token"),
+    # Utility endpoints
+    path('cors-test/', cors_test_view, name='cors_test'),
+    path('public/projects/', PublicProjectListView.as_view(), name='public_projects'),
+    path('users/csrf-token/', csrf_token_view, name='csrf_token'),
 ]
 
-# Railway   
-if HAS_RAILWAY_DEBUG:
-    urlpatterns += [
-        path('api/debug/status/', debug_status, name='debug_status'),
-        path('api/debug/echo/', debug_echo, name='debug_echo'),
-        path('api/debug/test-signup/', test_signup_debug, name='test_signup_debug'),
-    ]
-
-# Always serve media files
+# Static and media files
 if settings.DEBUG:
-    #   Django static  
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 else:
-    #      
-    from .media_settings import serve_media
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve_media, name='serve_media'),
-    ]
+    # Production media serving
+    try:
+        from .media_settings import serve_media
+        urlpatterns += [
+            re_path(r'^media/(?P<path>.*)$', serve_media, name='serve_media'),
+        ]
+    except ImportError:
+        pass
 
-# SPA catch-all route - API     React 
-#      
+# SPA catch-all route - MUST be last
 urlpatterns += [
-    #       React SPA 
-    re_path(r'^(?!api|admin|media|static|health|users|projects|feedbacks|onlines|cors-test|public).*$', SPAView.as_view(), name='spa'),
+    re_path(r'^(?!api|admin|media|static|health|users|projects|feedbacks|onlines|cors-test|public).*$', 
+            SPAView.as_view(), name='spa'),
 ]
 
-# token_blacklist   unregister
+# ============================================================================
+# ADMIN CUSTOMIZATION
+# ============================================================================
+
+# Unregister token blacklist models if present
 if HAS_TOKEN_BLACKLIST and token_blacklist:
     try:
         admin.site.unregister(token_blacklist.models.BlacklistedToken)
@@ -270,16 +195,20 @@ if HAS_TOKEN_BLACKLIST and token_blacklist:
     except admin.sites.NotRegistered:
         pass
 
+# Unregister Group model
 try:
     admin.site.unregister(Group)
 except admin.sites.NotRegistered:
     pass
 
-admin.site.site_title = "Vlanet "
-admin.site.site_header = "Vlanet  "
-admin.site.index_title = ""
+# Admin site customization
+admin.site.site_title = "Vlanet 관리자"
+admin.site.site_header = "Vlanet 관리자 패널"
+admin.site.index_title = "관리"
 
-#    
+# ============================================================================
+# ERROR HANDLERS
+# ============================================================================
 handler400 = 'config.error_handlers.custom_400_handler'
 handler403 = 'config.error_handlers.custom_403_handler'
 handler404 = 'config.error_handlers.custom_404_handler'
