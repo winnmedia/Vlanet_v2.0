@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 from .views import health_check, root_view
 from .simple_health import simple_health_check
 from .fast_health import ultra_fast_health, root_health
+from .railway_health import railway_health_check, simple_root_health
 from api_health import csrf_token_view
 from users import views as user_views
 from users.views_signup_safe import SafeSignUp, SafeSignIn
@@ -154,13 +155,13 @@ if HAS_IMPROVED_AUTH_V2:
 #  URL 
 urlpatterns = auth_patterns + [
     #    (Railway  ) -  
-    path("", ultra_fast_health, name="root_health"),
+    path("", simple_root_health, name="root_health"),
     
     # System API (,   )
     path("api/", include("system.urls")),  #  API 
     
     # API  ( ) -   
-    path("api/health/", ultra_fast_health, name="api_health"),  #  
+    path("api/health/", railway_health_check, name="api_health"),  # Railway 헬스체크
     path("api/health-full/", health_check, name="api_health_full"),  #  
     # api/version/ is handled by system.urls (included above)
     path("health/", simple_health_check, name="health"),  #  

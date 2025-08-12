@@ -128,7 +128,10 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    # Unified CORS middleware - MUST be first to handle all responses
+    # Railway health check middleware - MUST be first for quick response
+    "config.middleware.RailwayHealthCheckMiddleware",
+    
+    # Unified CORS middleware - handles all CORS responses
     "config.middleware_cors_unified.UnifiedCORSMiddleware",  # Single source of CORS truth
     
     # Django security and session middleware

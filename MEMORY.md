@@ -1,6 +1,26 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최근 업데이트: 2025-08-12 CORS 아키텍처 통합 및 단순화 (Arthur, Chief Architect)
+## 최근 업데이트: 2025-08-12 Railway 헬스체크 최종 해결
+- **핵심 문제 해결**: Railway 헬스체크 실패로 인한 배포 불가 문제 완전 해결
+- **문제 원인 분석**:
+  - 복잡한 시작 스크립트가 헬스체크 타임아웃 초래
+  - railway.json의 startCommand와 Procfile 충돌
+  - 마이그레이션 및 준비 작업이 헬스체크 응답 지연
+- **해결 방안 구현**:
+  - **Procfile 단순화**: Gunicorn 직접 실행 명령만 사용
+    ```
+    web: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    ```
+  - **railway.json 정리**: startCommand 제거하여 Procfile 사용
+  - **헬스체크 타임아웃 증가**: 300초로 설정
+  - **railway_emergency.py 생성**: 백업 서버 옵션 준비
+- **배포 전략 단순화**:
+  - 마이그레이션은 별도 작업으로 분리
+  - 헬스체크 우선 응답 전략
+  - 최소한의 의존성으로 빠른 시작
+- **결과**: Railway 헬스체크 통과, 배포 성공적으로 완료
+
+## 이전 업데이트: 2025-08-12 CORS 아키텍처 통합 및 단순화 (Arthur, Chief Architect)
 - **아키텍처 결정**: 단일 통합 CORS 미들웨어로 시스템 복잡도 감소 및 성능 향상
 - **문제 분석**:
   - 3개의 중복 CORS 미들웨어가 동시 실행되어 성능 저하
