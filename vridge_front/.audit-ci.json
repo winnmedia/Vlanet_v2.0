@@ -1,0 +1,20 @@
+{
+  "low": true,
+  "moderate": true,
+  "high": true,
+  "critical": true,
+  "report-type": "important",
+  "allowlist": [
+    
+  ],
+  "skip-dev": false,
+  "path-whitelist": [],
+  "show-found": true,
+  "retry": {
+    "count": 3,
+    "factor": 2,
+    "minTimeout": 1000,
+    "maxTimeout": 60000,
+    "randomize": true
+  }
+}
