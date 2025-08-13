@@ -52,11 +52,22 @@ class CheckEmail(View):
             # Database query with connection error handling
             try:
                 # N+1  :   
-                user = models.User.objects.filter(username=email).first()
+                # username  email  
+                user = models.User.objects.filter(email=email).first()
                 if user:
-                    return StandardResponse.error("USER_ALREADY_EXISTS", "   .", 409)
+                    # 409  200  ( )
+                    return JsonResponse({
+                        "success": False,
+                        "available": False,
+                        "message": "   .",
+                        "code": "USER_ALREADY_EXISTS"
+                    }, status=200)
                 else:
-                    return StandardResponse.success(message="  .")
+                    return JsonResponse({
+                        "success": True,
+                        "available": True,
+                        "message": "  ."
+                    }, status=200)
             except Exception as db_error:
                 logger.error(f"Database error in CheckEmail for email {email}: {str(db_error)}", exc_info=True)
                 # Return a safe error response that indicates temporary issue

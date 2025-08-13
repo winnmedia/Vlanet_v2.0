@@ -28,6 +28,83 @@ class EmailVerificationService:
     """  """
     
     @staticmethod
+    def send_verification_code_email(email, code):
+        """   (6 )"""
+        try:
+            subject = "[VideoPlanet]   "
+            
+            html_message = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
+                    <h1 style="color: white; margin: 0;">VideoPlanet</h1>
+                </div>
+                <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px;">
+                    <h2 style="color: #333;">  </h2>
+                    <p style="color: #666; line-height: 1.6;">    .</p>
+                    
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; margin: 30px 0;">
+                        <p style="color: #999; margin: 0 0 10px 0;"> :</p>
+                        <h1 style="color: #1631F8; font-size: 36px; letter-spacing: 8px; margin: 0;">{code}</h1>
+                    </div>
+                    
+                    <p style="color: #999; font-size: 14px;">
+                        •    10  .<br>
+                        •       .<br>
+                        •       .
+                    </p>
+                </div>
+                <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+                    © 2025 VideoPlanet. All rights reserved.
+                </div>
+            </body>
+            </html>
+            """
+            
+            text_message = f"""
+VideoPlanet  
+
+    .
+
+: {code}
+
+   10  .
+      .
+      .
+
+.
+VideoPlanet 
+            """
+            
+            #   
+            if email_queue_manager:
+                email_id = email_queue_manager.add_email(
+                    to_email=email,
+                    subject=subject,
+                    html_content=html_message,
+                    text_content=text_message,
+                    email_type='verification_code'
+                )
+                logger.info(f"Verification code email queued for {email}: {email_id}")
+            else:
+                #  
+                send_mail(
+                    subject=subject,
+                    message=text_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    html_message=html_message,
+                    fail_silently=False
+                )
+                logger.info(f"Verification code email sent directly to {email}")
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to send verification code email: {str(e)}")
+            return False
+    
+    @staticmethod
     def send_verification_email(user):
         """   """
         try:

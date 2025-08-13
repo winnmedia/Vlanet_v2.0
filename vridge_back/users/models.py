@@ -13,6 +13,7 @@ class User(AbstractUser):
     )
 
     nickname = models.CharField(verbose_name="", max_length=100, blank=True)
+    full_name = models.CharField(max_length=100, blank=True, verbose_name='성명')
     login_method = models.CharField(
         max_length=50, verbose_name=" ", choices=LOGIN_CHOICES, default="email"
     )
@@ -103,9 +104,19 @@ class UserProfile(core_model.TimeStampedModel):
 class EmailVerify(core_model.TimeStampedModel):
     email = models.CharField(verbose_name=" ", max_length=200)
     auth_number = models.CharField(verbose_name="", max_length=10)
+    is_verified = models.BooleanField(default=False, verbose_name='인증 완료')
+    verified_at = models.DateTimeField(null=True, blank=True, verbose_name='인증 시간')
+    expires_at = models.DateTimeField(null=True, blank=True, verbose_name='만료 시간')
 
     def __str__(self):
         return f"{self.email} - {self.auth_number}"
+
+    def is_expired(self):
+        """인증 코드 만료 여부 확인"""
+        if not self.expires_at:
+            return False
+        from django.utils import timezone
+        return timezone.now() > self.expires_at
 
     class Meta:
         verbose_name = " "

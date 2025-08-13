@@ -135,7 +135,10 @@ urlpatterns = [
     # System API
     path('api/', include('system.urls')),
     
-    # Authentication
+    # Enhanced Authentication (must come before basic auth patterns)
+    path('api/auth/', include('users.urls_enhanced')),  # Enhanced signup endpoints
+    
+    # Authentication (legacy)
     *auth_patterns,
     
     # API endpoints

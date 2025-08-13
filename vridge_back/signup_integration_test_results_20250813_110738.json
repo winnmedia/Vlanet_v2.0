@@ -1,0 +1,57 @@
+{
+  "test_data": {
+    "email": "integration_test_1755050857@example.com",
+    "nickname": "testuser_1755050857",
+    "password": "TestPassword123!",
+    "full_name": "통합테스트 사용자",
+    "company": "Test Integration Company",
+    "position": "QA Automation Engineer",
+    "phone": "010-9999-8888"
+  },
+  "flow_state": {
+    "email_verified": true,
+    "verification_code": "770277",
+    "nickname_available": false,
+    "signup_completed": false,
+    "access_token": null,
+    "user_id": null
+  },
+  "results": [
+    {
+      "timestamp": "2025-08-13T11:07:37.314845",
+      "test_name": "1단계 - 이메일 중복 체크 & 인증 코드 발송",
+      "success": true,
+      "message": "이메일 사용 가능하며 인증 코드 발송 완료",
+      "details": {
+        "email": "integration_test_1755050857@example.com",
+        "available": true,
+        "expires_in": 600
+      }
+    },
+    {
+      "timestamp": "2025-08-13T11:07:38.548215",
+      "test_name": "2단계 - 이메일 인증",
+      "success": true,
+      "message": "이메일 인증 성공",
+      "details": {
+        "email": "integration_test_1755050857@example.com",
+        "code": "770277"
+      }
+    },
+    {
+      "timestamp": "2025-08-13T11:07:38.551438",
+      "test_name": "3단계 - 닉네임 중복",
+      "success": false,
+      "message": "닉네임이 이미 사용 중",
+      "details": {
+        "message": "  ."
+      }
+    }
+  ],
+  "summary": {
+    "total_tests": 3,
+    "passed_tests": 2,
+    "failed_tests": 1,
+    "success_rate": 66.66666666666666
+  }
+}

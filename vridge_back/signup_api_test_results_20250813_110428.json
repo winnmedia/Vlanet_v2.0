@@ -1,0 +1,170 @@
+[
+  {
+    "timestamp": "2025-08-13T11:04:28.022319",
+    "test_name": "Server Health Check",
+    "success": true,
+    "message": "Django 서버가 정상적으로 응답합니다.",
+    "details": {}
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.029190",
+    "test_name": "Check Email & Send Verification (Valid)",
+    "success": false,
+    "message": "API 호출 실패: {'status_code': 500, 'data': {'success': False, 'message': '처리 중 오류가 발생했습니다.', 'action': 'error'}, 'headers': {'Date': 'Wed, 13 Aug 2025 02:04:28 GMT', 'Server': 'WSGIServer/0.2 CPython/3.12.3', 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS', 'X-XSS-Protection': '1; mode=block', 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Response-Time': '2.93ms', 'Content-Length': '128', 'Cross-Origin-Opener-Policy': 'same-origin', 'Vary': 'Origin', 'X-Request-ID': 'b06529aa'}}",
+    "details": {
+      "status_code": 500,
+      "data": {
+        "success": false,
+        "message": "처리 중 오류가 발생했습니다.",
+        "action": "error"
+      },
+      "headers": {
+        "Date": "Wed, 13 Aug 2025 02:04:28 GMT",
+        "Server": "WSGIServer/0.2 CPython/3.12.3",
+        "Content-Type": "application/json",
+        "Allow": "POST, OPTIONS",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Response-Time": "2.93ms",
+        "Content-Length": "128",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "Origin",
+        "X-Request-ID": "b06529aa"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.031645",
+    "test_name": "Check Email & Send Verification (Invalid)",
+    "success": true,
+    "message": "잘못된 이메일 형식을 올바르게 거부함",
+    "details": {
+      "success": false,
+      "errors": {
+        "email": [
+          "유효한 이메일 주소를 입력하십시오.",
+          "올바른 이메일 형식이 아닙니다."
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.033987",
+    "test_name": "Verify Email Code",
+    "success": false,
+    "message": "인증 실패 또는 예상과 다른 응답: {'success': False, 'message': '인증 처리 중 오류가 발생했습니다.'}",
+    "details": {
+      "success": false,
+      "message": "인증 처리 중 오류가 발생했습니다."
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.036103",
+    "test_name": "Resend Verification",
+    "success": false,
+    "message": "API 호출 실패: {'status_code': 500, 'data': {'success': False, 'message': '인증 코드 발송에 실패했습니다.'}, 'headers': {'Date': 'Wed, 13 Aug 2025 02:04:28 GMT', 'Server': 'WSGIServer/0.2 CPython/3.12.3', 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS', 'X-XSS-Protection': '1; mode=block', 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Response-Time': '0.74ms', 'Content-Length': '115', 'Cross-Origin-Opener-Policy': 'same-origin', 'Vary': 'Origin', 'X-Request-ID': '858c4731'}}",
+    "details": {
+      "status_code": 500,
+      "data": {
+        "success": false,
+        "message": "인증 코드 발송에 실패했습니다."
+      },
+      "headers": {
+        "Date": "Wed, 13 Aug 2025 02:04:28 GMT",
+        "Server": "WSGIServer/0.2 CPython/3.12.3",
+        "Content-Type": "application/json",
+        "Allow": "POST, OPTIONS",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Response-Time": "0.74ms",
+        "Content-Length": "115",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "Origin",
+        "X-Request-ID": "858c4731"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.039561",
+    "test_name": "Check Nickname (Valid)",
+    "success": false,
+    "message": "예상과 다른 응답",
+    "details": {
+      "message": "  ."
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.041021",
+    "test_name": "Check Nickname (Invalid)",
+    "success": true,
+    "message": "잘못된 닉네임을 올바르게 거부함",
+    "details": {
+      "message": "  2  ."
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.044840",
+    "test_name": "Enhanced Signup (Valid)",
+    "success": false,
+    "message": "회원가입 실패: {'status_code': 400, 'data': {'success': False, 'errors': {'terms_agreed': ['이용약관에 동의해주세요.'], 'privacy_agreed': ['개인정보처리방침에 동의해주세요.']}}, 'headers': {'Date': 'Wed, 13 Aug 2025 02:04:28 GMT', 'Server': 'WSGIServer/0.2 CPython/3.12.3', 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS', 'X-XSS-Protection': '1; mode=block', 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Response-Time': '2.48ms', 'Content-Length': '236', 'Cross-Origin-Opener-Policy': 'same-origin', 'Vary': 'Origin', 'X-Request-ID': '63d5a950'}}",
+    "details": {
+      "status_code": 400,
+      "data": {
+        "success": false,
+        "errors": {
+          "terms_agreed": [
+            "이용약관에 동의해주세요."
+          ],
+          "privacy_agreed": [
+            "개인정보처리방침에 동의해주세요."
+          ]
+        }
+      },
+      "headers": {
+        "Date": "Wed, 13 Aug 2025 02:04:28 GMT",
+        "Server": "WSGIServer/0.2 CPython/3.12.3",
+        "Content-Type": "application/json",
+        "Allow": "POST, OPTIONS",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Response-Time": "2.48ms",
+        "Content-Length": "236",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Vary": "Origin",
+        "X-Request-ID": "63d5a950"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.048434",
+    "test_name": "Enhanced Signup (Invalid)",
+    "success": true,
+    "message": "잘못된 데이터를 올바르게 거부함",
+    "details": {
+      "success": false,
+      "errors": {
+        "terms_agreed": [
+          "이용약관에 동의해주세요."
+        ],
+        "privacy_agreed": [
+          "개인정보처리방침에 동의해주세요."
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2025-08-13T11:04:28.050381",
+    "test_name": "Rate Limiting",
+    "success": true,
+    "message": "레이트 리미팅이 1번째 요청에서 작동함",
+    "details": {
+      "detail": "요청이 지연(throttled)되었습니다. Expected available in 60 seconds."
+    }
+  }
+]

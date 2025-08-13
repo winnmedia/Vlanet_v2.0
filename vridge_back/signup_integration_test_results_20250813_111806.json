@@ -1,0 +1,82 @@
+{
+  "test_data": {
+    "email": "integration_test_1755051485@example.com",
+    "nickname": "testuser_1755051485",
+    "password": "TestPassword123!",
+    "full_name": "통합테스트 사용자",
+    "company": "Test Integration Company",
+    "position": "QA Automation Engineer",
+    "phone": "010-9999-8888"
+  },
+  "flow_state": {
+    "email_verified": true,
+    "verification_code": "638997",
+    "nickname_available": true,
+    "signup_completed": true,
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NjU2Mjg2LCJpYXQiOjE3NTUwNTE0ODYsImp0aSI6IjY4MGY1YTFkYjczMTRmZjQ4Y2JjNzIxMmRiNWY5ZjY3IiwidXNlcl9pZCI6NTd9.CiX2AmMoCK5726sMJsUr6KZnMmSirfzJMmEWLJ7tQaI",
+    "user_id": 57
+  },
+  "results": [
+    {
+      "timestamp": "2025-08-13T11:18:05.156485",
+      "test_name": "1단계 - 이메일 중복 체크 & 인증 코드 발송",
+      "success": true,
+      "message": "이메일 사용 가능하며 인증 코드 발송 완료",
+      "details": {
+        "email": "integration_test_1755051485@example.com",
+        "available": true,
+        "expires_in": 600
+      }
+    },
+    {
+      "timestamp": "2025-08-13T11:18:06.657169",
+      "test_name": "2단계 - 이메일 인증",
+      "success": true,
+      "message": "이메일 인증 성공",
+      "details": {
+        "email": "integration_test_1755051485@example.com",
+        "code": "638997"
+      }
+    },
+    {
+      "timestamp": "2025-08-13T11:18:06.660657",
+      "test_name": "3단계 - 닉네임 중복 체크",
+      "success": true,
+      "message": "닉네임 사용 가능",
+      "details": {
+        "nickname": "testuser_1755051485",
+        "available": true
+      }
+    },
+    {
+      "timestamp": "2025-08-13T11:18:06.791605",
+      "test_name": "4단계 - 회원가입",
+      "success": true,
+      "message": "회원가입 및 JWT 토큰 발급 완료",
+      "details": {
+        "user_id": 57,
+        "email": "integration_test_1755051485@example.com",
+        "nickname": "testuser_1755051485",
+        "full_name": "통합테스트 사용자",
+        "tokens_issued": true
+      }
+    },
+    {
+      "timestamp": "2025-08-13T11:18:06.795558",
+      "test_name": "5단계 - 토큰 검증",
+      "success": true,
+      "message": "JWT 토큰으로 사용자 정보 조회 성공",
+      "details": {
+        "user_id": 57,
+        "email": "integration_test_1755051485@example.com",
+        "nickname": "testuser_1755051485"
+      }
+    }
+  ],
+  "summary": {
+    "total_tests": 5,
+    "passed_tests": 5,
+    "failed_tests": 0,
+    "success_rate": 100.0
+  }
+}
