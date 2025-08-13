@@ -151,15 +151,15 @@ export class AuthService extends APIClient {
   }
 
   /**
-   *  
+   * 추가 정보 포함 회원가입 (Enhanced)
    */
   async signup(data: SignupRequest): Promise<APIResponse<SignupResponse>> {
-    const response = await this.post<SignupResponse>('/api/auth/signup/', data, {
+    const response = await this.post<SignupResponse>('/api/auth/signup-enhanced/', data, {
       skipAuth: true,
     });
 
     if (response.success && response.data) {
-      //   
+      // 토큰 저장
       this.setTokens(response.data.tokens);
     }
 
@@ -215,10 +215,10 @@ export class AuthService extends APIClient {
   // ========================================
 
   /**
-   *   
+   * 이메일 중복 체크 + 인증 발송 (통합 API)
    */
   async checkEmailAvailability(email: string): Promise<APIResponse<{ available: boolean; message: string }>> {
-    return this.post('/api/auth/check-email/', { email }, { skipAuth: true });
+    return this.post('/api/auth/check-email-verify/', { email }, { skipAuth: true });
   }
 
   /**
@@ -274,7 +274,28 @@ export class AuthService extends APIClient {
   }
 
   /**
-   *   
+   * 이메일 인증 코드 검증
+   */
+  async verifyEmailCode(email: string, code: string): Promise<APIResponse<{ verified: boolean; message: string }>> {
+    return this.post<{ verified: boolean; message: string }>('/api/auth/verify-email-code/', { 
+      email, 
+      code 
+    }, {
+      skipAuth: true,
+    });
+  }
+
+  /**
+   * 인증 코드 재발송
+   */
+  async resendVerificationCode(email: string): Promise<APIResponse<{ message: string }>> {
+    return this.post<{ message: string }>('/api/auth/resend-verification/', { email }, {
+      skipAuth: true,
+    });
+  }
+
+  /**
+   * 기존 이메일 인증 (토큰 기반) - 레거시 지원
    */
   async verifyEmail(token: string): Promise<APIResponse<{ message: string }>> {
     return this.post<{ message: string }>('/api/auth/verify-email/', { token }, {

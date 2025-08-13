@@ -1,0 +1,146 @@
+[
+  {
+    "timestamp": "2025-08-13T12:21:25.748134",
+    "step": "CORS Preflight",
+    "status": "PASS",
+    "details": {
+      "status_code": 200,
+      "Access-Control-Allow-Origin": "https://tempdeploy-precqbumb-vlanets-projects.vercel.app",
+      "Access-Control-Allow-Methods": "DELETE, GET, OPTIONS, PATCH, POST, PUT, HEAD",
+      "Access-Control-Allow-Headers": "accept, accept-encoding, authorization, content-type, dnt, origin, user-agent, x-csrftoken, x-requested-with, cache-control, pragma, x-idempotency-key",
+      "Access-Control-Allow-Credentials": "true"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:25.920114",
+    "step": "Validation: Empty Request",
+    "status": "PASS",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 162.89,
+      "content_length": 141,
+      "expected_status": [
+        400,
+        500
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:25.920170",
+    "step": "Response: Empty Request",
+    "status": "INFO",
+    "details": {
+      "response_text": "<html>\n  <head>\n    <title>Internal Server Error</title>\n  </head>\n  <body>\n    <h1><p>Internal Server Error</p></h1>\n    \n  </body>\n</html>\n"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.081916",
+    "step": "Validation: Missing Email",
+    "status": "PASS",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 161.73,
+      "content_length": 141,
+      "expected_status": [
+        400,
+        500
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.081944",
+    "step": "Response: Missing Email",
+    "status": "INFO",
+    "details": {
+      "response_text": "<html>\n  <head>\n    <title>Internal Server Error</title>\n  </head>\n  <body>\n    <h1><p>Internal Server Error</p></h1>\n    \n  </body>\n</html>\n"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.281967",
+    "step": "Validation: Invalid Email Format",
+    "status": "PASS",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 200.01,
+      "content_length": 141,
+      "expected_status": [
+        400,
+        500
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.281992",
+    "step": "Response: Invalid Email Format",
+    "status": "INFO",
+    "details": {
+      "response_text": "<html>\n  <head>\n    <title>Internal Server Error</title>\n  </head>\n  <body>\n    <h1><p>Internal Server Error</p></h1>\n    \n  </body>\n</html>\n"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.481482",
+    "step": "Validation: Short Password",
+    "status": "PASS",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 199.48,
+      "content_length": 141,
+      "expected_status": [
+        400,
+        500
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.481506",
+    "step": "Response: Short Password",
+    "status": "INFO",
+    "details": {
+      "response_text": "<html>\n  <head>\n    <title>Internal Server Error</title>\n  </head>\n  <body>\n    <h1><p>Internal Server Error</p></h1>\n    \n  </body>\n</html>\n"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.644817",
+    "step": "Validation: Valid Complete Data",
+    "status": "PASS",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 163.3,
+      "content_length": 141,
+      "expected_status": [
+        200,
+        201,
+        400,
+        500
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.644841",
+    "step": "Response: Valid Complete Data",
+    "status": "INFO",
+    "details": {
+      "response_text": "<html>\n  <head>\n    <title>Internal Server Error</title>\n  </head>\n  <body>\n    <h1><p>Internal Server Error</p></h1>\n    \n  </body>\n</html>\n"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:26.813618",
+    "step": "Login Endpoint",
+    "status": "FAIL",
+    "details": {
+      "status_code": 500,
+      "content_type": "text/html"
+    }
+  },
+  {
+    "timestamp": "2025-08-13T12:21:27.400151",
+    "step": "Response Timing",
+    "status": "EXCELLENT",
+    "details": {
+      "avg_response_time_ms": 117.29,
+      "min_response_time_ms": 115.43,
+      "max_response_time_ms": 119.72,
+      "samples": 5
+    }
+  }
+]

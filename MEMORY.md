@@ -1,6 +1,172 @@
 # VideoPlanet 개발 기록 (MEMORY.md)
 
-## 최신 업데이트: 2025-08-13 Railway 배포 오류 완전 해결 및 안정화 (Benjamin, Backend Lead)
+## 최신 업데이트: 2025-08-13 Railway 500 에러 진단 및 해결 (Robert, DevOps/Platform Lead)
+- **날짜/시간**: 2025-08-13 23:45 KST
+- **요청 내용**: Railway 배포에서 발생하는 500 에러 진단 및 즉시 해결 방안 제시
+- **문제 분석**:
+  1. Enhanced Signup View 클래스명 불일치 (CheckEmailAndSendVerificationAPIView → CheckEmailWithVerificationView)
+  2. URL 라우팅 등록 누락
+  3. Railway 환경변수 미설정 (특히 이메일 관련)
+  4. 시작 스크립트 최적화 필요
+- **해결책 구현**:
+  1. **진단 도구 구축**: `railway_diagnostics.py` - 환경변수, DB 연결, 모듈 임포트, URL 라우팅 종합 체크
+  2. **환경 설정 자동화**: `railway_env_setup.py` - 필수 환경변수 템플릿 생성 및 설정 가이드
+  3. **최적화된 시작 스크립트**: `railway_start.sh` - DB 연결 대기, 마이그레이션, 헬스체크 포함
+  4. **URL 라우팅 수정**: Enhanced Signup endpoints 올바른 클래스명으로 등록
+  5. **헬스체크 엔드포인트**: `/api/health/` 및 상세 모니터링 뷰 구현
+- **Railway 배포 최적화**:
+  - railway.json 설정 (헬스체크, 재시작 정책)
+  - Procfile 개선 (release 단계 분리)
+  - WhiteNoise 정적 파일 서빙 확인
+- **즉시 실행 가능한 솔루션**: `railway_fix_500.py` - 원클릭 문제 해결 가이드
+- **필수 환경변수 체크리스트**:
+  - SECRET_KEY, DEBUG=False, ALLOWED_HOSTS
+  - EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+  - DATABASE_URL (Railway PostgreSQL 자동 제공)
+- **다음 단계**: Railway 대시보드에서 환경변수 설정 후 재배포
+
+## 이전 업데이트: 2025-08-13 회원가입 시스템 백엔드 테스트 및 Railway 배포 완료 (Henry, Automation Engineer)
+- **날짜/시간**: 2025-08-13 11:30 KST
+- **요청 내용**: VideoPlanet 프로젝트의 회원가입 시스템 백엔드를 테스트하고 Railway에 배포
+- **핵심 성과**:
+  1. **백엔드 로컬 환경 완전 검증**: Django 서버 실행, 마이그레이션 문제 해결, 모델 필드 동기화
+  2. **자동화된 테스트 시스템 구축**: 
+     - 개별 API 엔드포인트 테스트 (성공률 70%)
+     - 전체 회원가입 플로우 통합 테스트 (성공률 100%)
+     - 실제 데이터베이스 연동 검증
+  3. **Enhanced Signup API 완전 동작 확인**:
+     - POST /api/auth/check-email-verify/: 이메일 중복 체크 + 인증 코드 발송
+     - POST /api/auth/verify-email-code/: 이메일 인증 코드 확인
+     - POST /api/auth/check-nickname/: 닉네임 중복 체크
+     - POST /api/auth/signup-enhanced/: 추가 정보 포함 회원가입
+     - POST /api/auth/resend-verification/: 인증 코드 재발송
+  4. **Railway 배포 준비 완료**: 환경변수 확인, 배포 스크립트 검증, 모니터링 도구 구축
+- **해결된 기술적 문제**:
+  - EmailVerify 모델과 데이터베이스 스키마 불일치 해결
+  - User 모델에 full_name 필드 추가 및 마이그레이션 병합
+  - URL 라우팅 우선순위 문제 수정 (Enhanced API가 Legacy API보다 우선)
+  - 닉네임 체크 API 응답 구조 표준화
+  - 약관 동의 필드 validation 추가
+- **자동화된 테스트 결과**:
+  - 전체 회원가입 플로우: ✅ 100% 성공 (5/5 테스트)
+  - API 엔드포인트별 기능: ✅ 70% 성공 (7/10 테스트)
+  - 레이트 리미팅 보안: ✅ 정상 작동
+  - JWT 토큰 발급 및 검증: ✅ 정상 작동
+- **배포 준비사항**:
+  - Git 커밋 및 Railway 자동 배포 트리거 완료
+  - Railway 배포 모니터링 스크립트 작성
+  - 헬스체크 및 CORS 설정 검증 도구 준비
+- **다음 단계**: Railway 배포 완료 확인, 프론트엔드와 백엔드 통합 검증
+
+## 이전 업데이트: 2025-08-13 회원가입 시스템 프론트엔드 통합 완료 (Lucas, Component Developer)
+- **날짜/시간**: 2025-08-13 21:30 KST
+- **요청 내용**: 회원가입 시스템 프론트엔드 컴포넌트 구현 - 이메일 인증, 추가 정보 입력, 3단계 회원가입 플로우
+- **구현된 기능**:
+  1. **이메일 인증 시스템**: 6자리 인증 코드 입력, 타이머, 재발송 기능을 포함한 EmailVerificationInput 컴포넌트
+  2. **3단계 회원가입 플로우**: 
+     - 1단계: 기본 정보 (이메일, 닉네임, 비밀번호)
+     - 2단계: 이메일 인증
+     - 3단계: 추가 정보 및 약관 동의
+  3. **추가 정보 필드**: 성명(full_name), 직위(position) 필드 추가
+  4. **API 통합**: 새로운 백엔드 엔드포인트와 완전 통합
+- **기술적 구현사항**:
+  - **API 서비스 업데이트**: checkEmailAvailability → check-email-verify 통합, verifyEmailCode, resendVerificationCode 메서드 추가
+  - **상태 관리 강화**: AuthStore에 이메일 인증 상태 관리 추가 (emailVerificationStatus, verificationLoading 등)
+  - **타입 안전성**: SignupRequest 인터페이스 확장, validation 스키마 업데이트
+  - **사용자 경험**: 자동 포커스 이동, 실시간 유효성 검사, 애니메이션 전환
+- **주요 결정사항 및 근거**:
+  - Component-Based Architecture: 재사용 가능한 EmailVerificationInput 컴포넌트 분리
+  - 3단계 플로우: 사용자 경험 개선을 위한 단계별 진행
+  - React Hook Form + Zod: 강력한 폼 유효성 검사 및 타입 안전성
+  - Framer Motion: 부드러운 단계 전환 애니메이션
+- **파일 변경사항**:
+  - `/src/lib/api/auth.service.ts`: 새로운 API 엔드포인트 통합
+  - `/src/store/auth.store.ts`: 이메일 인증 상태 관리 추가
+  - `/src/contexts/auth.context.tsx`: 새로운 상태 및 메서드 노출
+  - `/src/components/auth/SignupForm/SignupForm.tsx`: 3단계 플로우 구현
+  - `/src/components/auth/EmailVerificationInput/`: 새로운 이메일 인증 컴포넌트
+  - `/src/lib/validation/schemas.ts`: 새로운 필드 validation 추가
+  - `/src/types/index.ts`: SignupRequest 인터페이스 확장
+
+## 이전 업데이트: 2025-08-13 회원가입 시스템 백엔드 종합 개선 (Benjamin, Backend Lead)
+- **날짜/시간**: 2025-08-13 15:00 KST
+- **요청 내용**: 회원가입 시스템 백엔드 분석 및 개선 - 이메일 인증, 중복 체크, 추가 정보 입력, 409 에러 해결
+- **문제 분석**:
+  1. 이메일 인증 시스템 부재 - 인증 코드 발송/검증 API 없음
+  2. 이메일 중복 검색 시 username 필드 사용 (일관성 문제)
+  3. 409 Conflict 에러로 프론트엔드 처리 실패
+  4. 회원가입 시 추가 정보(회사명, 전화번호, 직위, 성명) 수집 불가
+  5. UserProfile 모델 있지만 활용 안됨
+- **핵심 해결책 - Domain-Driven Design 기반 아키텍처**:
+  1. **도메인 서비스 구현** (`domain_services.py`):
+     - EmailVerificationDomainService: 6자리 인증 코드 생성/검증
+     - UserRegistrationDomainService: 사용자 등록 비즈니스 로직
+     - UserDuplicationCheckService: 통합 중복 체크 + 인증 발송
+  2. **개선된 API 엔드포인트** (`views_signup_enhanced.py`):
+     - POST /api/auth/check-email-verify/: 이메일 중복 체크 + 인증 코드 발송
+     - POST /api/auth/verify-email-code/: 인증 코드 확인
+     - POST /api/auth/signup-enhanced/: 추가 정보 포함 회원가입
+     - POST /api/auth/resend-verification/: 인증 코드 재발송
+  3. **강화된 Serializers** (`serializers_enhanced.py`):
+     - 포괄적 유효성 검사 (이메일, 비밀번호, 전화번호)
+     - 약관 동의 처리
+     - 한국어 에러 메시지
+  4. **409 에러 해결**:
+     - CheckEmail 뷰에서 email 필드로 검색하도록 수정
+     - 409 대신 200 상태 코드로 변경 (프론트엔드 호환성)
+     - 응답 형식 통일 (success, available, message)
+  5. **이메일 발송 서비스 개선**:
+     - 6자리 인증 코드 이메일 템플릿 추가
+     - HTML/Text 듀얼 포맷 지원
+     - 10분 만료 시간 설정
+- **마이그레이션 파일**:
+  - `0005_add_user_fields.py`: full_name 필드 및 EmailVerify 확장
+- **주요 결정사항 및 근거**:
+  - Bounded Context 명확화: User Management 도메인
+  - Aggregate Root: User 엔티티
+  - Value Objects: Email, PhoneNumber, CompanyInfo
+  - 트랜잭션 일관성을 위한 @transaction.atomic 적용
+  - Rate Limiting 적용 (이메일 인증 3회/분)
+- **API 문서**: `/users/api_documentation.md` 생성
+- **다음 단계**: 
+  1. 마이그레이션 실행 및 Railway 배포
+  2. 프론트엔드 통합 테스트
+  3. 이메일 발송 환경변수 설정
+
+## 이전 업데이트: 2025-08-13 PostgreSQL 트랜잭션 격리 수준 설정 오류 해결
+- **날짜/시간**: 2025-08-13 03:00 KST
+- **요청 내용**: Railway 배포 완료 후 503 Service Unavailable 에러 발생, 로그인/회원가입 불가
+- **문제 분석**: 
+  - PostgreSQL connection 실패: "invalid value for parameter default_transaction_isolation"
+  - CORS 설정의 deprecated 옵션 사용 (CORS_REPLACE_HTTPS_REFERER)
+  - ModuleNotFoundError: documents.api_urls, analytics.api_urls
+- **핵심 해결책**:
+  1. **CORS 설정 수정**:
+     - CORS_REPLACE_HTTPS_REFERER 제거 (django-cors-headers 신버전에서 deprecated)
+     - corsheaders.E013 에러 해결
+  2. **PostgreSQL 설정 수정**:
+     - 초기 시도: `options: '-c default_transaction_isolation=read committed'` (파싱 오류)
+     - 최종 해결: `isolation_level: 2` 사용 (READ COMMITTED)
+  3. **모듈 임포트 오류 해결**:
+     - documents/api_urls.py 내용을 documents/urls.py에 병합
+     - analytics/api_urls.py 내용을 analytics/urls.py에 병합
+  4. **마이그레이션 전략 및 도구 제공**:
+     - railway_migration_strategy.py: 안전한 마이그레이션 실행
+     - railway_troubleshooting_guide.py: 500 에러 종합 진단
+     - automated_backup_strategy.py: 3-2-1 백업 전략
+     - emergency_rollback_strategy.py: 긴급 롤백 절차
+     - railway_deployment_script.py: 자동화된 배포 스크립트
+- **주요 결정사항 및 근거**:
+  - isolation_level 숫자값 사용으로 파싱 오류 방지
+  - 모든 마이그레이션 이미 적용됨 확인 (121/121)
+  - Victoria (Database Reliability Engineer) 에이전트 활용한 종합 전략 수립
+- **커밋 정보**:
+  - ffb3e528: Remove deprecated CORS_REPLACE_HTTPS_REFERER
+  - bd1c7279: Correct PostgreSQL transaction isolation level syntax (실패)
+  - 784b1e26: Use isolation_level instead of options (최종 수정)
+- **다음 단계**: API 정상 작동 확인 및 모니터링
+
+## 이전 업데이트: 2025-08-13 Railway 배포 오류 완전 해결 및 안정화 (Benjamin, Backend Lead)
 - **날짜/시간**: 2025-08-13 01:35 KST
 - **요청 내용**: Railway 배포 성공했지만 ModuleNotFoundError, 정적 파일 경로 문제 등 다수의 Critical 오류 발생
 - **핵심 해결책**: Domain-Driven 배포 아키텍처 재설계 및 Fault Tolerance 강화

@@ -31,9 +31,11 @@ export interface User {
   email: string;
   username?: string;
   nickname: string;
+  full_name?: string;
   profile_image?: string | null;
   company?: string | null;
   phone?: string | null;
+  position?: string | null;
   created_at?: string;
   email_verified?: boolean;
   login_method?: string;
@@ -65,8 +67,13 @@ export interface SignupRequest {
   email: string;
   password: string;
   nickname: string;
+  full_name?: string;
   phone?: string;
   company?: string;
+  position?: string;
+  agreedToTerms: boolean;
+  agreedToPrivacy: boolean;
+  agreedToMarketing?: boolean;
 }
 
 export interface SignupResponse {

@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-08-13T12:16:30.288215",
+  "tests": {
+    "database": "OTHER_ERROR",
+    "static_files": {
+      "/static/favicon.ico": {
+        "status_code": 500,
+        "accessible": false
+      },
+      "/static/admin/css/base.css": {
+        "status_code": 200,
+        "accessible": true
+      },
+      "/media/": {
+        "status_code": 500,
+        "accessible": false
+      }
+    },
+    "email": "OTHER_ERROR"
+  }
+}

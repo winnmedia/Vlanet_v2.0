@@ -1,0 +1,140 @@
+{
+  "Backend Root Access": {
+    "timestamp": "2025-08-13T12:11:47.592473",
+    "status": "PASS",
+    "details": {
+      "status_code": 200,
+      "response_time_ms": 530.9,
+      "content_type": "application/json"
+    }
+  },
+  "Frontend Access": {
+    "timestamp": "2025-08-13T12:11:47.686535",
+    "status": "EXPECTED_401",
+    "details": {
+      "status_code": 401,
+      "response_time_ms": 94.02,
+      "auth_required": true
+    }
+  },
+  "API POST /api/users/signup/": {
+    "timestamp": "2025-08-13T12:11:47.844488",
+    "status": "FAIL",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 157.89,
+      "content_length": 141
+    }
+  },
+  "API POST /api/auth/login/": {
+    "timestamp": "2025-08-13T12:11:48.043166",
+    "status": "FAIL",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 198.65,
+      "content_length": 141
+    }
+  },
+  "API GET /admin/": {
+    "timestamp": "2025-08-13T12:11:48.199940",
+    "status": "FAIL",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 156.73,
+      "content_length": 141
+    }
+  },
+  "API GET /api/health/": {
+    "timestamp": "2025-08-13T12:11:48.362717",
+    "status": "FAIL",
+    "details": {
+      "status_code": 500,
+      "response_time_ms": 162.73,
+      "content_length": 141
+    }
+  },
+  "CORS Origin: https://tempdeploy-precqbumb-vlanets-projects.vercel.app": {
+    "timestamp": "2025-08-13T12:11:48.482792",
+    "status": "PASS",
+    "details": {
+      "returned_origin": "https://tempdeploy-precqbumb-vlanets-projects.vercel.app",
+      "status_code": 200,
+      "expected_block": false
+    }
+  },
+  "CORS Origin: https://localhost:3000": {
+    "timestamp": "2025-08-13T12:11:48.649960",
+    "status": "BLOCKED",
+    "details": {
+      "returned_origin": "NONE",
+      "status_code": 200,
+      "expected_block": false
+    }
+  },
+  "CORS Origin: https://vlanet.net": {
+    "timestamp": "2025-08-13T12:11:48.761372",
+    "status": "PASS",
+    "details": {
+      "returned_origin": "https://vlanet.net",
+      "status_code": 200,
+      "expected_block": false
+    }
+  },
+  "CORS Origin: https://malicious-site.com": {
+    "timestamp": "2025-08-13T12:11:48.957913",
+    "status": "BLOCKED",
+    "details": {
+      "returned_origin": "NONE",
+      "status_code": 200,
+      "expected_block": true
+    }
+  },
+  "Performance /": {
+    "timestamp": "2025-08-13T12:11:50.476558",
+    "status": "MEASURED",
+    "details": {
+      "min_ms": 127.29,
+      "max_ms": 193.5,
+      "avg_ms": 151.83,
+      "median_ms": 143.76,
+      "p95_ms": 193.5,
+      "samples": 10
+    }
+  },
+  "Performance /api/users/signup/": {
+    "timestamp": "2025-08-13T12:11:52.175179",
+    "status": "MEASURED",
+    "details": {
+      "min_ms": 151.28,
+      "max_ms": 209.96,
+      "avg_ms": 169.84,
+      "median_ms": 162.12,
+      "p95_ms": 209.96,
+      "samples": 10
+    }
+  },
+  "Concurrent Load Test": {
+    "timestamp": "2025-08-13T12:11:52.900472",
+    "status": "COMPLETED",
+    "details": {
+      "total_requests": 15,
+      "successful_requests": 15,
+      "failed_requests": 0,
+      "success_rate_pct": 100.0,
+      "avg_response_time_ms": 212.25,
+      "requests_per_second": 20.68,
+      "test_duration_s": 0.73
+    }
+  },
+  "Security Headers": {
+    "timestamp": "2025-08-13T12:11:53.017028",
+    "status": "SCANNED",
+    "details": {
+      "X-Frame-Options": null,
+      "X-Content-Type-Options": null,
+      "Strict-Transport-Security": null,
+      "Content-Security-Policy": null,
+      "X-XSS-Protection": null
+    }
+  }
+}

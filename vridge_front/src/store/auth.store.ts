@@ -37,6 +37,13 @@ interface AuthState {
   nicknameCheckResult: { available: boolean; message: string } | null;
   isEmailCheckLoading: boolean;
   isNicknameCheckLoading: boolean;
+  
+  // 이메일 인증 상태 관리
+  emailVerificationStatus: 'none' | 'sent' | 'verified' | 'failed';
+  isEmailVerificationLoading: boolean;
+  emailVerificationError: string | null;
+  verificationCodeSentAt: number | null;
+  isResendLoading: boolean;
 }
 
 interface AuthActions {
@@ -55,9 +62,11 @@ interface AuthActions {
   //  
   updateProfile: (data: Partial<User>) => Promise<boolean>;
   
-  //  
+  // 중복 체크 및 이메일 인증
   checkEmailAvailability: (email: string) => Promise<void>;
   checkNicknameAvailability: (nickname: string) => Promise<void>;
+  verifyEmailCode: (email: string, code: string) => Promise<boolean>;
+  resendVerificationCode: (email: string) => Promise<boolean>;
   
   //  
   loginWithGoogle: () => Promise<void>;
@@ -104,6 +113,12 @@ const initialState: AuthState = {
   nicknameCheckResult: null,
   isEmailCheckLoading: false,
   isNicknameCheckLoading: false,
+  
+  emailVerificationStatus: 'none',
+  isEmailVerificationLoading: false,
+  emailVerificationError: null,
+  verificationCodeSentAt: null,
+  isResendLoading: false,
 };
 
 // ========================================
@@ -518,6 +533,73 @@ export const useAuthStore = create<AuthStore>()(
             nicknameCheckResult: null,
             isNicknameCheckLoading: false,
           });
+        }
+      },
+
+      /**
+       * 이메일 인증 코드 검증
+       */
+      verifyEmailCode: async (email: string, code: string): Promise<boolean> => {
+        set({ isEmailVerificationLoading: true, emailVerificationError: null });
+
+        try {
+          const response = await authService.verifyEmailCode(email, code);
+          
+          if (response.success && response.data) {
+            set({
+              isEmailVerificationLoading: false,
+              emailVerificationStatus: response.data.verified ? 'verified' : 'failed',
+              emailVerificationError: response.data.verified ? null : response.data.message,
+            });
+            return response.data.verified;
+          } else {
+            set({
+              isEmailVerificationLoading: false,
+              emailVerificationStatus: 'failed',
+              emailVerificationError: getErrorMessage(response.error),
+            });
+            return false;
+          }
+        } catch (error) {
+          set({
+            isEmailVerificationLoading: false,
+            emailVerificationStatus: 'failed',
+            emailVerificationError: getErrorMessage(error),
+          });
+          return false;
+        }
+      },
+
+      /**
+       * 인증 코드 재발송
+       */
+      resendVerificationCode: async (email: string): Promise<boolean> => {
+        set({ isResendLoading: true, emailVerificationError: null });
+
+        try {
+          const response = await authService.resendVerificationCode(email);
+          
+          if (response.success) {
+            set({
+              isResendLoading: false,
+              emailVerificationStatus: 'sent',
+              verificationCodeSentAt: Date.now(),
+              emailVerificationError: null,
+            });
+            return true;
+          } else {
+            set({
+              isResendLoading: false,
+              emailVerificationError: getErrorMessage(response.error),
+            });
+            return false;
+          }
+        } catch (error) {
+          set({
+            isResendLoading: false,
+            emailVerificationError: getErrorMessage(error),
+          });
+          return false;
         }
       },
 

@@ -10,6 +10,7 @@ export type { PasswordResetFormProps } from './PasswordResetForm';
 
 //   
 export { EmailVerificationForm } from './EmailVerificationForm';
+export { EmailVerificationInput } from './EmailVerificationInput';
 export { FindAccountForm } from './FindAccountForm';
 export { AccountDeletionForm } from './AccountDeletionForm';
 

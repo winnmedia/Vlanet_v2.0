@@ -1,0 +1,660 @@
+'use client';
+
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  X, 
+  User, 
+  Tag,
+  Filter as FilterIcon,
+  RotateCcw,
+  ChevronDown,
+  Check,
+  Calendar as CalendarIcon,
+  Hash
+} from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { cn } from '@/lib/cn';
+import { useProjectFilters } from '@/store/project.store';
+import type { ProjectStatus, ProjectFilters as ProjectFiltersType } from '@/types';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
+// ========================================
+// 타입 정의
+// ========================================
+
+export interface ProjectFiltersProps {
+  className?: string;
+  onClose?: () => void;
+  showCloseButton?: boolean;
+}
+
+interface FilterOptionProps<T> {
+  value: T;
+  label: string;
+  count?: number;
+  color?: string;
+}
+
+// ========================================
+// 필터 데이터
+// ========================================
+
+const statusFilters: FilterOptionProps<ProjectStatus>[] = [
+  { 
+    value: 'planning', 
+    label: '기획 중', 
+    color: 'bg-blue-100 text-blue-800 border-blue-200',
+    count: 0 
+  },
+  { 
+    value: 'production', 
+    label: '제작 중', 
+    color: 'bg-orange-100 text-orange-800 border-orange-200',
+    count: 0 
+  },
+  { 
+    value: 'review', 
+    label: '검토 중', 
+    color: 'bg-purple-100 text-purple-800 border-purple-200',
+    count: 0 
+  },
+  { 
+    value: 'completed', 
+    label: '완료', 
+    color: 'bg-green-100 text-green-800 border-green-200',
+    count: 0 
+  },
+];
+
+const ownerFilters: FilterOptionProps<number>[] = [
+  { value: 1, label: '나의 프로젝트', count: 0 },
+  { value: 2, label: '팀원 프로젝트', count: 0 },
+];
+
+// ========================================
+// 하위 컴포넌트들
+// ========================================
+
+interface FilterSectionProps {
+  title: string;
+  icon: React.ComponentType<any>;
+  children: React.ReactNode;
+  collapsible?: boolean;
+}
+
+const FilterSection: React.FC<FilterSectionProps> = ({
+  title,
+  icon: Icon,
+  children,
+  collapsible = false,
+}) => {
+  const [isExpanded, setIsExpanded] = React.useState(true);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Icon className="w-4 h-4 text-gray-500" />
+          <h3 className="text-sm font-medium text-gray-900">{title}</h3>
+        </div>
+        
+        {collapsible && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-1 hover:bg-gray-100 rounded transition-colors"
+          >
+            <ChevronDown 
+              className={cn(
+                'w-4 h-4 text-gray-400 transition-transform',
+                !isExpanded && 'transform rotate-180'
+              )}
+            />
+          </button>
+        )}
+      </div>
+      
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+interface CheckboxFilterProps<T> {
+  options: FilterOptionProps<T>[];
+  selectedValues: T[];
+  onChange: (values: T[]) => void;
+  multiple?: boolean;
+}
+
+const CheckboxFilter = <T extends string | number>({
+  options,
+  selectedValues,
+  onChange,
+  multiple = true,
+}: CheckboxFilterProps<T>) => {
+  const handleToggle = (value: T) => {
+    if (multiple) {
+      const newValues = selectedValues.includes(value)
+        ? selectedValues.filter(v => v !== value)
+        : [...selectedValues, value];
+      onChange(newValues);
+    } else {
+      onChange(selectedValues.includes(value) ? [] : [value]);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {options.map((option) => {
+        const isSelected = selectedValues.includes(option.value);
+        
+        return (
+          <label
+            key={option.value}
+            className={cn(
+              'flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors',
+              'hover:bg-gray-50',
+              isSelected && 'bg-blue-50'
+            )}
+          >
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => handleToggle(option.value)}
+                className="sr-only"
+              />
+              <div className={cn(
+                'w-4 h-4 border rounded transition-colors',
+                isSelected 
+                  ? 'bg-blue-600 border-blue-600' 
+                  : 'border-gray-300 bg-white'
+              )}>
+                {isSelected && (
+                  <Check className="w-3 h-3 text-white absolute top-0.5 left-0.5" />
+                )}
+              </div>
+            </div>
+            
+            <div className="flex-1 flex items-center justify-between">
+              <span className={cn(
+                'text-sm',
+                isSelected ? 'text-blue-900 font-medium' : 'text-gray-700'
+              )}>
+                {option.label}
+              </span>
+              
+              {option.count !== undefined && (
+                <span className="text-xs text-gray-500">
+                  {option.count}
+                </span>
+              )}
+            </div>
+          </label>
+        );
+      })}
+    </div>
+  );
+};
+
+interface DateRangeFilterProps {
+  startDate?: string;
+  endDate?: string;
+  onChange: (dateRange: { start: string; end: string } | undefined) => void;
+}
+
+const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
+  startDate,
+  endDate,
+  onChange,
+}) => {
+  const [localStart, setLocalStart] = React.useState(startDate || '');
+  const [localEnd, setLocalEnd] = React.useState(endDate || '');
+
+  const handleApply = () => {
+    if (localStart && localEnd) {
+      onChange({ start: localStart, end: localEnd });
+    } else {
+      onChange(undefined);
+    }
+  };
+
+  const handleClear = () => {
+    setLocalStart('');
+    setLocalEnd('');
+    onChange(undefined);
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">시작일</label>
+          <Input
+            type="date"
+            value={localStart}
+            onChange={(e) => setLocalStart(e.target.value)}
+            className="text-sm"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">종료일</label>
+          <Input
+            type="date"
+            value={localEnd}
+            onChange={(e) => setLocalEnd(e.target.value)}
+            className="text-sm"
+          />
+        </div>
+      </div>
+      
+      <div className="flex gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleClear}
+          className="flex-1 text-xs"
+        >
+          초기화
+        </Button>
+        <Button
+          size="sm"
+          onClick={handleApply}
+          className="flex-1 text-xs"
+          disabled={!localStart || !localEnd}
+        >
+          적용
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface TagFilterProps {
+  selectedTags: string[];
+  onChange: (tags: string[]) => void;
+}
+
+const TagFilter: React.FC<TagFilterProps> = ({
+  selectedTags,
+  onChange,
+}) => {
+  const [inputValue, setInputValue] = React.useState('');
+  const [suggestions] = React.useState([
+    '브랜딩', '홍보', '교육', '이벤트', '제품소개', '인터뷰', 
+    '다큐멘터리', '광고', '뮤직비디오', '애니메이션'
+  ]);
+
+  const filteredSuggestions = suggestions.filter(tag => 
+    tag.toLowerCase().includes(inputValue.toLowerCase()) &&
+    !selectedTags.includes(tag)
+  );
+
+  const handleAddTag = (tag: string) => {
+    if (!selectedTags.includes(tag)) {
+      onChange([...selectedTags, tag]);
+    }
+    setInputValue('');
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    onChange(selectedTags.filter(t => t !== tag));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && inputValue.trim()) {
+      e.preventDefault();
+      handleAddTag(inputValue.trim());
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="relative">
+        <Input
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="태그 입력..."
+          className="text-sm"
+        />
+        
+        {inputValue && filteredSuggestions.length > 0 && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-40 overflow-y-auto">
+            {filteredSuggestions.slice(0, 5).map(tag => (
+              <button
+                key={tag}
+                onClick={() => handleAddTag(tag)}
+                className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 선택된 태그들 */}
+      {selectedTags.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {selectedTags.map(tag => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs"
+            >
+              <Hash className="w-3 h-3" />
+              {tag}
+              <button
+                onClick={() => handleRemoveTag(tag)}
+                className="ml-1 hover:text-blue-600"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* 인기 태그들 */}
+      {selectedTags.length === 0 && (
+        <div>
+          <p className="text-xs text-gray-500 mb-2">인기 태그</p>
+          <div className="flex flex-wrap gap-1">
+            {suggestions.slice(0, 6).map(tag => (
+              <button
+                key={tag}
+                onClick={() => handleAddTag(tag)}
+                className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs hover:bg-gray-200 transition-colors"
+              >
+                <Hash className="w-3 h-3" />
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface ActiveFiltersProps {
+  filters: ProjectFiltersType;
+  onRemoveFilter: (key: keyof ProjectFiltersType) => void;
+  onClearAll: () => void;
+}
+
+const ActiveFilters: React.FC<ActiveFiltersProps> = ({
+  filters,
+  onRemoveFilter,
+  onClearAll,
+}) => {
+  const activeFilterCount = Object.values(filters).filter(Boolean).length;
+  
+  if (activeFilterCount === 0) {
+    return null;
+  }
+
+  return (
+    <div className="p-4 bg-blue-50 border-b border-blue-200">
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="text-sm font-medium text-blue-900">
+          활성 필터 ({activeFilterCount}개)
+        </h4>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onClearAll}
+          className="text-blue-600 hover:text-blue-700 hover:bg-blue-100"
+        >
+          전체 해제
+        </Button>
+      </div>
+      
+      <div className="flex flex-wrap gap-2">
+        {filters.search && (
+          <FilterChip
+            label={`검색: "${filters.search}"`}
+            onRemove={() => onRemoveFilter('search')}
+          />
+        )}
+        
+        {filters.status && filters.status.length > 0 && (
+          <FilterChip
+            label={`상태: ${filters.status.map(s => statusFilters.find(f => f.value === s)?.label).join(', ')}`}
+            onRemove={() => onRemoveFilter('status')}
+          />
+        )}
+        
+        {filters.owner && filters.owner.length > 0 && (
+          <FilterChip
+            label={`소유자: ${filters.owner.length}개`}
+            onRemove={() => onRemoveFilter('owner')}
+          />
+        )}
+        
+        {filters.dateRange && (
+          <FilterChip
+            label={`기간: ${format(new Date(filters.dateRange.start), 'yyyy/MM/dd', { locale: ko })} ~ ${format(new Date(filters.dateRange.end), 'yyyy/MM/dd', { locale: ko })}`}
+            onRemove={() => onRemoveFilter('dateRange')}
+          />
+        )}
+        
+        {filters.tags && filters.tags.length > 0 && (
+          <FilterChip
+            label={`태그: ${filters.tags.join(', ')}`}
+            onRemove={() => onRemoveFilter('tags')}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+interface FilterChipProps {
+  label: string;
+  onRemove: () => void;
+}
+
+const FilterChip: React.FC<FilterChipProps> = ({ label, onRemove }) => {
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-300 text-blue-700 rounded-full text-xs">
+      {label}
+      <button
+        onClick={onRemove}
+        className="ml-1 hover:text-blue-900"
+      >
+        <X className="w-3 h-3" />
+      </button>
+    </span>
+  );
+};
+
+// ========================================
+// 메인 컴포넌트
+// ========================================
+
+export const ProjectFilters: React.FC<ProjectFiltersProps> = ({
+  className,
+  onClose,
+  showCloseButton = true,
+}) => {
+  const {
+    activeFilters,
+    updateFilters,
+    clearFilters,
+    hasActiveFilters,
+  } = useProjectFilters();
+
+  // 개별 필터 제거
+  const handleRemoveFilter = (key: keyof ProjectFiltersType) => {
+    const { [key]: removed, ...rest } = activeFilters;
+    updateFilters(rest);
+  };
+
+  // 상태 필터 변경
+  const handleStatusChange = (statuses: ProjectStatus[]) => {
+    updateFilters({ 
+      ...activeFilters,
+      status: statuses.length > 0 ? statuses : undefined 
+    });
+  };
+
+  // 소유자 필터 변경
+  const handleOwnerChange = (owners: number[]) => {
+    updateFilters({ 
+      ...activeFilters,
+      owner: owners.length > 0 ? owners : undefined 
+    });
+  };
+
+  // 날짜 범위 필터 변경
+  const handleDateRangeChange = (dateRange: { start: string; end: string } | undefined) => {
+    updateFilters({ 
+      ...activeFilters,
+      dateRange 
+    });
+  };
+
+  // 태그 필터 변경
+  const handleTagsChange = (tags: string[]) => {
+    updateFilters({ 
+      ...activeFilters,
+      tags: tags.length > 0 ? tags : undefined 
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className={cn(
+        'bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden',
+        className
+      )}
+    >
+      {/* 헤더 */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <FilterIcon className="w-5 h-5 text-gray-500" />
+          <h2 className="text-lg font-semibold text-gray-900">필터</h2>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {hasActiveFilters && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={clearFilters}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <RotateCcw className="w-4 h-4 mr-1" />
+              초기화
+            </Button>
+          )}
+          
+          {showCloseButton && onClose && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* 활성 필터 표시 */}
+      <ActiveFilters
+        filters={activeFilters}
+        onRemoveFilter={handleRemoveFilter}
+        onClearAll={clearFilters}
+      />
+
+      {/* 필터 본문 */}
+      <div className="p-4 space-y-6 max-h-96 overflow-y-auto">
+        {/* 상태 필터 */}
+        <FilterSection
+          title="프로젝트 상태"
+          icon={FilterIcon}
+        >
+          <CheckboxFilter
+            options={statusFilters}
+            selectedValues={activeFilters.status || []}
+            onChange={handleStatusChange}
+          />
+        </FilterSection>
+
+        {/* 소유자 필터 */}
+        <FilterSection
+          title="프로젝트 소유자"
+          icon={User}
+        >
+          <CheckboxFilter
+            options={ownerFilters}
+            selectedValues={activeFilters.owner || []}
+            onChange={handleOwnerChange}
+          />
+        </FilterSection>
+
+        {/* 날짜 범위 필터 */}
+        <FilterSection
+          title="날짜 범위"
+          icon={CalendarIcon}
+        >
+          <DateRangeFilter
+            startDate={activeFilters.dateRange?.start}
+            endDate={activeFilters.dateRange?.end}
+            onChange={handleDateRangeChange}
+          />
+        </FilterSection>
+
+        {/* 태그 필터 */}
+        <FilterSection
+          title="태그"
+          icon={Tag}
+        >
+          <TagFilter
+            selectedTags={activeFilters.tags || []}
+            onChange={handleTagsChange}
+          />
+        </FilterSection>
+      </div>
+
+      {/* 푸터 (모바일에서 적용/취소 버튼) */}
+      <div className="p-4 border-t border-gray-200 bg-gray-50 md:hidden">
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={onClose}
+          >
+            취소
+          </Button>
+          <Button
+            className="flex-1"
+            onClick={onClose}
+          >
+            적용
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};

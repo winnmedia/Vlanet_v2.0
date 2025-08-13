@@ -64,7 +64,7 @@ export const loginSchema = z.object({
 });
 
 /**
- *   
+ * 회원가입 스키마 (추가 정보 포함)
  */
 export const signupSchema = z.object({
   email: z.string()
@@ -75,9 +75,19 @@ export const signupSchema = z.object({
   passwordConfirm: z.string()
     .min(1, VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED),
   nickname: nicknameSchema,
-  phone: z.string().optional(),
+  full_name: z.string()
+    .min(1, '성명을 입력해주세요')
+    .max(50, '성명은 50자 이하로 입력해주세요')
+    .regex(/^[\uac00-\ud7af\ua-zA-Z\s]+$/, '한글 또는 영문만 입력 가능합니다')
+    .optional(),
+  phone: z.string()
+    .regex(/^01[0-9]-\d{4}-\d{4}$/, '올바른 핸드폰 번호를 입력해주세요 (010-1234-5678)')
+    .optional(),
   company: z.string()
     .max(100, VALIDATION_MESSAGES.COMPANY_TOO_LONG)
+    .optional(),
+  position: z.string()
+    .max(50, '직책은 50자 이하로 입력해주세요')
     .optional(),
   agreedToTerms: z.boolean()
     .refine(val => val === true, VALIDATION_MESSAGES.TERMS_AGREEMENT_REQUIRED),
@@ -127,22 +137,51 @@ export const emailCheckSchema = z.object({
 });
 
 /**
- *    
+ * 닉네임 중복 체크 스키마
  */
 export const nicknameCheckSchema = z.object({
   nickname: nicknameSchema,
 });
 
 /**
- *   
+ * 이메일 인증 코드 검증 스키마
+ */
+export const emailVerificationSchema = z.object({
+  email: z.string()
+    .min(1, VALIDATION_MESSAGES.EMAIL_REQUIRED)
+    .email(VALIDATION_MESSAGES.INVALID_EMAIL_FORMAT),
+  code: z.string()
+    .min(6, '인증 코드는 6자리입니다')
+    .max(6, '인증 코드는 6자리입니다')
+    .regex(/^\d{6}$/, '인증 코드는 6자리 숫자여야 합니다'),
+});
+
+/**
+ * 인증 코드 재발송 스키마
+ */
+export const resendVerificationSchema = z.object({
+  email: z.string()
+    .min(1, VALIDATION_MESSAGES.EMAIL_REQUIRED)
+    .email(VALIDATION_MESSAGES.INVALID_EMAIL_FORMAT),
+});
+
+/**
+ * 프로필 업데이트 스키마
  */
 export const profileUpdateSchema = z.object({
   nickname: nicknameSchema.optional(),
+  full_name: z.string()
+    .min(1, '성명을 입력해주세요')
+    .max(50, '성명은 50자 이하로 입력해주세요')
+    .optional(),
   phone: phoneNumberSchema.optional(),
   company: z.string()
-    .max(100, '  100 ')
+    .max(100, '회사명은 100자 이하로 입력해주세요')
     .optional(),
-  profile_image: z.string().url(' URL  ').optional(),
+  position: z.string()
+    .max(50, '직책은 50자 이하로 입력해주세요')
+    .optional(),
+  profile_image: z.string().url('올바른 URL을 입력해주세요').optional(),
 });
 
 /**
@@ -298,6 +337,8 @@ export type PasswordResetRequestData = z.infer<typeof passwordResetRequestSchema
 export type PasswordResetData = z.infer<typeof passwordResetSchema>;
 export type EmailCheckData = z.infer<typeof emailCheckSchema>;
 export type NicknameCheckData = z.infer<typeof nicknameCheckSchema>;
+export type EmailVerificationData = z.infer<typeof emailVerificationSchema>;
+export type ResendVerificationData = z.infer<typeof resendVerificationSchema>;
 export type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
 export type PasswordChangeData = z.infer<typeof passwordChangeSchema>;
 export type CreateProjectData = z.infer<typeof createProjectSchema>;

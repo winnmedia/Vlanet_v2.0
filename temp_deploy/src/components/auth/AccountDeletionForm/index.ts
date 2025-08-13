@@ -1,0 +1,1 @@
+export { AccountDeletionForm } from './AccountDeletionForm';

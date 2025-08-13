@@ -28,6 +28,15 @@ from core.error_messages import ErrorMessages
 
 ########## username kakao,naver,google    x
 #   
+
+
+class EmptyView(View):
+    """빈 뷰 (URL 패턴 플레이스홀더용)"""
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({"error": "Not implemented"}, status=404)
+    
+    def post(self, request, *args, **kwargs):
+        return JsonResponse({"error": "Not implemented"}, status=404)
 @method_decorator(csrf_exempt, name='dispatch')
 class CheckEmail(View):
     def post(self, request):

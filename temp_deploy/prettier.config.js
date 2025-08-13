@@ -1,0 +1,20 @@
+/** @type {import('prettier').Config} */
+export default {
+  semi: true,
+  singleQuote: true,
+  tabWidth: 2,
+  trailingComma: 'es5',
+  printWidth: 80,
+  useTabs: false,
+  endOfLine: 'lf',
+  bracketSpacing: true,
+  bracketSameLine: false,
+  arrowParens: 'avoid',
+  proseWrap: 'preserve',
+  htmlWhitespaceSensitivity: 'css',
+  jsxSingleQuote: false,
+  quoteProps: 'as-needed',
+  plugins: ['prettier-plugin-tailwindcss'],
+  tailwindConfig: './tailwind.config.js',
+  tailwindFunctions: ['clsx', 'cn'],
+};

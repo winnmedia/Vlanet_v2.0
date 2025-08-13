@@ -48,11 +48,22 @@ interface AuthContextType {
   //  
   hasPermission: () => boolean;
   
-  //   
+  // 중복 체크 상태
   emailCheckResult: any;
   nicknameCheckResult: any;
   isEmailCheckLoading: boolean;
   isNicknameCheckLoading: boolean;
+  
+  // 이메일 인증 상태
+  emailVerificationStatus: 'none' | 'sent' | 'verified' | 'failed';
+  isEmailVerificationLoading: boolean;
+  emailVerificationError: string | null;
+  verificationCodeSentAt: number | null;
+  isResendLoading: boolean;
+  
+  // 이메일 인증 메서드
+  verifyEmailCode: (email: string, code: string) => Promise<boolean>;
+  resendVerificationCode: (email: string) => Promise<boolean>;
   
   //  
   loginWithGoogle: () => Promise<void>;
@@ -161,10 +172,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     //     
     hasPermission: () => true, //  
-    emailCheckResult: null, //  
-    nicknameCheckResult: null, //  
-    isEmailCheckLoading: false, //  
-    isNicknameCheckLoading: false, //  
+    emailCheckResult: authStore.emailCheckResult,
+    nicknameCheckResult: authStore.nicknameCheckResult,
+    isEmailCheckLoading: authStore.isEmailCheckLoading,
+    isNicknameCheckLoading: authStore.isNicknameCheckLoading,
+    
+    // 이메일 인증 상태
+    emailVerificationStatus: authStore.emailVerificationStatus,
+    isEmailVerificationLoading: authStore.isEmailVerificationLoading,
+    emailVerificationError: authStore.emailVerificationError,
+    verificationCodeSentAt: authStore.verificationCodeSentAt,
+    isResendLoading: authStore.isResendLoading,
+    
+    // 이메일 인증 메서드
+    verifyEmailCode: authStore.verifyEmailCode,
+    resendVerificationCode: authStore.resendVerificationCode,  
     
     loginWithGoogle: authStore.loginWithGoogle,
     loginWithKakao: authStore.loginWithKakao,

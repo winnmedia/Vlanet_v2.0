@@ -15,7 +15,9 @@ import {
   Building, 
   AlertCircle,
   CheckCircle,
-  X
+  X,
+  UserCheck,
+  Briefcase
 } from 'lucide-react';
 // debounce  
 const debounce = <T extends (...args: any[]) => any>(
@@ -34,6 +36,7 @@ import { signupSchema, type SignupFormData } from '@/lib/validation/schemas';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
+import { EmailVerificationInput } from '@/components/auth/EmailVerificationInput';
 
 export interface SignupFormProps {
   onSuccess?: (user: any) => void;
@@ -66,11 +69,20 @@ export function SignupForm({
     nicknameCheckResult,
     isEmailCheckLoading,
     isNicknameCheckLoading,
+    // 이메일 인증 관련
+    emailVerificationStatus,
+    isEmailVerificationLoading,
+    emailVerificationError,
+    verificationCodeSentAt,
+    isResendLoading,
+    verifyEmailCode,
+    resendVerificationCode,
   } = useAuth();
   
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [emailVerified, setEmailVerified] = useState(false);
 
   const {
     register,
@@ -132,12 +144,26 @@ export function SignupForm({
       clearErrors();
       clearSignupError();
 
+      // 이메일 인증 완료 확인
+      if (emailVerificationStatus !== 'verified') {
+        setError('root', {
+          type: 'manual',
+          message: '이메일 인증을 완료해주세요.',
+        });
+        return;
+      }
+
       const success = await signup({
         email: data.email,
         password: data.password,
         nickname: data.nickname,
+        full_name: data.full_name,
         phone: data.phone,
         company: data.company,
+        position: data.position,
+        agreedToTerms: data.agreedToTerms,
+        agreedToPrivacy: data.agreedToPrivacy,
+        agreedToMarketing: data.agreedToMarketing,
       });
 
       if (success) {
@@ -145,7 +171,7 @@ export function SignupForm({
         router.push(redirectTo);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : ' .';
+      const errorMessage = error instanceof Error ? error.message : '회원가입에 실패했습니다.';
       
       setError('root', {
         type: 'manual',
@@ -157,50 +183,59 @@ export function SignupForm({
   };
 
   const handleNextStep = async () => {
-    const step1Fields = ['email', 'nickname', 'password', 'passwordConfirm'] as const;
-    
-    // 먼저 필드 유효성 검사 실행
-    const isValid = await trigger(step1Fields);
-    
-    // 이메일 중복 체크 확인
-    if (watchedEmail && !emailCheckResult) {
-      await checkEmailAvailability(watchedEmail);
-      return; // 중복 체크 결과를 기다림
-    }
-    
-    // 닉네임 중복 체크 확인
-    if (watchedNickname && !nicknameCheckResult) {
-      await checkNicknameAvailability(watchedNickname);
-      return; // 중복 체크 결과를 기다림
-    }
-    
-    // 모든 조건 확인 후 다음 단계로 이동
-    if (isValid && 
-        emailCheckResult?.available !== false && 
-        nicknameCheckResult?.available !== false) {
-      setCurrentStep(2);
-    } else {
-      // 유효성 검사 실패 시 첫 번째 에러 필드로 포커스 이동
-      const errorField = step1Fields.find(field => {
-        if (errors[field]) return true;
-        if (field === 'email' && emailCheckResult?.available === false) return true;
-        if (field === 'nickname' && nicknameCheckResult?.available === false) return true;
-        return false;
-      });
+    if (currentStep === 1) {
+      const step1Fields = ['email', 'nickname', 'password', 'passwordConfirm'] as const;
       
-      if (errorField) {
-        // 약간의 지연을 두어 UI 업데이트 후 포커스 이동
-        setTimeout(() => {
-          const element = document.getElementById(errorField);
-          element?.focus();
-          element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
+      // 먼저 필드 유효성 검사 실행
+      const isValid = await trigger(step1Fields);
+      
+      // 이메일 중복 체크 확인
+      if (watchedEmail && !emailCheckResult) {
+        await checkEmailAvailability(watchedEmail);
+        return; // 중복 체크 결과를 기다림
+      }
+      
+      // 닉네임 중복 체크 확인
+      if (watchedNickname && !nicknameCheckResult) {
+        await checkNicknameAvailability(watchedNickname);
+        return; // 중복 체크 결과를 기다림
+      }
+      
+      // 모든 조건 확인 후 다음 단계로 이동
+      if (isValid && 
+          emailCheckResult?.available !== false && 
+          nicknameCheckResult?.available !== false) {
+        setCurrentStep(2);
+      } else {
+        // 유효성 검사 실패 시 첫 번째 에러 필드로 포커스 이동
+        const errorField = step1Fields.find(field => {
+          if (errors[field]) return true;
+          if (field === 'email' && emailCheckResult?.available === false) return true;
+          if (field === 'nickname' && nicknameCheckResult?.available === false) return true;
+          return false;
+        });
+        
+        if (errorField) {
+          // 약간의 지연을 두어 UI 업데이트 후 포커스 이동
+          setTimeout(() => {
+            const element = document.getElementById(errorField);
+            element?.focus();
+            element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 100);
+        }
+      }
+    } else if (currentStep === 2) {
+      // 이메일 인증 완료 확인
+      if (emailVerificationStatus === 'verified') {
+        setCurrentStep(3);
       }
     }
   };
 
   const handlePrevStep = () => {
-    setCurrentStep(1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -214,6 +249,27 @@ export function SignupForm({
   const handleSocialLogin = (provider: 'google' | 'kakao') => {
     //    
     console.log(`${provider} signup clicked`);
+  };
+
+  // 이메일 인증 처리
+  const handleEmailVerified = (verified: boolean) => {
+    setEmailVerified(verified);
+    if (verified) {
+      // 자동으로 다음 단계로 이동
+      setTimeout(() => {
+        setCurrentStep(3);
+      }, 1000);
+    }
+  };
+
+  const handleVerifyCode = async (code: string) => {
+    if (!watchedEmail) return false;
+    return await verifyEmailCode(watchedEmail, code);
+  };
+
+  const handleResendCode = async () => {
+    if (!watchedEmail) return false;
+    return await resendVerificationCode(watchedEmail);
   };
 
   const getEmailValidationStatus = () => {
@@ -275,20 +331,33 @@ export function SignupForm({
       className={cn('w-full max-w-lg mx-auto', className)}
     >
       {/* 진행 단계 표시 */}
-      <div className="flex items-center justify-center mb-8" role="progressbar" aria-valuenow={currentStep} aria-valuemin={1} aria-valuemax={2} aria-label="회원가입 진행 단계">
+      <div className="flex items-center justify-center mb-8" role="progressbar" aria-valuenow={currentStep} aria-valuemin={1} aria-valuemax={3} aria-label="회원가입 진행 단계">
         <div className="flex items-center">
           <div className={cn(
             'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
-            currentStep === 1 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
+            currentStep >= 1 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
           )} aria-label="1단계: 기본 정보">
             1
           </div>
-          <div className="w-12 h-0.5 bg-gray-200 mx-2" />
+          <div className={cn(
+            'w-12 h-0.5 mx-2',
+            currentStep >= 2 ? 'bg-brand-primary' : 'bg-gray-200'
+          )} />
           <div className={cn(
             'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
-            currentStep === 2 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
-          )} aria-label="2단계: 추가 정보 및 약관 동의">
+            currentStep >= 2 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
+          )} aria-label="2단계: 이메일 인증">
             2
+          </div>
+          <div className={cn(
+            'w-12 h-0.5 mx-2',
+            currentStep >= 3 ? 'bg-brand-primary' : 'bg-gray-200'
+          )} />
+          <div className={cn(
+            'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
+            currentStep >= 3 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-600'
+          )} aria-label="3단계: 추가 정보 및 약관 동의">
+            3
           </div>
         </div>
       </div>
@@ -542,7 +611,7 @@ export function SignupForm({
             </motion.div>
           )}
 
-          {/* 2:      */}
+          {/* 2단계: 이메일 인증 */}
           {currentStep === 2 && (
             <motion.div
               key="step2"
@@ -552,8 +621,91 @@ export function SignupForm({
               className="space-y-6"
             >
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2" id="step2-heading">추가 정보 입력</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2" id="step2-heading">이메일 인증</h2>
+                <p className="text-gray-600">지메일로 전송된 인증 코드를 입력해주세요</p>
+              </div>
+
+              <EmailVerificationInput
+                email={watchedEmail || ''}
+                onVerified={handleEmailVerified}
+                verificationStatus={emailVerificationStatus}
+                isVerificationLoading={isEmailVerificationLoading}
+                verificationError={emailVerificationError}
+                verificationCodeSentAt={verificationCodeSentAt}
+                isResendLoading={isResendLoading}
+                onVerifyCode={handleVerifyCode}
+                onResendCode={handleResendCode}
+              />
+
+              {/* 단계 네비게이션 */}
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrevStep}
+                  className="flex-1"
+                  size="lg"
+                >
+                  이전 단계
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleNextStep}
+                  disabled={emailVerificationStatus !== 'verified'}
+                  className="flex-1"
+                  size="lg"
+                >
+                  다음 단계
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 3단계: 추가 정보 및 약관 동의 */}
+          {currentStep === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2" id="step3-heading">추가 정보 입력</h2>
                 <p className="text-gray-600">서비스 이용을 위한 추가 정보를 입력해주세요</p>
+              </div>
+
+              {/* 성명 필드 추가 */}
+              <div className="space-y-2">
+                <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
+                  성명
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <UserCheck className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    {...register('full_name')}
+                    type="text"
+                    id="full_name"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                    placeholder="성명을 입력해주세요 (선택사항)"
+                    autoComplete="name"
+                  />
+                </div>
+                <AnimatePresence>
+                  {errors.full_name && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-sm text-red-500 flex items-center gap-1"
+                    >
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.full_name.message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/*  */}
@@ -617,6 +769,39 @@ export function SignupForm({
                     >
                       <AlertCircle className="w-4 h-4" />
                       {errors.company.message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* 직위 */}
+              <div className="space-y-2">
+                <label htmlFor="position" className="block text-sm font-medium text-gray-700">
+                  직위
+                </label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <Briefcase className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    {...register('position')}
+                    type="text"
+                    id="position"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary"
+                    placeholder="직위를 입력해주세요 (선택사항)"
+                    autoComplete="organization-title"
+                  />
+                </div>
+                <AnimatePresence>
+                  {errors.position && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="text-sm text-red-500 flex items-center gap-1"
+                    >
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.position.message}
                     </motion.p>
                   )}
                 </AnimatePresence>

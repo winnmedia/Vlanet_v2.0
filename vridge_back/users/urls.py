@@ -13,6 +13,14 @@ from . import views_profile_upload
 from . import views_email_monitor
 from . import views_account_management
 
+# Import Enhanced Signup Views
+try:
+    from . import views_signup_enhanced
+    HAS_ENHANCED_SIGNUP = True
+except ImportError:
+    HAS_ENHANCED_SIGNUP = False
+    views_signup_enhanced = None
+
 # Import api_urls patterns safely
 try:
     from .api_urls import urlpatterns as api_patterns
@@ -21,7 +29,19 @@ except ImportError:
 
 app_name = 'users'
 
-urlpatterns = api_patterns + [
+# Enhanced Signup endpoints (conditionally added)
+enhanced_signup_patterns = []
+if HAS_ENHANCED_SIGNUP:
+    enhanced_signup_patterns = [
+        path("check-email-verify/", views_signup_enhanced.CheckEmailWithVerificationView.as_view(), name='check-email-verify'),
+        path("verify-email-code/", views_signup_enhanced.VerifyEmailCodeView.as_view(), name='verify-email-code'),
+        path("check-nickname/", views_signup_enhanced.CheckNicknameView.as_view(), name='check-nickname'),
+        path("signup-enhanced/", views_signup_enhanced.EnhancedSignupView.as_view(), name='signup-enhanced'),
+        path("resend-verification/", views_signup_enhanced.ResendVerificationCodeView.as_view(), name='resend-verification'),
+    ]
+
+urlpatterns = api_patterns + enhanced_signup_patterns + [
+    
     # Railway 전용 최적화된 로그인 엔드포인트
     path("railway/login/", views_railway_login_fix.railway_login_view, name='railway_login'),
     path("railway/health/", views_railway_login_fix.railway_health_check, name='railway_health'),
